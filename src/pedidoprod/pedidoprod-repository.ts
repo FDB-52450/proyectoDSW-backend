@@ -1,35 +1,25 @@
 import { Repository } from '../shared/repository.js'
 import { PedidoProd } from './pedidoprod-entity.js'
 
+// TODO: Remove this later and use a real database
+
 import { ProductoRepository } from '../producto/producto-repository.js'
 
-import { Marca } from '../marca/marca-entity.js'
-import { Categoria } from '../categoria/categoria-entity.js'
-import { Producto } from '../producto/producto-entity.js'
+const productoRepository = new ProductoRepository()
+const productos = productoRepository.findAll()
 
-const productos = [
-  new Producto(
-    'RTX 3060',
-    'Tarjeta grafica',
-    100000,
-    0,
-    50,
-    10,
-    false,
-    new Date(2025, 5, 30),
-    'pqwol23m3m21l2',
-    new Marca('NVIDIA', '123'),
-    new Categoria('placa-video')
-  ),
-]
+if (!productos) {
+  throw new Error('No products found in the repository')
+}
 
+//
 
 const pedidoProds = [
-  new PedidoProd(
-    5,
-    15000,
-    productos[0]
-  ),
+  new PedidoProd(2, productos[0]),
+  new PedidoProd(1, productos[1]),
+  new PedidoProd(4, productos[2]),
+  new PedidoProd(3, productos[1]),
+  new PedidoProd(1, productos[3]),
 ]
 
 export class PedidoProdRepository implements Repository<PedidoProd> {
