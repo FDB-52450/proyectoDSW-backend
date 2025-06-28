@@ -9,4 +9,24 @@ export class PedidoProd {
     public precioTotal = cantidad * precioUnidad,
     public id = crypto.randomInt(1000, 10000).toString()
   ) {}
+
+  public checkStock(): boolean {
+    return (0 < this.cantidad && this.cantidad <= this.producto.getStockDisponible())
+  }
+
+  public aumentarStockReservado(): void {
+    this.producto.aumentarStockReservado(this.cantidad)
+  }
+
+  public reducirStockReservado(): void {
+    this.producto.reducirStockReservado(this.cantidad)
+  }
+
+  public reducirStock(): void {
+    this.producto.reducirStock(this.cantidad)
+  }
+
+  public aumentarStock(): void {
+    this.producto.aumentarStock(this.cantidad)
+  }
 }

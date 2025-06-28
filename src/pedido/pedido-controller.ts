@@ -19,6 +19,7 @@ function sanitizePedidoInput(req: Request, res: Response, next: NextFunction) {
       delete req.body.sanitizedInput[key]
     }
   })
+
   next()
 }
 
@@ -47,17 +48,23 @@ function add(req: Request, res: Response) {
     input.detalle,
   )
 
-  // VALIDAR PRECIO TOTAL
+  const check = pedidoInput.checkDetalle()
 
-  // VALIDAR DETALLE INDIVIDUALMENTE
+  if (!check) {
+    return res.status(400).send({ message: 'Detalle del pedido no válido' })
+  } else {
+    const pedido = repository.add(pedidoInput)
+    pedido?.aumentarStockReservado() // Temporal fix (likely permanent)
 
-  const pedido = repository.add(pedidoInput)
-  res.status(201).send({ message: 'Pedido creada', data: pedido})
+    res.status(201).send({ message: 'Pedido creado.', data: pedido })
+  }
 }
 
 function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = req.params.id
   const pedido = repository.update(req.body.sanitizedInput)
+
+  // Update is not meant to be able to modify detalle, so it doesn't call any stock modifiying methods.
 
   if (!pedido) {
     res.status(404).send({ message: 'Pedido not found' })
@@ -74,6 +81,8 @@ function remove(req: Request, res: Response) {
     res.status(404).send({ message: 'Pedido not found' })
   } else {
     res.status(200).send({ message: 'Pedido deleted successfully' })
+
+    pedido.reducirStockReservado()
   }
 }
 

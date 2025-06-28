@@ -3,6 +3,9 @@ import { Marca } from '../marca/marca-entity.js'
 import { Categoria } from '../categoria/categoria-entity.js'
 
 export class Producto {
+  // TODO: Revise if the assignment of properties in the constructor is necessary
+  // and if it can be simplified or optimized.
+
   constructor(
     public nombre: string,
     public desc: string,
@@ -17,4 +20,30 @@ export class Producto {
     public categoria: Categoria,
     public id = crypto.randomInt(1000, 10000).toString()
   ) {}
+
+  public getStockDisponible(): number {
+    return this.stock - this.stockReservado
+  }
+
+  public aumentarStockReservado(cantidad: number): void {
+    this.stockReservado += cantidad
+  }
+
+  public reducirStockReservado(cantidad: number): void {
+    this.stockReservado -= cantidad
+  }
+
+  public aumentarStock(cantidad: number): void {
+    this.stock += cantidad
+  }
+
+  public reducirStock(cantidad: number): void {
+    this.stock -= cantidad
+  }
+
+  // Method to be used at some point in the future
+
+  public getPrecioConDescuento(): number {
+    return this.precio - (this.precio * this.descuento / 100)
+  }
 }

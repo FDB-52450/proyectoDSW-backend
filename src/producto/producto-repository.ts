@@ -117,6 +117,7 @@ export class ProductoRepository implements Repository<Producto> {
 
   public add(item: Producto): Producto | undefined {
     productos.push(item)
+    
     return item
   }
 
@@ -124,8 +125,9 @@ export class ProductoRepository implements Repository<Producto> {
     const productoIdx = productos.findIndex((producto) => producto.id === item.id)
 
     if (productoIdx !== -1) {
-      productos[productoIdx] = { ...productos[productoIdx], ...item }
+      Object.assign(productos[productoIdx], item)
     }
+
     return productos[productoIdx]
   }
 
@@ -135,6 +137,7 @@ export class ProductoRepository implements Repository<Producto> {
     if (productoIdx !== -1) {
       const deletedProductos = productos[productoIdx]
       productos.splice(productoIdx, 1)
+
       return deletedProductos
     }
   }

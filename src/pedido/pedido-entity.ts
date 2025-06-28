@@ -13,11 +13,32 @@ export class Pedido {
     public id = crypto.randomInt(1000, 10000).toString()
   ) {
     this.precioTotal = this.calcularPrecioTotal()
+    this.aumentarStockReservado()
   }
 
   public calcularPrecioTotal(): number {
     return this.detalle.reduce((total, item) => total + item.cantidad * item.precioUnidad, 0)
   }
 
-  // TODO: Maybe add a method to update the order status?
+  public checkDetalle(): boolean {
+    return this.detalle.every(item => item.checkStock())
+  }
+
+  public actualizarEstado(nuevoEstado: string): void {
+    // TODO: Complete this method; should include logic to increase/decrease stock accordingly.
+  }
+
+  // TODO: Determine if this string of methods from pedido to product is even necessary.
+
+  public aumentarStockReservado(): void {
+    this.detalle.forEach(item => {
+      item.aumentarStockReservado()
+    })
+  }
+
+  public reducirStockReservado(): void {
+    this.detalle.forEach(item => {
+      item.reducirStockReservado()
+    })
+  }
 }

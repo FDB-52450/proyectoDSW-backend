@@ -57,9 +57,9 @@ function findOne(req: Request, res: Response) {
 
   if (!producto) {
     res.status(404).send({ message: 'Producto not found' })
+  } else {
+    res.json({ data: producto })
   }
-  
-  res.json({ data: producto })
 }
 
 function add(req: Request, res: Response) {
@@ -80,6 +80,7 @@ function add(req: Request, res: Response) {
   )
 
   const producto = repository.add(productoInput)
+
   res.status(201).send({ message: 'Producto creada', data: producto})
 }
 
@@ -89,9 +90,9 @@ function update(req: Request, res: Response) {
 
   if (!producto) {
     res.status(404).send({ message: 'Producto not found' })
+  } else {
+    res.status(200).send({ message: 'Producto updated successfully', data: producto })
   }
-
-  res.status(200).send({ message: 'Producto updated successfully', data: producto })
 }
 
 function remove(req: Request, res: Response) {

@@ -29,6 +29,8 @@ function findOne(req: Request, res: Response) {
 
   if (!marca) {
     res.status(404).send({ message: 'Marca not found' })
+  } else {
+    
   }
   
   res.json({ data: marca })

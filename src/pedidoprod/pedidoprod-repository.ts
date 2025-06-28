@@ -22,36 +22,14 @@ const pedidoProds = [
   new PedidoProd(1, productos[3]),
 ]
 
-export class PedidoProdRepository implements Repository<PedidoProd> {
+// TODO: Remove this later and use a real database
+
+export class PedidoProdRepository {
   public findAll(): PedidoProd[] | undefined {
     return pedidoProds
   }
 
   public findOne(item: { id: string }): PedidoProd | undefined {
     return pedidoProds.find((pedidoprod) => pedidoprod.id === item.id)
-  }
-
-  public add(item: PedidoProd): PedidoProd | undefined {
-    pedidoProds.push(item)
-    return item
-  }
-
-  public update(item: PedidoProd): PedidoProd | undefined {
-    const pedidoprodIdx = pedidoProds.findIndex((pedidoprod) => pedidoprod.id === item.id)
-
-    if (pedidoprodIdx !== -1) {
-      pedidoProds[pedidoprodIdx] = { ...pedidoProds[pedidoprodIdx], ...item }
-    }
-    return pedidoProds[pedidoprodIdx]
-  }
-
-  public delete(item: { id: string }): PedidoProd | undefined {
-    const pedidoprodIdx = pedidoProds.findIndex((pedidoprod) => pedidoprod.id === item.id)
-
-    if (pedidoprodIdx !== -1) {
-      const deletedPedidoProds = pedidoProds[pedidoprodIdx]
-      pedidoProds.splice(pedidoprodIdx, 1)
-      return deletedPedidoProds
-    }
   }
 }
