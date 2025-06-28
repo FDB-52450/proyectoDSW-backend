@@ -1,0 +1,8 @@
+GET http://localhost:8080/api/pedidos/
+
+###
+
+GET http://localhost:8080/api/pedidos/9175
+
+###
+DELETE http://localhost:8080/api/pedidos/9175

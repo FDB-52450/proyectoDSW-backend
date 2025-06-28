@@ -8,10 +8,7 @@ function sanitizePedidoInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     tipoEntrega: req.body.tipoEntrega,
     tipoPago: req.body.tipoPago,
-    fechaPedido: req.body.fechaPedido,
     fechaEntrega: req.body.fechaEntrega,
-    estado: req.body.estado,
-    precioTotal: req.body.precioTotal,
     detalle: req.body.detalle
   }
   
@@ -46,10 +43,7 @@ function add(req: Request, res: Response) {
   const pedidoInput = new Pedido(
     input.tipoEntrega,
     input.tipoPago,
-    input.fechaPedido,
     input.fechaEntrega,
-    input.estado,
-    input.precioTotal,
     input.detalle,
   )
 

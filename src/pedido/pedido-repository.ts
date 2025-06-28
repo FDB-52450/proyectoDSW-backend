@@ -1,13 +1,39 @@
 import { Repository } from '../shared/repository.js'
 import { Pedido } from './pedido-entity.js'
 
+import { PedidoProdRepository } from '../pedidoprod/pedidoprod-repository.js'
+
+const pedidoProdRepository = new PedidoProdRepository()
+const pedidoProds = pedidoProdRepository.findAll()
+
+if (!pedidoProds) {
+  throw new Error('No pedido products found in the repository')
+}
+
 const pedidos = [
   new Pedido(
     'RETIRO',
     'EFECTIVO',
-    new Date(2025, 5, 25),
     new Date(2025, 5, 30),
-    'pendiente',
+    [pedidoProds[0], pedidoProds[1]]
+  ),
+  new Pedido(
+    'ENVIO',
+    'TARJETA',
+    new Date(2025, 6, 5),
+    [pedidoProds[2]]
+  ),
+  new Pedido(
+    'RETIRO',
+    'TRANSFERENCIA',
+    new Date(2025, 6, 10),
+    [pedidoProds[3]]
+  ),
+  new Pedido(
+    'ENVIO',
+    'EFECTIVO',
+    new Date(2025, 6, 15),
+    [pedidoProds[4]]
   ),
 ]
 
@@ -25,12 +51,16 @@ export class PedidoRepository implements Repository<Pedido> {
     return item
   }
 
+  // TODO: Determine if an extra method for updating only the state is neccessary
+
   public update(item: Pedido): Pedido | undefined {
     const pedidoIdx = pedidos.findIndex((pedido) => pedido.id === item.id)
 
     if (pedidoIdx !== -1) {
-      pedidos[pedidoIdx] = { ...pedidos[pedidoIdx], ...item }
+      Object.assign(pedidos[pedidoIdx], item)
+      pedidos[pedidoIdx].calcularPrecioTotal()
     }
+
     return pedidos[pedidoIdx]
   }
 
