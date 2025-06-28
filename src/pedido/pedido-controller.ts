@@ -51,7 +51,7 @@ function add(req: Request, res: Response) {
   const check = pedidoInput.checkDetalle()
 
   if (!check) {
-    return res.status(400).send({ message: 'Detalle del pedido no válido' })
+    res.status(400).send({ message: 'Detalle del pedido no válido' })
   } else {
     const pedido = repository.add(pedidoInput)
     pedido?.aumentarStockReservado() // Temporal fix (likely permanent)
@@ -68,9 +68,9 @@ function update(req: Request, res: Response) {
 
   if (!pedido) {
     res.status(404).send({ message: 'Pedido not found' })
+  } else {
+    res.status(200).send({ message: 'Pedido updated successfully', data: pedido })
   }
-
-  res.status(200).send({ message: 'Pedido updated successfully', data: pedido })
 }
 
 function remove(req: Request, res: Response) {

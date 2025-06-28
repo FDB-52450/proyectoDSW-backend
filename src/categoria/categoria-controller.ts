@@ -29,9 +29,9 @@ function findOne(req: Request, res: Response) {
 
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })
+  } else {
+    res.json({ data: categoria })
   }
-  
-  res.json({ data: categoria })
 }
 
 function add(req: Request, res: Response) {
@@ -51,9 +51,9 @@ function update(req: Request, res: Response) {
 
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })
+  } else {
+    res.status(200).send({ message: 'Categoria actualizada con exito.', data: categoria })
   }
-
-  res.status(200).send({ message: 'Categoria actualizada con exito.', data: categoria })
 }
 
 function remove(req: Request, res: Response) {

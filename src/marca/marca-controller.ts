@@ -30,10 +30,8 @@ function findOne(req: Request, res: Response) {
   if (!marca) {
     res.status(404).send({ message: 'Marca not found' })
   } else {
-    
+    res.json({ data: marca })
   }
-  
-  res.json({ data: marca })
 }
 
 function add(req: Request, res: Response) {
@@ -54,9 +52,9 @@ function update(req: Request, res: Response) {
 
   if (!marca) {
     res.status(404).send({ message: 'Marca not found' })
+  } else {
+    res.status(200).send({ message: 'Marca updated successfully', data: marca })
   }
-
-  res.status(200).send({ message: 'Marca updated successfully', data: marca })
 }
 
 function remove(req: Request, res: Response) {
