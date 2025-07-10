@@ -16,9 +16,6 @@ const productos = [
     100000,
     0,
     50,
-    10,
-    false,
-    new Date(2025, 5, 30),
     'pqwol23m3m21l2',
     marca1,
     categoria1
@@ -29,9 +26,6 @@ const productos = [
     90000,
     5,
     30,
-    5,
-    true,
-    new Date(2025, 6, 10),
     'amdimg123',
     marca2,
     categoria1
@@ -42,9 +36,6 @@ const productos = [
     120000,
     10,
     20,
-    2,
-    false,
-    new Date(2025, 7, 15),
     'ryzenimg456',
     marca2,
     categoria2
@@ -55,9 +46,6 @@ const productos = [
     130000,
     8,
     15,
-    1,
-    true,
-    new Date(2025, 8, 5),
     'intelimg789',
     new Marca('Intel', '789'),
     categoria2

@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express'
 import { ProductoRepository } from './producto-repository.js'
 import { Producto } from './producto-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
-import { describe } from 'node:test'
 
 const repository = new ProductoRepository()
 
@@ -13,9 +12,6 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
     precio: req.body.precio,
     descuento: req.body.descuento,
     stock: req.body.stock,
-    stockReservado: req.body.stockReservado,
-    destacado: req.body.destacado,
-    fechaIngreso: req.body.fechaIngreso,
     imagenLink: req.body.imagenLink,
     marca: req.body.marca.marca,
     categoria: req.body.categoria
@@ -71,9 +67,6 @@ function add(req: Request, res: Response) {
     input.precio,
     input.descuento,
     input.stock,
-    input.stockReservado,
-    input.destacado,
-    input.fechaIngreso,
     input.imagenLink,
     input.marca,
     input.categoria

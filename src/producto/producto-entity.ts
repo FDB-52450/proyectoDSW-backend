@@ -12,12 +12,12 @@ export class Producto {
     public precio: number,
     public descuento: number,
     public stock: number,
-    public stockReservado: number,
-    public destacado: boolean,
-    public fechaIngreso: Date,
     public imagenLink: string,
     public marca: Marca,
     public categoria: Categoria,
+    public fechaIngreso = new Date(),
+    public stockReservado = 0,
+    public destacado = false,
     public id = crypto.randomInt(1000, 10000).toString()
   ) {}
 
