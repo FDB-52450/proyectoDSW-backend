@@ -1,0 +1,4 @@
+GET http://localhost:8080/api/productos/
+
+###
+GET http://localhost:8080/api/productos/1023

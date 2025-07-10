@@ -13,7 +13,6 @@ export class Pedido {
     public id = crypto.randomInt(1000, 10000).toString()
   ) {
     this.precioTotal = this.calcularPrecioTotal()
-    this.aumentarStockReservado()
   }
 
   public calcularPrecioTotal(): number {
@@ -24,8 +23,23 @@ export class Pedido {
     return this.detalle.every(item => item.checkStock())
   }
 
-  public actualizarEstado(nuevoEstado: string): void {
-    // TODO: Complete this method; should include logic to increase/decrease stock accordingly.
+  public actualizarEstado(nuevoEstado: string): boolean {
+    // A PEDIDO CAN ONLY GO FROM 'pendiente' TO 'confirmado' OR 'cancelado'
+
+    if (this.estado === 'pendiente') {
+      if (nuevoEstado === 'confirmado' || nuevoEstado === 'cancelado') {
+        this.estado = nuevoEstado
+        this.reducirStockReservado()
+
+        if (nuevoEstado === 'confirmado') {
+          this.reducirStock()
+        }
+
+        return true
+      }
+    }
+
+    return false
   }
 
   // TODO: Determine if this string of methods from pedido to product is even necessary.
@@ -39,6 +53,18 @@ export class Pedido {
   public reducirStockReservado(): void {
     this.detalle.forEach(item => {
       item.reducirStockReservado()
+    })
+  }
+
+  public aumentarStock(): void {
+    this.detalle.forEach(item => {
+      item.aumentarStock()
+    })
+  }
+
+  public reducirStock(): void {
+    this.detalle.forEach(item => {
+      item.reducirStock()
     })
   }
 }
