@@ -60,31 +60,31 @@ export class ProductoRepository implements Repository<Producto> {
 
     if (!filters) return result
 
-    if (filters.precioMin !== undefined) {
+    if (filters.precioMin) {
       result = result.filter(p => p.precio >= filters.precioMin!)
     }
-    if (filters.precioMax !== undefined) {
+    if (filters.precioMax) {
       result = result.filter(p => p.precio <= filters.precioMax!)
     }
-    if (filters.stockMin !== undefined) {
+    if (filters.stockMin) {
       result = result.filter(p => p.stock >= filters.stockMin!)
     }
-    if (filters.stockMax !== undefined) {
+    if (filters.stockMax) {
       result = result.filter(p => p.stock <= filters.stockMax!)
     }
-    if (filters.nombre !== undefined) {
+    if (filters.nombre) {
       result = result.filter(p => p.nombre.toLowerCase().includes(filters.nombre!.toLowerCase()))
     }
-    if (filters.destacado !== undefined) {
+    if (filters.destacado) {
       result = result.filter(p => p.destacado === filters.destacado)
     }
 
     // TODO: Check if filters.marca and filters.categoria should be uppercased or not (implemented as uppercased directly on database)
 
-    if (filters.marca !== undefined) {
+    if (filters.marca) {
       result = result.filter(p => p.marca.nombre.toUpperCase() === filters.marca)
     }
-    if (filters.categoria !== undefined) {
+    if (filters.categoria) {
       result = result.filter(p => p.categoria.nombre.toUpperCase() === filters.categoria)
     }
 

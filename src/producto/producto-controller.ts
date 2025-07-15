@@ -9,9 +9,9 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
     desc: req.body.desc,
-    precio: req.body.precio,
-    descuento: req.body.descuento,
-    stock: req.body.stock,
+    precio: Number(req.body.precio),
+    descuento: Number(req.body.descuento),
+    stock: Number(req.body.stock),
     imagenLink: req.body.imagenLink,
     marca: req.body.marca.marca,
     categoria: req.body.categoria
@@ -21,19 +21,23 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
       delete req.body.sanitizedInput[key]
+
+      // This line of code validates that each key (except destacado) actually exists when creating a product (otherwise returns an error.)
+      if (req.method === "POST" && key != 'destacado') {return res.status(400).send({ message: 'Missing attributes on product creation.'})}
     }
   })
   next()
 }
 
 function sanitizeProductoFilters(req: Request, res: Response, next: NextFunction) {
+  // TODO: Determine if invalid input should just throw an error.
   res.locals.filters = {
-    precioMin: req.query.precioMin,
-    precioMax: req.query.precioMax,
+    precioMin: Number(req.query.precioMin),
+    precioMax: Number(req.query.precioMax),
     stockMin: req.query.stockMin,
     stockMax: req.query.stockMax,
     nombre: req.query.nombre,
-    destacado: req.query.destacado,
+    destacado: (req.query.destacado === "true"),
     marca: req.query.marca,
     categoria: req.query.categoria
   }

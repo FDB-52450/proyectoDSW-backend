@@ -50,8 +50,6 @@ function add(req: Request, res: Response) {
   const detalleWithProducts = input.detalle.map((item: { cantidad: number, productoId: string }) => {
     const producto = productoRepository.findOne({ id: item.productoId })
 
-    console.log(`Producto buscado: ${item.productoId}`, producto)
-
     if (!producto) {
       res.status(400).send({ message: `Producto con id ${item.productoId} no existe.` })
       throw new Error('Producto no encontrado') // TEMPORAL FIX

@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 
 import { productoRouter } from './producto/producto-routes.js'
 import { marcaRouter} from './marca/marca-routes.js'
@@ -10,6 +11,7 @@ const app = express()
 const port = 8080
 
 app.use(express.json())
+app.use(cors())
 
 app.use('/api/productos', productoRouter)
 app.use('/api/marcas', marcaRouter)
