@@ -27,3 +27,7 @@ dist
 
 ## built vscode extensions
 *.vsix
+
+## product / brand images
+images/*
+!images/template.png

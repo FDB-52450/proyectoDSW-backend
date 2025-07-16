@@ -12,12 +12,14 @@ const port = 8080
 
 app.use(express.json())
 app.use(cors())
+app.use('/images', express.static('images'))
 
 app.use('/api/productos', productoRouter)
 app.use('/api/marcas', marcaRouter)
 app.use('/api/categorias', categoriaRouter)
 app.use('/api/administradores', administradorRouter)
 app.use('/api/pedidos', pedidoRouter)
+
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Resource not found' });

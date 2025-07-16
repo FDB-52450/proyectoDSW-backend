@@ -1,21 +1,23 @@
 import { Request, Response, NextFunction } from 'express'
 import { MarcaRepository } from './marca-repository.js'
 import { Marca } from './marca-entity.js'
+import { Imagen } from '../imagen/imagen-entity.js'
 
 const repository = new MarcaRepository()
 
 function sanitizeMarcaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
-    imagenLink: req.body.imagenLink
+    imagen: req.file?.filename || undefined,
+    operacion: req.body.operacion // ONLY FOR UPDATE API ['remove', 'keep']
   }
-  //more checks here
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
       delete req.body.sanitizedInput[key]
     }
   })
+
   next()
 }
 
@@ -36,10 +38,11 @@ function findOne(req: Request, res: Response) {
 
 function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
+  const imagen = new Imagen(input.imagen, true)
 
   const marcaInput = new Marca(
     input.nombre,
-    input.imagenLink,
+    imagen,
   )
 
   const marca = repository.add(marcaInput)
@@ -48,6 +51,19 @@ function add(req: Request, res: Response) {
 
 function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = req.params.id
+
+  // THIS IS A QUESTIONABLE FIX AT BEST
+
+  if (req.body.sanitizedInput.imagen) {
+    req.body.sanitizedInput.imagen = new Imagen(req.body.sanitizedInput.imagen, true)
+  } else if (req.body.sanitizedInput.operacion === 'remove') {
+    req.body.sanitizedInput.imagen = new Imagen('remove')
+  } else {
+    req.body.sanitizedInput.imagen = new Imagen('keep')
+  }
+
+  delete req.body.sanitizedInput.operacion
+
   const marca = repository.update(req.body.sanitizedInput)
 
   if (!marca) {

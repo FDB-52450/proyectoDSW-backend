@@ -3,11 +3,16 @@ import { Producto } from './producto-entity.js'
 import { Marca } from '../marca/marca-entity.js'
 import { Categoria } from '../categoria/categoria-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
+import { Imagen } from '../imagen/imagen-entity.js'
 
-const marca1 = new Marca('NVIDIA', '123')
+import fs from 'fs'
+
+const marca1 = new Marca('NVIDIA', new Imagen('/test.jpg'))
 const categoria1 = new Categoria('placa-video')
-const marca2 = new Marca('AMD', '456')
+const marca2 = new Marca('AMD', new Imagen('/test.jpg'))
 const categoria2 = new Categoria('procesador')
+
+const imagenGen = [new Imagen()]
 
 const productos = [
   new Producto(
@@ -16,7 +21,7 @@ const productos = [
     100000,
     0,
     50,
-    'pqwol23m3m21l2',
+    imagenGen,
     marca1,
     categoria1
   ),
@@ -26,7 +31,7 @@ const productos = [
     90000,
     5,
     30,
-    'amdimg123',
+    imagenGen,
     marca2,
     categoria1
   ),
@@ -36,7 +41,7 @@ const productos = [
     120000,
     10,
     20,
-    'ryzenimg456',
+    imagenGen,
     marca2,
     categoria2
   ),
@@ -46,8 +51,8 @@ const productos = [
     130000,
     8,
     15,
-    'intelimg789',
-    new Marca('Intel', '789'),
+    imagenGen,
+    new Marca('Intel', new Imagen('/test.jpg')),
     categoria2
   )
 ]
@@ -119,14 +124,19 @@ export class ProductoRepository implements Repository<Producto> {
     return productos[productoIdx]
   }
 
+  public updateImages(): Producto | undefined {
+    return 
+  }
+
   public delete(item: { id: string }): Producto | undefined {
     const productoIdx = productos.findIndex((producto) => producto.id === item.id)
 
     if (productoIdx !== -1) {
-      const deletedProductos = productos[productoIdx]
+      const deletedProducto = productos[productoIdx]
+      deletedProducto.imagenes.map((imagen: Imagen) => {fs.unlinkSync("images/" + imagen.url)})
       productos.splice(productoIdx, 1)
 
-      return deletedProductos
+      return deletedProducto
     }
   }
 }

@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express'
 import { ProductoRepository } from './producto-repository.js'
 import { Producto } from './producto-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
+import { Imagen } from '../imagen/imagen-entity.js'
+
+import fs from 'fs'
 
 const repository = new ProductoRepository()
 
@@ -12,8 +15,8 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
     precio: Number(req.body.precio),
     descuento: Number(req.body.descuento),
     stock: Number(req.body.stock),
-    imagenLink: req.body.imagenLink,
-    marca: req.body.marca.marca,
+    imagenes: req.files,
+    marca: req.body.marca,
     categoria: req.body.categoria
   }
   //more checks here
@@ -22,8 +25,10 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
     if (req.body.sanitizedInput[key] === undefined) {
       delete req.body.sanitizedInput[key]
 
-      // This line of code validates that each key (except destacado) actually exists when creating a product (otherwise returns an error.)
-      if (req.method === "POST" && key != 'destacado') {return res.status(400).send({ message: 'Missing attributes on product creation.'})}
+      // This line of code validates that each key (except destacado or imagenes) actually exists when creating a product (otherwise returns an error.)
+      /*if (req.method === "POST" && !(key === 'destacado' || key === 'imagenes')) {
+        return res.status(400).send({ message: 'Missing attributes on product creation.'}
+      )}*/
     }
   })
   next()
@@ -31,6 +36,7 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
 
 function sanitizeProductoFilters(req: Request, res: Response, next: NextFunction) {
   // TODO: Determine if invalid input should just throw an error.
+
   res.locals.filters = {
     precioMin: Number(req.query.precioMin),
     precioMax: Number(req.query.precioMax),
@@ -64,6 +70,9 @@ function findOne(req: Request, res: Response) {
 
 function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
+  const imagenes = input.imagenes.map((imagen: Express.Multer.File) => new Imagen(imagen.filename))
+  
+  if (!imagenes) {imagenes.push(new Imagen())}
 
   const productoInput = new Producto(
     input.nombre,
@@ -71,7 +80,7 @@ function add(req: Request, res: Response) {
     input.precio,
     input.descuento,
     input.stock,
-    input.imagenLink,
+    imagenes,
     input.marca,
     input.categoria
   )
@@ -83,6 +92,8 @@ function add(req: Request, res: Response) {
 
 function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = req.params.id
+  delete req.body.sanitizedInput.imagenes
+
   const producto = repository.update(req.body.sanitizedInput)
 
   if (!producto) {
@@ -90,6 +101,10 @@ function update(req: Request, res: Response) {
   } else {
     res.status(200).send({ message: 'Producto updated successfully', data: producto })
   }
+}
+
+function updateImages(req: Request, res: Response) {
+  res.status(404).send({ message: 'NOT IMPLEMENTED YET' })
 }
 
 function remove(req: Request, res: Response) {

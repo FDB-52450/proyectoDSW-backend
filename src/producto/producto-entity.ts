@@ -1,6 +1,7 @@
 import crypto from 'node:crypto'
 import { Marca } from '../marca/marca-entity.js'
 import { Categoria } from '../categoria/categoria-entity.js'
+import { Imagen } from '../imagen/imagen-entity.js'
 
 export class Producto {
   // TODO: Revise if the assignment of properties in the constructor is necessary
@@ -12,7 +13,7 @@ export class Producto {
     public precio: number,
     public descuento: number,
     public stock: number,
-    public imagenLink: string,
+    public imagenes: Imagen[],
     public marca: Marca,
     public categoria: Categoria,
     public fechaIngreso = new Date(),
