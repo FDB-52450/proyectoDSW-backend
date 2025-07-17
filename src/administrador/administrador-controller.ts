@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express'
 import { AdministradorRepository } from './administrador-repository.js'
 import { Administrador } from './administrador-entity.js'
 
+import session from 'express-session'
+
 const repository = new AdministradorRepository()
 
 function sanitizeAdminInput(req: Request, res: Response, next: NextFunction) {
@@ -21,11 +23,11 @@ function sanitizeAdminInput(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
+
 function login(req: Request, res: Response) {
   const { nombre, password } = req.body
 
   // TODO: Add cooldown mechanism to prevent brute force attacks (express-rate-limit?)
-  // TODO: Return a JWT token instead of a simple message (or some other form of authentication)
 
   if (!nombre || !password) {
     res.status(400).json({ message: 'Faltan credenciales.' })
@@ -38,6 +40,7 @@ function login(req: Request, res: Response) {
       const passwordHash = Administrador.hashPassword(password)
 
       if (admin.passwordHash == passwordHash) {
+        req.session.user = {'id': admin.id, 'username': admin.nombre};
         res.status(200).json({ message: 'Login exitoso.' })
       } else {
         res.status(401).json({ message: 'Usuario y/o contraseña incorrectas.' })
@@ -46,4 +49,10 @@ function login(req: Request, res: Response) {
   }
 }
 
-export {sanitizeAdminInput, login}
+function logout(req: Request, res: Response) {
+  req.session.destroy(() => {
+    res.status(200).json({message: 'LOGGED OUT'})
+  })
+}
+
+export {sanitizeAdminInput, login, logout}

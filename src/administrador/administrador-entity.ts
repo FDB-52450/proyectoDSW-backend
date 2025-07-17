@@ -5,7 +5,9 @@ export class Administrador {
     public nombre: string,
     public passwordHash: string,
     public id = crypto.randomInt(1000, 10000).toString()
-  ) {}
+  ) {
+    this.passwordHash = Administrador.hashPassword(this.passwordHash)
+  }
 
   static hashPassword(password: string): string {
     if (!process.env.SALT) {

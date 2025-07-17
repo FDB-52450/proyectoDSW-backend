@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "5.0.1",
+    "@types/express-session": "^1.18.2",
     "@types/multer": "^2.0.0",
     "@types/node": "22.15.17",
     "tsc-watch": "^6.0.4",
@@ -23,6 +24,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "5.1.0",
+    "express-session": "^1.18.1",
     "multer": "^2.0.1"
   }
 }

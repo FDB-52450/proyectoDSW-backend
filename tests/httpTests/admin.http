@@ -1,0 +1,13 @@
+### Login
+POST http://localhost:8080/api/administradores/login
+Content-Type: application/json
+
+{
+  "nombre": "admin",
+  "password": "admin123"
+}
+
+### 
+GET http://localhost:8080/api/administradores/protect
+###
+GET http://localhost:8080/api/administradores/logout

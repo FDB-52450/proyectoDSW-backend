@@ -1,6 +1,3 @@
-import { Marca } from '../marca/marca-entity.js'
-import { Categoria } from '../categoria/categoria-entity.js'
-
 // TODO: Determine if this should be an interface or a class
 
 export interface ProductoFilters {

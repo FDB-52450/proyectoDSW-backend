@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import session from 'express-session'
 
 import { productoRouter } from './producto/producto-routes.js'
 import { marcaRouter} from './marca/marca-routes.js'
@@ -13,6 +14,13 @@ const port = 8080
 app.use(express.json())
 app.use(cors())
 app.use('/images', express.static('images'))
+app.use(session({
+  secret: process.env.SECRET || 'super-duper-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60 * 60 * 1000 },
+  rolling: true
+}));
 
 app.use('/api/productos', productoRouter)
 app.use('/api/marcas', marcaRouter)
@@ -27,6 +35,6 @@ app.use((_, res) => {
 
 
 app.listen(port, () => {
-    console.log('Server running on http://localhost:8080/')
+  console.log('Server running on http://localhost:8080/')
 })
 

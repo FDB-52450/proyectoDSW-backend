@@ -1,7 +1,8 @@
 import { Administrador } from './administrador-entity.js'
 
 const administradores = [
-  new Administrador('admin', Administrador.hashPassword('admin123'))
+  new Administrador('admin', 'admin123'),
+  new Administrador('adminAlt', 'admin456')
 ]
 
 export class AdministradorRepository {
