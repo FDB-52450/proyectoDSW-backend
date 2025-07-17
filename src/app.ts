@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import session from 'express-session'
+import rateLimit from 'express-rate-limit'
 
 import { productoRouter } from './producto/producto-routes.js'
 import { marcaRouter} from './marca/marca-routes.js'
@@ -14,6 +15,12 @@ const port = 8080
 app.use(express.json())
 app.use(cors())
 app.use('/images', express.static('images'))
+
+app.use(rateLimit({
+  windowMs: 5 * 60 * 1000,
+	limit: 120,
+}))
+
 app.use(session({
   secret: process.env.SECRET || 'super-duper-secret',
   resave: false,
