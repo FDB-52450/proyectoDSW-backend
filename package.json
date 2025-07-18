@@ -22,10 +22,13 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
+    "@mikro-orm/core": "^6.4.16",
+    "@mikro-orm/mysql": "^6.4.16",
     "cors": "^2.8.5",
     "express": "5.1.0",
     "express-rate-limit": "^8.0.1",
     "express-session": "^1.18.1",
-    "multer": "^2.0.1"
+    "multer": "^2.0.1",
+    "mysql2": "^3.14.2"
   }
 }

@@ -9,39 +9,51 @@ import { categoriaRouter } from './categoria/categoria-routes.js'
 import { administradorRouter } from './administrador/administrador-routes.js'
 import { pedidoRouter } from './pedido/pedido-routes.js'
 
-const app = express()
-const port = 8080
+import config from './config-db/mikro-orm.config.js'
+import { MikroORM } from '@mikro-orm/mysql'
 
-app.use(express.json())
-app.use(cors())
-app.use('/images', express.static('images'))
+const main = async () => {
+  const orm = await MikroORM.init(config)
+  await orm.getSchemaGenerator().updateSchema()
 
-app.use(rateLimit({
-  windowMs: 5 * 60 * 1000,
-	limit: 120,
-}))
+  const app = express()
+  const port = 8080
 
-app.use(session({
-  secret: process.env.SECRET || 'super-duper-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 60 * 60 * 1000 },
-  rolling: true
-}));
+  app.use(express.json())
+  app.use(cors())
+  app.use('/images', express.static('images'))
 
-app.use('/api/productos', productoRouter)
-app.use('/api/marcas', marcaRouter)
-app.use('/api/categorias', categoriaRouter)
-app.use('/api/administradores', administradorRouter)
-app.use('/api/pedidos', pedidoRouter)
+  app.use(rateLimit({
+    windowMs: 5 * 60 * 1000,
+    limit: 120,
+  }))
+
+  app.use(session({
+    secret: process.env.SECRET || 'super-duper-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60 * 60 * 1000 },
+    rolling: true
+  }));
+
+  app.use('/api/productos', productoRouter)
+  app.use('/api/marcas', marcaRouter)
+  app.use('/api/categorias', categoriaRouter)
+  app.use('/api/administradores', administradorRouter)
+  app.use('/api/pedidos', pedidoRouter)
 
 
-app.use((_, res) => {
-  res.status(404).json({ message: 'Resource not found' });
-});
+  app.use((_, res) => {
+    res.status(404).json({ message: 'Resource not found' });
+  });
 
 
-app.listen(port, () => {
-  console.log('Server running on http://localhost:8080/')
+  app.listen(port, () => {
+    console.log('Server running on http://localhost:8080/')
+  })
+}
+
+main().
+catch(er => {
+  console.log(er)
 })
-
