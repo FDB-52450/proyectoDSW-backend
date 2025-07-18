@@ -6,7 +6,7 @@ export const pedidoRouter = Router()
 
 pedidoRouter.get('/', authLogin, findAll)
 pedidoRouter.get('/:id', authLogin, findOne)
-pedidoRouter.post('/', authLogin, sanitizePedidoInput, add)
+pedidoRouter.post('/', sanitizePedidoInput, add) // TODO: Add loads of validation to this endpoint
 pedidoRouter.put('/:id', authLogin, sanitizePedidoInput, update)
 pedidoRouter.patch('/:id', authLogin, sanitizePedidoInput, update)
 pedidoRouter.patch('/:id/estado', authLogin, updateEstado)
