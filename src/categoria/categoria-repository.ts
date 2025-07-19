@@ -1,45 +1,48 @@
 import { Repository } from '../shared/repository.js'
 import { Categoria } from './categoria-entity.js'
 
-const categorias = [
-  new Categoria(
-    'PLACAS DE VIDEO',
-  ),
-  new Categoria(
-    'MICROPROCESADORES'
-  )
-]
+import { EntityManager } from '@mikro-orm/mysql'
 
-export class CategoriaRepository implements Repository<Categoria> {
-  public findAll(): Categoria[] | undefined {
-    return categorias
+export class CategoriaRepository /*implements Repository<Categoria>*/{
+  constructor(
+    private categoriaEm: EntityManager
+  ) {}
+
+  public async findAll(): Promise<Categoria[]> {
+    return await this.categoriaEm.find(Categoria, {})
   }
 
-  public findOne(item: { id: string }): Categoria | undefined {
-    return categorias.find((categoria) => categoria.id === item.id)
+  public async findOne(item: { id: number }): Promise<Categoria | null> {
+    return await this.categoriaEm.findOne(Categoria, { id: item.id })
   }
 
-  public add(item: Categoria): Categoria | undefined {
-    categorias.push(item)
-    return item
-  }
-
-  public update(item: Categoria): Categoria | undefined {
-    const categoriaIdx = categorias.findIndex((categoria) => categoria.id === item.id)
-
-    if (categoriaIdx !== -1) {
-      categorias[categoriaIdx] = { ...categorias[categoriaIdx], ...item }
+  public async add(item: Categoria): Promise<Categoria | null> {
+    try {
+      await this.categoriaEm.persistAndFlush(item)
+      return item
+    } catch {
+      return null
     }
-    return categorias[categoriaIdx]
   }
 
-  public delete(item: { id: string }): Categoria | undefined {
-    const categoriaIdx = categorias.findIndex((categoria) => categoria.id === item.id)
+  public async update(item: Categoria): Promise<Categoria | null> {
+    const categoria = await this.findOne(item)
 
-    if (categoriaIdx !== -1) {
-      const deletedCategorias = categorias[categoriaIdx]
-      categorias.splice(categoriaIdx, 1)
-      return deletedCategorias
+    if (categoria) {
+      Object.assign(categoria, item)
+      await this.categoriaEm.flush()
     }
+
+    return categoria
+  }
+
+  public async delete(item: { id: number }): Promise<Categoria | null> {
+    const categoria = await this.findOne(item)
+
+    if (categoria) {
+      await this.categoriaEm.removeAndFlush(categoria)
+    }
+
+    return categoria
   }
 }

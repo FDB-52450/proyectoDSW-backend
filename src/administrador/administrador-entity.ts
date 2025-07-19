@@ -4,7 +4,7 @@ export class Administrador {
   constructor(
     public nombre: string,
     public passwordHash: string,
-    public id = crypto.randomInt(1000, 10000).toString()
+    public id = crypto.randomInt(1000, 10000)
   ) {
     this.passwordHash = Administrador.hashPassword(this.passwordHash)
   }

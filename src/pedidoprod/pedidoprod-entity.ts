@@ -7,7 +7,7 @@ export class PedidoProd {
     public producto: Producto,
     public precioUnidad = producto.precio,
     public precioTotal = cantidad * precioUnidad,
-    public id = crypto.randomInt(1000, 10000).toString()
+    public id = crypto.randomInt(1000, 10000)
   ) {}
 
   public checkStock(): boolean {

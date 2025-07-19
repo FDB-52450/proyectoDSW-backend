@@ -16,7 +16,7 @@ export class MarcaRepository implements Repository<Marca> {
     return marcas
   }
 
-  public findOne(item: { id: string }): Marca | undefined {
+  public findOne(item: { id: number }): Marca | undefined {
     return marcas.find((marca) => marca.id === item.id)
   }
 
@@ -47,7 +47,7 @@ export class MarcaRepository implements Repository<Marca> {
     return marcas[marcaIdx]
   }
 
-  public delete(item: { id: string }): Marca | undefined {
+  public delete(item: { id: number }): Marca | undefined {
     const marcaIdx = marcas.findIndex((marca) => marca.id === item.id)
 
     if (marcaIdx !== -1) {

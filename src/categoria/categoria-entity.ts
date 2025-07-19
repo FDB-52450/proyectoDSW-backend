@@ -1,8 +1,16 @@
-import crypto from 'node:crypto'
+import { Entity, PrimaryKey, Property} from '@mikro-orm/core'
 
+@Entity()
 export class Categoria {
+  @PrimaryKey()
+  id!: number
+
+  @Property({ unique: true})
+  nombre!: string
+
   constructor(
-    public nombre: string,
-    public id = crypto.randomInt(1000, 10000).toString()
-  ) {}
+    nombre: string
+  ) {
+    this.nombre = nombre
+  }
 }

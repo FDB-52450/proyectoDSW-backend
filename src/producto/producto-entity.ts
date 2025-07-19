@@ -19,7 +19,7 @@ export class Producto {
     public fechaIngreso = new Date(),
     public stockReservado = 0,
     public destacado = false,
-    public id = crypto.randomInt(1000, 10000).toString()
+    public id = crypto.randomInt(1000, 10000)
   ) {}
 
   public getStockDisponible(): number {

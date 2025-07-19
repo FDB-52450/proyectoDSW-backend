@@ -26,7 +26,7 @@ function findAll(req: Request, res: Response) {
 }
 
 function findOne(req: Request, res: Response) {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const marca = repository.findOne({ id })
 
   if (!marca) {
@@ -50,7 +50,7 @@ function add(req: Request, res: Response) {
 }
 
 function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
+  req.body.sanitizedInput.id = Number(req.params.id)
 
   // THIS IS A QUESTIONABLE FIX AT BEST
 
@@ -74,7 +74,7 @@ function update(req: Request, res: Response) {
 }
 
 function remove(req: Request, res: Response) {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const marca = repository.delete({ id })
 
   if (!marca) {

@@ -96,7 +96,7 @@ export class ProductoRepository implements Repository<Producto> {
     return result
   }
 
-  public findOne(item: { id: string }): Producto | undefined {
+  public findOne(item: { id: number }): Producto | undefined {
     return productos.find((producto) => producto.id === item.id)
   }
  
@@ -128,7 +128,7 @@ export class ProductoRepository implements Repository<Producto> {
     return 
   }
 
-  public delete(item: { id: string }): Producto | undefined {
+  public delete(item: { id: number }): Producto | undefined {
     const productoIdx = productos.findIndex((producto) => producto.id === item.id)
 
     if (productoIdx !== -1) {

@@ -2,13 +2,12 @@ import { Request, Response, NextFunction } from 'express'
 import { CategoriaRepository } from './categoria-repository.js'
 import { Categoria } from './categoria-entity.js'
 
-const repository = new CategoriaRepository()
+import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
 function sanitizeCategoriaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
   }
-  //more checks here
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -19,13 +18,26 @@ function sanitizeCategoriaInput(req: Request, res: Response, next: NextFunction)
   next()
 }
 
-function findAll(req: Request, res: Response) {
-  res.json({ data: repository.findAll() })
+function getRepo() {
+  const em = RequestContext.getEntityManager()
+  return new CategoriaRepository(em as SqlEntityManager)
 }
 
-function findOne(req: Request, res: Response) {
-  const id = req.params.id
-  const categoria = repository.findOne({ id })
+async function findAll(req: Request, res: Response) {
+  const repository = getRepo()
+  const categorias = await repository.findAll()
+
+  if (categorias.length == 0) {
+    res.status(404).send({ message: 'No hay categorias disponibles.'})
+  } else {
+    res.json({data: categorias})
+  }
+}
+
+async function findOne(req: Request, res: Response) {
+  const repository = getRepo()
+  const id = Number(req.params.id)
+  const categoria = await repository.findOne({ id })
 
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })
@@ -34,20 +46,25 @@ function findOne(req: Request, res: Response) {
   }
 }
 
-function add(req: Request, res: Response) {
+async function add(req: Request, res: Response) {
+  const repository = getRepo()
   const input = req.body.sanitizedInput
 
-  const categoriaInput = new Categoria(
-    input.nombre,
-  )
+  const categoriaInput = RequestContext.getEntityManager()!.create(Categoria, input)
+  const categoria = await repository.add(categoriaInput)
 
-  const categoria = repository.add(categoriaInput)
-  res.status(201).send({ message: 'Categoria creada.', data: categoria})
+  if (!categoria) {
+    res.status(409).send({ message: 'Categoria ya existente.'})
+  } else {
+    res.status(201).send({ message: 'Categoria creada con exito.', data: categoria})
+  }
 }
 
-function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
-  const categoria = repository.update(req.body.sanitizedInput)
+async function update(req: Request, res: Response) {
+  req.body.sanitizedInput.id = Number(req.params.id)
+  
+  const repository = getRepo()
+  const categoria = await repository.update(req.body.sanitizedInput)
 
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })
@@ -56,9 +73,10 @@ function update(req: Request, res: Response) {
   }
 }
 
-function remove(req: Request, res: Response) {
-  const id = req.params.id
-  const categoria = repository.delete({ id })
+async function remove(req: Request, res: Response) {
+  const repository = getRepo()
+  const id = Number(req.params.id)
+  const categoria = await repository.delete({ id })
 
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })

@@ -32,7 +32,7 @@ function findAll(req: Request, res: Response) {
 }
 
 function findOne(req: Request, res: Response) {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const pedido = repository.findOne({ id })
 
   if (!pedido) {
@@ -47,7 +47,7 @@ function add(req: Request, res: Response) {
 
   // THIS CODE REPLACES EACH PRODUCT ID IN THE DETALLE WITH THE ACTUAL PRODUCT ENTITY
 
-  const detalleWithProducts = input.detalle.map((item: { cantidad: number, productoId: string }) => {
+  const detalleWithProducts = input.detalle.map((item: { cantidad: number, productoId: number }) => {
     const producto = productoRepository.findOne({ id: item.productoId })
 
     if (!producto) {
@@ -78,7 +78,7 @@ function add(req: Request, res: Response) {
 }
 
 function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
+  req.body.sanitizedInput.id = Number(req.params.id)
   const pedido = repository.update(req.body.sanitizedInput)
 
   // Update is not meant to be able to modify detalle, so it doesn't call any stock modifiying methods.
@@ -91,7 +91,7 @@ function update(req: Request, res: Response) {
 }
 
 function updateEstado(req: Request, res: Response) {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const nuevoEstado = req.body.nuevoEstado
 
   const pedido = repository.findOne({ id })
@@ -111,7 +111,7 @@ function updateEstado(req: Request, res: Response) {
 }
 
 function remove(req: Request, res: Response) {
-  /*const id = req.params.id
+  /*const id = Number(req.params.id)
   const pedido = repository.delete({ id })
 
   if (!pedido) {

@@ -10,7 +10,7 @@ export class Pedido {
     public estado = 'pendiente',
     public precioTotal = 0, // Questionable patch, maybe should be revised.
     public fechaPedido = new Date(),
-    public id = crypto.randomInt(1000, 10000).toString()
+    public id = crypto.randomInt(1000, 10000)
   ) {
     this.precioTotal = this.calcularPrecioTotal()
   }

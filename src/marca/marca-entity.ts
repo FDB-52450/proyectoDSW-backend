@@ -5,6 +5,6 @@ export class Marca {
   constructor(
     public nombre: string,
     public imagen: Imagen,
-    public id = crypto.randomInt(1000, 10000).toString()
+    public id = crypto.randomInt(1000, 10000)
   ) {}
 }

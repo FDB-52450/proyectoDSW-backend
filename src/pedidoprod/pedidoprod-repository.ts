@@ -28,8 +28,4 @@ export class PedidoProdRepository {
   public findAll(): PedidoProd[] | undefined {
     return pedidoProds
   }
-
-  public findOne(item: { id: string }): PedidoProd | undefined {
-    return pedidoProds.find((pedidoprod) => pedidoprod.id === item.id)
-  }
 }

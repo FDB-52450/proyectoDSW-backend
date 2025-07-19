@@ -6,6 +6,6 @@ export class Imagen{
     constructor(
         public url: string = 'template.png',
         public primaria: boolean = true,
-        public id = crypto.randomInt(1000, 10000).toString()
+        public id = crypto.randomInt(1000, 10000)
     ) {}
 }

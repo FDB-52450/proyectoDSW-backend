@@ -10,12 +10,13 @@ import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js';
 import { Producto } from '../producto/producto-entity.js';
 
 const config: Options<MySqlDriver> = {
-  entities: [], // [Administrador, Categoria, Imagen, Marca, Pedido, PedidoProd, Producto], COMMENTED OUT FOR FUTURE USE
+  entities: [Categoria], // [Administrador, Categoria, Imagen, Marca, Pedido, PedidoProd, Producto], COMMENTED OUT FOR FUTURE USE
   dbName: process.env.DB_NAME || 'backend_db',
   user: process.env.DB_USER || 'admin',
   password: process.env.DB_PASSWORD || 'root',
   host: process.env.DB_HOST || 'localhost',
   port: Number(process.env.DB_PORT) || 3306,
+  driver: MySqlDriver
 };
 
 export default config;

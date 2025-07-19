@@ -58,7 +58,7 @@ function findAll(req: Request, res: Response) {
 }
 
 function findOne(req: Request, res: Response) {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const producto = repository.findOne({ id })
 
   if (!producto) {
@@ -91,7 +91,7 @@ function add(req: Request, res: Response) {
 }
 
 function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
+  req.body.sanitizedInput.id = Number(req.params.id)
   delete req.body.sanitizedInput.imagenes
 
   const producto = repository.update(req.body.sanitizedInput)
@@ -108,7 +108,7 @@ function updateImages(req: Request, res: Response) {
 }
 
 function remove(req: Request, res: Response) {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const producto = repository.delete({ id })
 
   if (!producto) {

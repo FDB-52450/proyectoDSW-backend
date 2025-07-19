@@ -42,7 +42,7 @@ export class PedidoRepository implements Repository<Pedido> {
     return pedidos
   }
 
-  public findOne(item: { id: string }): Pedido | undefined {
+  public findOne(item: { id: number }): Pedido | undefined {
     return pedidos.find((pedido) => pedido.id === item.id)
   }
 
@@ -64,7 +64,7 @@ export class PedidoRepository implements Repository<Pedido> {
     return pedidos[pedidoIdx]
   }
 
-  public delete(item: { id: string }): Pedido | undefined {
+  public delete(item: { id: number }): Pedido | undefined {
     const pedidoIdx = pedidos.findIndex((pedido) => pedido.id === item.id)
 
     if (pedidoIdx !== -1) {

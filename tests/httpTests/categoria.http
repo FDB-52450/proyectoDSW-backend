@@ -1,0 +1,21 @@
+###
+GET http://localhost:8080/api/categorias
+###
+GET http://localhost:8080/api/categorias/1
+###
+POST http://localhost:8080/api/categorias/
+Content-Type: application/json
+
+{
+    "nombre": "FUENTES"
+}
+###
+PATCH http://localhost:8080/api/categorias/1
+Content-Type: application/json
+
+{
+    "nombre": "GABINETES"
+}
+
+###
+DELETE http://localhost:8080/api/categorias/1
