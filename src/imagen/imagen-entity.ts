@@ -1,11 +1,20 @@
-import crypto from 'crypto'
-
-// TODO: Determine if the url should just be the id (conflict when two imagenes don't have an url?)
-
+import { Entity, PrimaryKey, Property } from '@mikro-orm/core'
+@Entity()
 export class Imagen{
+    @PrimaryKey()
+    id!: number
+
+    @Property()
+    url!: string 
+
+    @Property()
+    imagenPrimaria!: boolean
+
     constructor(
-        public url: string = 'template.png',
-        public primaria: boolean = true,
-        public id = crypto.randomInt(1000, 10000)
-    ) {}
+        url: string = 'template.png',
+        imagenPrim: boolean = true,
+    ) {
+        this.url = url
+        this.imagenPrimaria = imagenPrim
+    }
 }

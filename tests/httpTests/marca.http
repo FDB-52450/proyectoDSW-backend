@@ -1,11 +1,12 @@
 GET http://localhost:8080/api/marcas/
 ###
+GET http://localhost:8080/api/marcas/2
+###
 POST http://localhost:8080/api/marcas/
 Content-Type: application/json
 
 {
-    "nombre": "INTEL",
-    "imagenLink": "oqweoqweo2132"
+    "nombre": "NVIDIA-ALTER"
 }
 
 ###
@@ -15,7 +16,7 @@ Content-Type: multipart/form-data; boundary=XYZ
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-NVIDIA
+NVIDIA-ALTER
 --XYZ
 Content-Disposition: form-data; name="image"; filename="nvidiaLogo.png"
 Content-Type: image/png
@@ -23,23 +24,22 @@ Content-Type: image/png
 < ../testImages/nvidiaLogo.png
 --XYZ--
 
-###
-PATCH http://localhost:8080/api/marcas/9341
+### Simple update
+PATCH http://localhost:8080/api/marcas/10
 Content-Type: application/json
 
 {
-    "nombre": "NVIDIA-NEWTON",
     "operacion": "keep"
 }
 
-###
-PATCH http://localhost:8080/api/marcas/1101
+### Update with image
+PATCH http://localhost:8080/api/marcas/9
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-AMD
+AMD-ALT
 --XYZ
 Content-Disposition: form-data; name="image"; filename="amdLogo.png"
 Content-Type: image/png
@@ -47,4 +47,4 @@ Content-Type: image/png
 < ../testImages/amdLogo.png
 --XYZ--
 ###
-DELETE http://localhost:8080/api/marcas/9667
+DELETE http://localhost:8080/api/marcas/9

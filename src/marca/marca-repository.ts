@@ -2,64 +2,89 @@ import { Imagen } from '../imagen/imagen-entity.js'
 import { Repository } from '../shared/repository.js'
 import { Marca } from './marca-entity.js'
 
+import { EntityManager, SqlEntityManager } from '@mikro-orm/mysql'
+import { ImagenRepository } from '../imagen/imagen-repository.js'
+
 import fs from 'fs'
 
-const marcas = [
-  new Marca(
-    'INTEL',
-    new Imagen('test.jpg', true)
-  ),
-]
+export class MarcaRepository /*implements Repository<Marca>*/ {
+  constructor(
+    private marcaEm: EntityManager
+  ) {}
 
-export class MarcaRepository implements Repository<Marca> {
-  public findAll(): Marca[] | undefined {
-    return marcas
+  public async findAll(): Promise<Marca[]> {
+    return await this.marcaEm.find(Marca, {}, {populate: ['imagen']})
   }
 
-  public findOne(item: { id: number }): Marca | undefined {
-    return marcas.find((marca) => marca.id === item.id)
+  public async findOne(item: { id: number }): Promise<Marca | null> {
+    return await this.marcaEm.findOne(Marca, {id: item.id}, {populate: ['imagen']})
   }
 
-  public add(item: Marca): Marca | undefined {
-    marcas.push(item)
-    return item
+  public async add(item: Marca): Promise<Marca | null> {
+    try {
+      await this.marcaEm.persistAndFlush(item)
+      return item
+    } catch {
+      if (item.imagen.url != "template.png") {
+        fs.unlinkSync("images/" + item.imagen.url)
+      }
+      return null
+    }
   }
 
-  public update(item: Marca): Marca | undefined {
-    const marcaIdx = marcas.findIndex((marca) => marca.id === item.id)
+  public async update(item: Marca): Promise<Marca | null> {
+    const marca = await this.findOne(item)
 
-    if (marcaIdx !== -1) {
-      let marca = marcas[marcaIdx]
-
-      console.log(item)
+    if (marca) {
+      let oldImage = marca.imagen
 
       if (item.imagen.url === 'remove') {
-        item.imagen = new Imagen()
-        fs.unlinkSync("images/" + marca.imagen.url)
+        item.imagen = await this.getTemplateImage()
+        fs.unlinkSync("images/" + oldImage.url)
       } else if (item.imagen.url === 'keep') {
-        item.imagen = marca.imagen
+        item.imagen = oldImage
       } else { // UPDATE IMAGE
-        fs.unlinkSync("images/" + marca.imagen.url)
+        if (oldImage.url != "template.png") {
+          fs.unlinkSync("images/" + oldImage.url)
+          await this.marcaEm.remove(oldImage);
+        }
       }
-      
-      marcas[marcaIdx] = { ...marcas[marcaIdx], ...item }
+
+      Object.assign(marca, item)
+
+      try {
+        await this.marcaEm.flush()
+      } catch {
+        throw new Error()
+      }
     }
-    return marcas[marcaIdx]
+
+    return marca
   }
 
-  public delete(item: { id: number }): Marca | undefined {
-    const marcaIdx = marcas.findIndex((marca) => marca.id === item.id)
+  public async delete(item: { id: number }): Promise<Marca | null> {
+    const marca = await this.findOne(item)
 
-    if (marcaIdx !== -1) {
-      const deletedMarca = marcas[marcaIdx]
-      fs.unlinkSync("images/" + deletedMarca.imagen.url)
-      marcas.splice(marcaIdx, 1)
-
-      return deletedMarca
+    if (marca) {
+      fs.unlinkSync("images/" + marca.imagen.url)
+      await this.marcaEm.removeAndFlush(marca)
     }
+
+    return marca
   }
 
-  public handleImages() {
-    
+  public async getTemplateImage() {
+    const imagenRepo = new ImagenRepository(this.marcaEm?.fork() as SqlEntityManager)
+
+    return await imagenRepo.findTemplate()
+  }
+
+  public async createMarcas() {
+    const marcas = [
+      new Marca('INTEL', new Imagen('test.jpg', true)),
+      new Marca('AMD', new Imagen('amdLogo.png'))
+    ]
+
+    await this.marcaEm.persistAndFlush(marcas)
   }
 }

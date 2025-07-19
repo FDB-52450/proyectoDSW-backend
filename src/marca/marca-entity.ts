@@ -1,10 +1,22 @@
-import crypto from 'node:crypto'
+import { Entity, PrimaryKey, Property, ManyToOne } from '@mikro-orm/core'
 import { Imagen } from '../imagen/imagen-entity.js'
 
+@Entity()
 export class Marca {
+  @PrimaryKey()
+  id!: number
+
+  @Property({ unique: true})
+  nombre!: string
+
+  @ManyToOne(() => Imagen)
+  imagen!: Imagen
+
   constructor(
-    public nombre: string,
-    public imagen: Imagen,
-    public id = crypto.randomInt(1000, 10000)
-  ) {}
+    nombre: string,
+    imagen: Imagen,
+  ) {
+    this.nombre = nombre
+    this.imagen = imagen
+  }
 }

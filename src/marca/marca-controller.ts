@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from 'express'
 import { MarcaRepository } from './marca-repository.js'
 import { Marca } from './marca-entity.js'
 import { Imagen } from '../imagen/imagen-entity.js'
+import { ImagenRepository } from '../imagen/imagen-repository.js'
 
-const repository = new MarcaRepository()
+import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
 function sanitizeMarcaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -18,41 +19,75 @@ function sanitizeMarcaInput(req: Request, res: Response, next: NextFunction) {
     }
   })
 
+  if (!req.body.sanitizedInput.nombre) {
+    res.status(401).send({ message: 'Faltan atributos de marca.' })
+    return
+  } // DONE OUTSIDE DUE TO FOREACH NOT RESPECTING RETURN
+
   next()
 }
 
-function findAll(req: Request, res: Response) {
-  res.json({ data: repository.findAll() })
+function getRepo() {
+  const em = RequestContext.getEntityManager()
+  return new MarcaRepository(em as SqlEntityManager)
 }
 
-function findOne(req: Request, res: Response) {
+async function findAll(req: Request, res: Response) {
+  const repository = getRepo()
+  const marcas = await repository.findAll()
+
+  if (marcas.length == 0) {
+    res.status(404).send({ message: 'No hay categorias disponibles.'})
+  } else {
+    res.json({data: marcas})
+  }
+}
+
+async function findOne(req: Request, res: Response) {
+  const repository = getRepo()
   const id = Number(req.params.id)
-  const marca = repository.findOne({ id })
+  const marca = await repository.findOne({ id })
 
   if (!marca) {
-    res.status(404).send({ message: 'Marca not found' })
+    res.status(404).send({ message: 'Marca no encontrada.' })
   } else {
     res.json({ data: marca })
   }
 }
 
-function add(req: Request, res: Response) {
+async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
-  const imagen = new Imagen(input.imagen, true)
+  const repository = getRepo()
+  let imagen: Imagen
+
+  if (input.imagen) {
+    imagen = new Imagen(input.imagen, true)
+  } else {
+    const em = RequestContext.getEntityManager()
+    const imagenRepo = new ImagenRepository(em?.fork() as SqlEntityManager)
+
+    imagen = await imagenRepo.findTemplate()
+  }
 
   const marcaInput = new Marca(
     input.nombre,
     imagen,
   )
 
-  const marca = repository.add(marcaInput)
-  res.status(201).send({ message: 'Marca creada', data: marca})
+  const marca = await repository.add(marcaInput)
+
+  if (!marca) {
+    res.status(409).send({ message: 'Marca ya existente.'})
+  } else {
+    res.status(201).send({ message: 'Marca creada con exito.', data: marca})
+  }
 }
 
-function update(req: Request, res: Response) {
+async function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = Number(req.params.id)
+  const repository = getRepo()
 
-  // THIS IS A QUESTIONABLE FIX AT BEST
+  // THIS IS A QUESTIONABLE FIX
 
   if (req.body.sanitizedInput.imagen) {
     req.body.sanitizedInput.imagen = new Imagen(req.body.sanitizedInput.imagen, true)
@@ -64,23 +99,31 @@ function update(req: Request, res: Response) {
 
   delete req.body.sanitizedInput.operacion
 
-  const marca = repository.update(req.body.sanitizedInput)
+  let marca: Marca | null
+
+  try {
+    marca = await repository.update(req.body.sanitizedInput)
+  } catch {
+    res.status(401).send({ message: 'Nombre proporcionado de la marca ya esta en uso.'})
+    return
+  }
 
   if (!marca) {
-    res.status(404).send({ message: 'Marca not found' })
+    res.status(404).send({ message: 'Marca no encontrada.' })
   } else {
-    res.status(200).send({ message: 'Marca updated successfully', data: marca })
+    res.status(200).send({ message: 'Marca actualizada con exito.', data: marca })
   }
 }
 
-function remove(req: Request, res: Response) {
+async function remove(req: Request, res: Response) {
+  const repository = getRepo()
   const id = Number(req.params.id)
-  const marca = repository.delete({ id })
+  const marca = await repository.delete({ id })
 
   if (!marca) {
-    res.status(404).send({ message: 'Marca not found' })
+    res.status(404).send({ message: 'Marca no encontrada.' })
   } else {
-    res.status(200).send({ message: 'Marca deleted successfully' })
+    res.status(200).send({ message: 'Marca borrada con exito.' })
   }
 }
 
