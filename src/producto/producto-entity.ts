@@ -1,26 +1,71 @@
-import crypto from 'node:crypto'
+import { Entity, PrimaryKey, Property, ManyToOne, OneToMany, Collection} from '@mikro-orm/core'
 import { Marca } from '../marca/marca-entity.js'
 import { Categoria } from '../categoria/categoria-entity.js'
 import { Imagen } from '../imagen/imagen-entity.js'
 
+@Entity()
 export class Producto {
+  @PrimaryKey()
+  id!: number
+
+  @Property({ unique: true })
+  nombre!: string
+
+  @Property({ default: 'Sin descripcion.'})
+  desc!: string
+
+  @Property()
+  precio!: number
+
+  @Property()
+  descuento = 0
+
+  @Property()
+  stock!: number
+
+  @Property({ hidden: true })
+  stockReservado = 0
+
+  @Property({ default: false})
+  destacado!: boolean
+
+  @Property({ onCreate: () => new Date()})
+  fechaIngreso!: Date
+
+  @OneToMany(() => Imagen, img => img.producto)
+  imagenes = new Collection<Imagen>(this)
+
+  @ManyToOne(() => Marca)
+  marca!: Marca
+
+  @ManyToOne(() => Categoria)
+  categoria!: Categoria
+  
   // TODO: Revise if the assignment of properties in the constructor is necessary
   // and if it can be simplified or optimized.
 
   constructor(
-    public nombre: string,
-    public desc: string,
-    public precio: number,
-    public descuento: number,
-    public stock: number,
-    public imagenes: Imagen[],
-    public marca: Marca,
-    public categoria: Categoria,
-    public fechaIngreso = new Date(),
-    public stockReservado = 0,
-    public destacado = false,
-    public id = crypto.randomInt(1000, 10000)
-  ) {}
+    nombre: string,
+    desc: string = 'Sin descripcion.',
+    precio: number,
+    stock: number,
+    imagenes: Imagen[],
+    marca: Marca,
+    categoria: Categoria,
+  ) {
+    this.nombre = nombre
+    this.desc = desc
+    this.precio = precio
+    this.stock = stock
+    this.imagenes = new Collection<Imagen>(this)
+    this.imagenes.add(imagenes)
+    this.marca = marca
+    this.categoria = categoria
+    this.descuento = 0
+    this.fechaIngreso = new Date()
+    this.stockReservado = 0
+    this.destacado = false
+  }
 
   public getStockDisponible(): number {
     return this.stock - this.stockReservado

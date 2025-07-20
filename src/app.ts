@@ -7,15 +7,20 @@ import { productoRouter } from './producto/producto-routes.js'
 import { marcaRouter} from './marca/marca-routes.js'
 import { categoriaRouter } from './categoria/categoria-routes.js'
 import { administradorRouter } from './administrador/administrador-routes.js'
-import { pedidoRouter } from './pedido/pedido-routes.js'
+// import { pedidoRouter } from './pedido/pedido-routes.js'
 
 import { orm, syncSchema} from './shared/database.js'
 import { RequestContext } from '@mikro-orm/core'
 
+import { ProductoRepository } from './producto/producto-repository.js'
+
 const app = express()
 const port = 8080
 
-// syncSchema() ONLY FOR UPDATING SCHEMA
+/*await syncSchema() // ONLY FOR UPDATING SCHEMA
+
+const prodRepo = new ProductoRepository(orm.em.fork())
+await prodRepo.createPedidos()*/
 
 app.use(express.json())
 app.use(cors())
@@ -42,7 +47,7 @@ app.use('/api/productos', productoRouter)
 app.use('/api/marcas', marcaRouter)
 app.use('/api/categorias', categoriaRouter)
 app.use('/api/administradores', administradorRouter)
-app.use('/api/pedidos', pedidoRouter)
+// app.use('/api/pedidos', pedidoRouter)
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Resource not found' });

@@ -5,138 +5,137 @@ import { Categoria } from '../categoria/categoria-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
 import { Imagen } from '../imagen/imagen-entity.js'
 
+import { Collection, EntityManager, SqlEntityManager } from '@mikro-orm/mysql'
 import fs from 'fs'
 
-const marca1 = new Marca('NVIDIA', new Imagen('/test.jpg'))
-const categoria1 = new Categoria('placa-video')
-const marca2 = new Marca('AMD', new Imagen('/test.jpg'))
-const categoria2 = new Categoria('procesador')
+// DELETE LATER
+import { ImagenRepository } from '../imagen/imagen-repository.js'
+import { MarcaRepository } from '../marca/marca-repository.js'
+import { CategoriaRepository } from '../categoria/categoria-repository.js'
 
-const imagenGen = [new Imagen()]
+export class ProductoRepository /*implements Repository<Producto>*/ {
+  constructor(
+    private productoEm: EntityManager
+  ) {}
 
-const productos = [
-  new Producto(
-    'RTX 3060',
-    'Tarjeta grafica',
-    100000,
-    0,
-    50,
-    imagenGen,
-    marca1,
-    categoria1
-  ),
-  new Producto(
-    'RX 6700 XT',
-    'Tarjeta grafica AMD',
-    90000,
-    5,
-    30,
-    imagenGen,
-    marca2,
-    categoria1
-  ),
-  new Producto(
-    'Ryzen 7 5800X',
-    'Procesador de alto rendimiento',
-    120000,
-    10,
-    20,
-    imagenGen,
-    marca2,
-    categoria2
-  ),
-  new Producto(
-    'Core i7 12700K',
-    'Procesador Intel de 12va generación',
-    130000,
-    8,
-    15,
-    imagenGen,
-    new Marca('Intel', new Imagen('/test.jpg')),
-    categoria2
-  )
-]
+  public async findAll(filters?: ProductoFilters): Promise<Producto[]> {
+    const queryFilters: any = {}
 
-export class ProductoRepository implements Repository<Producto> {
-  public findAll(filters?: ProductoFilters): Producto[] | undefined {
-    // TODO: Try to clean up this code (ideally the second return result shouldn't be necessary)
+    if (filters) {
+      if (filters.precioMin) {
+        queryFilters.precio = { $gte: filters.precioMin}
+      }
+      if (filters.precioMax) {
+        queryFilters.precio = {...(queryFilters.precio || {}), $lte: filters.precioMax}
+      }
+      if (filters.stockMin) {
+        queryFilters.stock = { $gte: filters.stockMin}
+      }
+      if (filters.stockMax) {
+        queryFilters.stock = {...(queryFilters.stock || {}), $lte: filters.stockMax}
+      }
+      if (filters.nombre) {
+        queryFilters.nombre = { $like: filters.nombre}
+      }
+      if (filters.destacado) {
+        queryFilters.destacado = filters.destacado
+      }
 
-    let result = productos
+      // TODO: Check if filters.marca and filters.categoria should be uppercased or not (implemented as uppercased directly on database)
 
-    if (!filters) return result
-
-    if (filters.precioMin) {
-      result = result.filter(p => p.precio >= filters.precioMin!)
-    }
-    if (filters.precioMax) {
-      result = result.filter(p => p.precio <= filters.precioMax!)
-    }
-    if (filters.stockMin) {
-      result = result.filter(p => p.stock >= filters.stockMin!)
-    }
-    if (filters.stockMax) {
-      result = result.filter(p => p.stock <= filters.stockMax!)
-    }
-    if (filters.nombre) {
-      result = result.filter(p => p.nombre.toLowerCase().includes(filters.nombre!.toLowerCase()))
-    }
-    if (filters.destacado) {
-      result = result.filter(p => p.destacado === filters.destacado)
+      if (filters.marca) {
+        queryFilters.marca = { $like: filters.marca}
+      }
+      if (filters.categoria) {
+        queryFilters.categoria = { $like: filters.categoria}
+      }
     }
 
-    // TODO: Check if filters.marca and filters.categoria should be uppercased or not (implemented as uppercased directly on database)
-
-    if (filters.marca) {
-      result = result.filter(p => p.marca.nombre.toUpperCase() === filters.marca)
-    }
-    if (filters.categoria) {
-      result = result.filter(p => p.categoria.nombre.toUpperCase() === filters.categoria)
-    }
-
-    return result
+    return await this.productoEm.find(Producto, queryFilters, {populate: ['marca', 'categoria', 'imagenes']})
   }
 
-  public findOne(item: { id: number }): Producto | undefined {
-    return productos.find((producto) => producto.id === item.id)
-  }
- 
-  public findByMarca(filter: Marca): Producto[] | undefined {
-    return productos.filter((producto) => producto.marca === filter)
+  public async findOne(item: { id: number }): Promise<Producto | null> {
+    return await this.productoEm.findOne(Producto, {id: item.id}, {populate: ['imagenes']})
   }
 
-  public findByCategoria(filter: Categoria): Producto[] | undefined {
-    return productos.filter((producto) => producto.categoria === filter)
+  public async add(item: Producto): Promise<Producto | null> {
+    try {
+      await this.productoEm.persistAndFlush(item)
+      return item
+    } catch (error) {
+      item.imagenes.map((img: Imagen) => {
+        if (img.url != "template.png") {fs.unlinkSync("images/" + img.url)}
+      })
+      return null
+    }
   }
 
-  public add(item: Producto): Producto | undefined {
-    productos.push(item)
-    
-    return item
-  }
+  public async update(item: Producto, data: any): Promise<Producto | null> {
+    const producto = await this.findOne(item)
 
-  public update(item: Producto): Producto | undefined {
-    const productoIdx = productos.findIndex((producto) => producto.id === item.id)
+    if (producto) {
+      Object.assign(producto, item)
 
-    if (productoIdx !== -1) {
-      Object.assign(productos[productoIdx], item)
+      /*data.map((data: {operation: string, oldUrl?: string, newImageName?: string}) => {
+        if (data.operation === 'add') {
+
+          producto.imagenes.add()
+        }
+      })*/
+
+      try {
+        await this.productoEm.flush()
+      } catch {
+        throw new Error()
+      }
     }
 
-    return productos[productoIdx]
+    return producto
   }
 
-  public updateImages(): Producto | undefined {
-    return 
-  }
+  public async delete(item: { id: number }): Promise<Producto | null> {
+    const producto = await this.findOne(item)
 
-  public delete(item: { id: number }): Producto | undefined {
-    const productoIdx = productos.findIndex((producto) => producto.id === item.id)
-
-    if (productoIdx !== -1) {
-      const deletedProducto = productos[productoIdx]
-      deletedProducto.imagenes.map((imagen: Imagen) => {fs.unlinkSync("images/" + imagen.url)})
-      productos.splice(productoIdx, 1)
-
-      return deletedProducto
+    if (producto) {
+      producto.imagenes.map((img: Imagen) => {
+        if (img.url != "template.png") {fs.unlinkSync("images/" + img.url)}
+      })
+      await this.productoEm.removeAndFlush(producto)
     }
+
+    return producto
+  }
+
+  public async createPedidos() {
+    const imgRepo = new ImagenRepository(this.productoEm.fork())
+    const catRepo = new CategoriaRepository(this.productoEm.fork())
+    const marRepo = new MarcaRepository(this.productoEm.fork())
+
+    const marca1 = await marRepo.findOne({id: 1})
+    const marca2 = await marRepo.findOne({id: 2})
+    const categoria1 = await catRepo.findOne({id: 3})
+    const categoria2 = await catRepo.findOne({id: 3})
+    const imagenGen = await imgRepo.findTemplate()
+
+    const productos = [
+      new Producto(
+        'RTX 3060', 'Tarjeta grafica', 100000, 50,
+        [imagenGen], marca1!, categoria1!
+      ),
+      new Producto(
+        'RX 6700 XT', 'Tarjeta grafica AMD', 90000, 30,
+        [imagenGen], marca2!, categoria1!
+      ),
+      new Producto(
+        'Ryzen 7 5800X', 'Procesador de alto rendimiento', 120000, 20,
+        [imagenGen], marca2!, categoria2!
+      ),
+      new Producto(
+        'Core i7 12700K', 'Procesador Intel de 12va generación', 130000, 15,
+        [imagenGen], marca1!, categoria2!
+      )
+    ]
+
+    await this.productoEm.persistAndFlush(productos)
   }
 }

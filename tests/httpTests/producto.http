@@ -1,19 +1,66 @@
 GET http://localhost:8080/api/productos
 
 ###
-GET http://localhost:8080/api/productos/?precioMin=qowqow
+GET http://localhost:8080/api/productos/?precioMin=120000
 
 ###
-GET http://localhost:8080/api/productos/1023
+GET http://localhost:8080/api/productos/7
 
-###
+### Create with singular image
 POST http://localhost:8080/api/productos
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-RTX 3060
+RTX 5090
+--XYZ
+Content-Disposition: form-data; name="precio"
+
+350000
+--XYZ
+Content-Disposition: form-data; name="stock"
+
+10
+--XYZ
+Content-Disposition: form-data; name="marcaId"
+
+1
+--XYZ
+Content-Disposition: form-data; name="categoriaId"
+
+3
+--XYZ
+Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
+Content-Type: image/png
+
+< ../testImages/nvidiaLogo.png
+--XYZ--
+
+### Create with multiple images
+POST http://localhost:8080/api/productos
+Content-Type: multipart/form-data; boundary=XYZ
+
+--XYZ
+Content-Disposition: form-data; name="nombre"
+
+RTX 4090
+--XYZ
+Content-Disposition: form-data; name="precio"
+
+500000
+--XYZ
+Content-Disposition: form-data; name="stock"
+
+20
+--XYZ
+Content-Disposition: form-data; name="marcaId"
+
+1
+--XYZ
+Content-Disposition: form-data; name="categoriaId"
+
+3
 --XYZ
 Content-Disposition: form-data; name="images"; filename="amdLogo.png"
 Content-Type: image/png
@@ -27,12 +74,4 @@ Content-Type: image/png
 --XYZ--
 
 ###
-DELETE http://localhost:8080/api/productos/9249
-
-###
-PATCH http://localhost:8080/api/productos/1439
-Content-Type: application/json
-
-{
-    "stock": 50
-}
+DELETE http://localhost:8080/api/productos/13
