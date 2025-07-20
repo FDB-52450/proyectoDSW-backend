@@ -1,14 +1,36 @@
-import crypto from 'node:crypto'
+import { Entity, PrimaryKey, Property, OneToOne, ManyToOne, Rel } from '@mikro-orm/core'
 import { Producto } from '../producto/producto-entity.js'
+import { Pedido } from '../pedido/pedido-entity.js'
 
+@Entity()
 export class PedidoProd {
+  @PrimaryKey()
+  id!: number
+
+  @Property()
+  cantidad!: number
+
+  @OneToOne(() => Producto)
+  producto!: Producto
+
+  @Property()
+  precioUnidad!: number
+
+  @Property()
+  precioTotal!: number
+
+  @ManyToOne(() => Pedido, {hidden: true})
+  pedido!: Rel<Pedido>
+
   constructor(
-    public cantidad: number,
-    public producto: Producto,
-    public precioUnidad = producto.precio,
-    public precioTotal = cantidad * precioUnidad,
-    public id = crypto.randomInt(1000, 10000)
-  ) {}
+    cantidad: number,
+    producto: Producto,
+  ) {
+    this.cantidad = cantidad
+    this.producto = producto
+    this.precioUnidad = this.producto.precio
+    this.precioTotal = this.precioUnidad * this.cantidad
+  }
 
   public checkStock(): boolean {
     return (0 < this.cantidad && this.cantidad <= this.producto.getStockDisponible())

@@ -1,76 +1,68 @@
 import { Repository } from '../shared/repository.js'
 import { Pedido } from './pedido-entity.js'
+import { EntityManager } from '@mikro-orm/mysql'
 
-import { PedidoProdRepository } from '../pedidoprod/pedidoprod-repository.js'
+export class PedidoRepository /*implements Repository<Pedido>*/ {
+  constructor(
+    private pedidoEm: EntityManager
+  ) {}
 
-const pedidoProdRepository = new PedidoProdRepository()
-const pedidoProds = pedidoProdRepository.findAll()
-
-if (!pedidoProds) {
-  throw new Error('No pedido products found in the repository')
-}
-
-const pedidos = [
-  new Pedido(
-    'RETIRO',
-    'EFECTIVO',
-    new Date(2025, 5, 30),
-    [pedidoProds[0], pedidoProds[1]]
-  ),
-  new Pedido(
-    'ENVIO',
-    'TARJETA',
-    new Date(2025, 6, 5),
-    [pedidoProds[2]]
-  ),
-  new Pedido(
-    'RETIRO',
-    'TRANSFERENCIA',
-    new Date(2025, 6, 10),
-    [pedidoProds[3]]
-  ),
-  new Pedido(
-    'ENVIO',
-    'EFECTIVO',
-    new Date(2025, 6, 15),
-    [pedidoProds[4]]
-  ),
-]
-
-export class PedidoRepository implements Repository<Pedido> {
-  public findAll(): Pedido[] | undefined {
-    return pedidos
+  public async findAll(): Promise<Pedido[]> {
+    return await this.pedidoEm.findAll(Pedido, {populate: ['detalle', 'detalle.producto']})
   }
 
-  public findOne(item: { id: number }): Pedido | undefined {
-    return pedidos.find((pedido) => pedido.id === item.id)
+  public async findOne(item: { id: number }): Promise<Pedido | null> {
+    return await this.pedidoEm.findOne(Pedido, {id: item.id}, {populate: ['detalle', 'detalle.producto']})
   }
 
-  public add(item: Pedido): Pedido | undefined {
-    pedidos.push(item)
-    return item
+  public async add(item: Pedido): Promise<Pedido | null> {
+    try {
+      await this.pedidoEm.persistAndFlush(item)
+      return item
+    } catch (err) {
+      return null
+    }
   }
 
-  // TODO: Determine if an extra method for updating only the state is neccessary
+  public async update(item: Pedido): Promise<Pedido | null> {
+    const pedido = await this.findOne(item)
 
-  public update(item: Pedido): Pedido | undefined {
-    const pedidoIdx = pedidos.findIndex((pedido) => pedido.id === item.id)
+    if (pedido) {
+      const result = this.cambiarEstado(pedido, item)
 
-    if (pedidoIdx !== -1) {
-      Object.assign(pedidos[pedidoIdx], item)
-      pedidos[pedidoIdx].calcularPrecioTotal()
+      if (result) {
+        pedido.estado = item.estado
+        await this.pedidoEm.flush()
+      } else {
+        throw new Error()
+      }
     }
 
-    return pedidos[pedidoIdx]
+    return pedido
   }
 
-  public delete(item: { id: number }): Pedido | undefined {
-    const pedidoIdx = pedidos.findIndex((pedido) => pedido.id === item.id)
+  public cambiarEstado(pedidoViejo: Pedido, pedidoNuevo: Pedido) {  
+    if (pedidoViejo.estado === 'pendiente') {
+      if (pedidoNuevo.estado === 'confirmado' || pedidoNuevo.estado === 'cancelado') {
+        pedidoViejo.reducirStockReservado()
 
-    if (pedidoIdx !== -1) {
-      const deletedPedidos = pedidos[pedidoIdx]
-      pedidos.splice(pedidoIdx, 1)
-      return deletedPedidos
+        if (pedidoNuevo.estado === 'confirmado') {
+          pedidoViejo.reducirStock()
+        }
+
+        return true
+      }
     }
+    return false 
+  }
+
+  public async delete(item: { id: number }): Promise<Pedido | null> {
+    const pedido = await this.findOne(item)
+
+    if (pedido) {
+      await this.pedidoEm.removeAndFlush(pedido)
+    }
+
+    return pedido
   }
 }

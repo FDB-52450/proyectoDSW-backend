@@ -1,17 +1,43 @@
-import crypto from 'node:crypto'
 import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
+import { Entity, PrimaryKey, Property, OneToMany, Collection } from '@mikro-orm/core'
 
+@Entity()
 export class Pedido {
+  @PrimaryKey()
+  id!: number
+
+  @Property()
+  tipoEntrega!: string
+
+  @Property()
+  tipoPago!: string
+
+  @Property()
+  estado: string = 'pendiente'
+
+  @Property()
+  precioTotal: number
+
+  @Property()
+  fechaEntrega!: Date
+
+  @Property()
+  fechaPedido: Date = new Date()
+
+  @OneToMany(() => PedidoProd, pedidoProd => pedidoProd.pedido)
+  detalle = new Collection<PedidoProd>(this)
+
   constructor(
-    public tipoEntrega: string,
-    public tipoPago: string,
-    public fechaEntrega: Date,
-    public detalle: Array<PedidoProd>,
-    public estado = 'pendiente',
-    public precioTotal = 0, // Questionable patch, maybe should be revised.
-    public fechaPedido = new Date(),
-    public id = crypto.randomInt(1000, 10000)
+    tipoEntrega: string = 'retiro',
+    tipoPago: string = 'efectivo',
+    fechaEntrega: Date,
+    detalle: Array<PedidoProd>,
   ) {
+    this.tipoEntrega = tipoEntrega
+    this.tipoPago = tipoPago
+    this.fechaEntrega = fechaEntrega
+    this.detalle = new Collection<PedidoProd>(this)
+    this.detalle.add(detalle)
     this.precioTotal = this.calcularPrecioTotal()
   }
 
@@ -20,50 +46,31 @@ export class Pedido {
   }
 
   public checkDetalle(): boolean {
-    return this.detalle.every(item => item.checkStock())
-  }
-
-  public actualizarEstado(nuevoEstado: string): boolean {
-    // A PEDIDO CAN ONLY GO FROM 'pendiente' TO 'confirmado' OR 'cancelado'
-
-    if (this.estado === 'pendiente') {
-      if (nuevoEstado === 'confirmado' || nuevoEstado === 'cancelado') {
-        this.estado = nuevoEstado
-        this.reducirStockReservado()
-
-        if (nuevoEstado === 'confirmado') {
-          this.reducirStock()
-        }
-
-        return true
-      }
-    }
-
-    return false
+    return this.detalle.getItems().every(item => item.checkStock())
   }
 
   // TODO: Determine if this string of methods from pedido to product is even necessary.
 
   public aumentarStockReservado(): void {
-    this.detalle.forEach(item => {
+    this.detalle.getItems().forEach(item => {
       item.aumentarStockReservado()
     })
   }
 
   public reducirStockReservado(): void {
-    this.detalle.forEach(item => {
+    this.detalle.getItems().forEach(item => {
       item.reducirStockReservado()
     })
   }
 
   public aumentarStock(): void {
-    this.detalle.forEach(item => {
+    this.detalle.getItems().forEach(item => {
       item.aumentarStock()
     })
   }
 
   public reducirStock(): void {
-    this.detalle.forEach(item => {
+    this.detalle.getItems().forEach(item => {
       item.reducirStock()
     })
   }
