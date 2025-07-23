@@ -6,7 +6,7 @@ POST http://localhost:8080/api/marcas/
 Content-Type: application/json
 
 {
-    "nombre": "NVIDIA-ALTER"
+    "nombre": "NVIDIA"
 }
 
 ###
@@ -16,7 +16,7 @@ Content-Type: multipart/form-data; boundary=XYZ
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-NVIDIA-ALTER
+RAZER
 --XYZ
 Content-Disposition: form-data; name="image"; filename="nvidiaLogo.png"
 Content-Type: image/png
@@ -25,21 +25,21 @@ Content-Type: image/png
 --XYZ--
 
 ### Simple update
-PATCH http://localhost:8080/api/marcas/10
+PATCH http://localhost:8080/api/marcas/27
 Content-Type: application/json
 
 {
-    "operacion": "keep"
+    "nombre": "RAZER-NOIMAGE"
 }
 
 ### Update with image
-PATCH http://localhost:8080/api/marcas/9
+PATCH http://localhost:8080/api/marcas/27
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-AMD-ALT
+AMD
 --XYZ
 Content-Disposition: form-data; name="image"; filename="amdLogo.png"
 Content-Type: image/png
@@ -47,4 +47,4 @@ Content-Type: image/png
 < ../testImages/amdLogo.png
 --XYZ--
 ###
-DELETE http://localhost:8080/api/marcas/9
+DELETE http://localhost:8080/api/marcas/23

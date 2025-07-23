@@ -1,13 +1,9 @@
-import { Imagen } from '../imagen/imagen-entity.js'
 import { Repository } from '../shared/repository.js'
 import { Marca } from './marca-entity.js'
 
-import { EntityManager, SqlEntityManager } from '@mikro-orm/mysql'
-import { ImagenRepository } from '../imagen/imagen-repository.js'
+import { EntityManager} from '@mikro-orm/mysql'
 
-import fs from 'fs'
-
-export class MarcaRepository /*implements Repository<Marca>*/ {
+export class MarcaRepository implements Repository<Marca> {
   constructor(
     private marcaEm: EntityManager
   ) {}
@@ -20,14 +16,19 @@ export class MarcaRepository /*implements Repository<Marca>*/ {
     return await this.marcaEm.findOne(Marca, {id: item.id}, {populate: ['imagen']})
   }
 
+  public async checkConstraint(item: Marca): Promise<boolean> {
+    const marcaConflict = await this.marcaEm.findOne(Marca, {nombre: item.nombre})
+
+    if (marcaConflict) return true
+
+    return false
+  }
+
   public async add(item: Marca): Promise<Marca | null> {
     try {
       await this.marcaEm.persistAndFlush(item)
       return item
-    } catch {
-      if (item.imagen.url != "template.png") {
-        fs.unlinkSync("images/" + item.imagen.url)
-      }
+    } catch (err) {
       return null
     }
   }
@@ -36,25 +37,16 @@ export class MarcaRepository /*implements Repository<Marca>*/ {
     const marca = await this.findOne(item)
 
     if (marca) {
-      let oldImage = marca.imagen
-
-      if (item.imagen.url === 'remove') {
-        item.imagen = await this.getTemplateImage()
-        fs.unlinkSync("images/" + oldImage.url)
-      } else if (item.imagen.url === 'keep') {
-        item.imagen = oldImage
-      } else { // UPDATE IMAGE
-        if (oldImage.url != "template.png") {
-          fs.unlinkSync("images/" + oldImage.url)
-          await this.marcaEm.remove(oldImage);
-        }
+      // FIX
+      if ('imagen' in item) {
+        if (marca.imagen) await this.marcaEm.remove(marca.imagen)
       }
-
+    
       Object.assign(marca, item)
 
       try {
         await this.marcaEm.flush()
-      } catch {
+      } catch (err) {
         throw new Error()
       }
     }
@@ -66,23 +58,16 @@ export class MarcaRepository /*implements Repository<Marca>*/ {
     const marca = await this.findOne(item)
 
     if (marca) {
-      fs.unlinkSync("images/" + marca.imagen.url)
       await this.marcaEm.removeAndFlush(marca)
     }
 
     return marca
   }
 
-  public async getTemplateImage() {
-    const imagenRepo = new ImagenRepository(this.marcaEm?.fork() as SqlEntityManager)
-
-    return await imagenRepo.findTemplate()
-  }
-
   public async createMarcas() {
     const marcas = [
-      new Marca('INTEL', new Imagen('test.jpg', true)),
-      new Marca('AMD', new Imagen('amdLogo.png'))
+      new Marca('INTEL', null),
+      new Marca('AMD', null)
     ]
 
     await this.marcaEm.persistAndFlush(marcas)

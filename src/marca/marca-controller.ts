@@ -9,8 +9,7 @@ import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 function sanitizeMarcaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
-    imagen: req.file?.filename || undefined,
-    operacion: req.body.operacion // ONLY FOR UPDATE API ['remove', 'keep']
+    imagen: req.file || null,
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -58,15 +57,12 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
   const repository = getRepo()
-  let imagen: Imagen
+  let imagen: Imagen | null
 
   if (input.imagen) {
-    imagen = new Imagen(input.imagen, true)
+    imagen = new Imagen(input.imagen.buffer)
   } else {
-    const em = RequestContext.getEntityManager()
-    const imagenRepo = new ImagenRepository(em?.fork() as SqlEntityManager)
-
-    imagen = await imagenRepo.findTemplate()
+    imagen = null
   }
 
   const marcaInput = new Marca(
@@ -74,44 +70,53 @@ async function add(req: Request, res: Response) {
     imagen,
   )
 
-  const marca = await repository.add(marcaInput)
+  const check = await repository.checkConstraint(marcaInput)
 
-  if (!marca) {
-    res.status(409).send({ message: 'Marca ya existente.'})
+  if (!check) {
+    const marca = await repository.add(marcaInput)
+
+    if (!marca) {
+      res.status(500).send({ message: 'Ocurrio un error, intente mas tarde.' })
+    } else {
+      res.status(201).send({ message: 'Marca creada con exito.', data: marca })
+    }
   } else {
-    res.status(201).send({ message: 'Marca creada con exito.', data: marca})
+    res.status(409).send({ message: 'Marca ya existente.' })
   }
 }
 
 async function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = Number(req.params.id)
   const repository = getRepo()
+  const keepImage = (req.body.keepImage === "true")
+  const marcaInput = req.body.sanitizedInput
 
   // THIS IS A QUESTIONABLE FIX
 
-  if (req.body.sanitizedInput.imagen) {
-    req.body.sanitizedInput.imagen = new Imagen(req.body.sanitizedInput.imagen, true)
-  } else if (req.body.sanitizedInput.operacion === 'remove') {
-    req.body.sanitizedInput.imagen = new Imagen('remove')
-  } else {
-    req.body.sanitizedInput.imagen = new Imagen('keep')
+  if (marcaInput.imagen) {
+    marcaInput.imagen = new Imagen(marcaInput.imagen.buffer)
   }
 
-  delete req.body.sanitizedInput.operacion
+  if (keepImage) {
+    delete req.body.sanitizedInput.imagen
+  }
 
-  let marca: Marca | null
+  let check = false
 
-  try {
-    marca = await repository.update(req.body.sanitizedInput)
-  } catch {
+  if (marcaInput.nombre) {
+    check = await repository.checkConstraint(marcaInput)
+  }
+
+  if (!check) {
+    const marca = await repository.update(marcaInput)
+
+    if (!marca) {
+      res.status(404).send({ message: 'Marca no encontrada.' })
+    } else {
+      res.status(200).send({ message: 'Marca actualizada con exito.', data: marca })
+    }
+  } else {
     res.status(401).send({ message: 'Nombre proporcionado de la marca ya esta en uso.'})
-    return
-  }
-
-  if (!marca) {
-    res.status(404).send({ message: 'Marca no encontrada.' })
-  } else {
-    res.status(200).send({ message: 'Marca actualizada con exito.', data: marca })
   }
 }
 

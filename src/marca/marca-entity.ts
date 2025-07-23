@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, ManyToOne } from '@mikro-orm/core'
+import { Entity, PrimaryKey, Property, OneToOne} from '@mikro-orm/core'
 import { Imagen } from '../imagen/imagen-entity.js'
 
 @Entity()
@@ -9,12 +9,12 @@ export class Marca {
   @Property({ unique: true})
   nombre!: string
 
-  @ManyToOne(() => Imagen)
-  imagen!: Imagen
+  @OneToOne(() => Imagen, {nullable: true, orphanRemoval: true, deleteRule: "cascade"})
+  imagen!: Imagen | null
 
   constructor(
     nombre: string,
-    imagen: Imagen,
+    imagen: Imagen | null,
   ) {
     this.nombre = nombre
     this.imagen = imagen

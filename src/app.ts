@@ -12,8 +12,6 @@ import { pedidoRouter } from './pedido/pedido-routes.js'
 import { orm, syncSchema} from './shared/database.js'
 import { RequestContext } from '@mikro-orm/core'
 
-import { ProductoRepository } from './producto/producto-repository.js'
-
 const app = express()
 const port = 8080
 

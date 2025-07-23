@@ -4,14 +4,10 @@ import { Producto } from './producto-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
 import { Imagen } from '../imagen/imagen-entity.js'
 
-import { ImagenRepository } from '../imagen/imagen-repository.js'
 import { MarcaRepository } from '../marca/marca-repository.js'
 import { CategoriaRepository } from '../categoria/categoria-repository.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
-
-import fs from 'fs'
-import { Marca } from '../marca/marca-entity.js'
 
 function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -27,7 +23,7 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
   //more checks here
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
+    if (req.body.sanitizedInput[key] === undefined || Number.isNaN(req.body.sanitizedInput[key])) {
       delete req.body.sanitizedInput[key]
 
       // This line of code validates that each key (except destacado or imagenes) actually exists when creating a product (otherwise returns an error.)
@@ -87,25 +83,23 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
   const repository = getRepo()
-  const imagenes = input.imagenes.map((imagen: Express.Multer.File, idx: number) => new Imagen(imagen.filename, (idx === 0)))
 
-  const {marca, categoria} = await convertIdsToEntities(input.marcaId, input.categoriaId)
+  const marca = await convertIdToMarca(input.marcaId)
+  const categoria = await convertIdToCategoria(input.categoriaId)
 
   if (!marca || !categoria) {
     res.status(401).send({ message: 'Categoria y/o marca no encontrada.'})
-    input.imagenes.map((img: Imagen) => {
-      if (img.url != "template.png") {fs.unlinkSync("images/" + img.url)}
-    })
     return
   }
-  
-  if (!imagenes) {
-    const em = RequestContext.getEntityManager()
-    const imagenRepo = new ImagenRepository(em?.fork() as SqlEntityManager)
 
-    imagenes.push(await imagenRepo.findTemplate())
+  let imagenes: Array<Imagen>
+
+  if (input.imagenes) {
+    imagenes = input.imagenes.map((imagen: Express.Multer.File, idx: number) => new Imagen(imagen.buffer, (idx === 0)))
+  } else {
+    imagenes = []
   }
-
+  
   const productoInput = new Producto(
     input.nombre,
     input.desc,
@@ -116,12 +110,18 @@ async function add(req: Request, res: Response) {
     categoria,
   )
 
-  const producto = await repository.add(productoInput)
+  const check = await repository.checkConstraint(productoInput)
 
-  if (!producto) {
-    res.status(409).send({ message: 'Producto ya existente.'})
+  if (!check) {
+    const producto = await repository.add(productoInput)
+
+    if (!producto) {
+      res.status(500).send({ message: 'Ocurrio un error, intente mas tarde.' })
+    } else {
+      res.status(201).send({ message: 'Producto creado con exito.', data: producto})
+    }
   } else {
-    res.status(201).send({ message: 'Producto creado con exito.', data: producto})
+    res.status(409).send({ message: 'Producto ya existente.' })
   }
 }
 
@@ -129,19 +129,37 @@ async function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = Number(req.params.id)
   const input = req.body.sanitizedInput
   const repository = getRepo()
+  const imagesToKeep = req.body.imagesToKeep ? (
+  req.body.imagesToKeep.length > 1 ? req.body.imagesToKeep : [req.body.imagesToKeep]) : []
 
-  // ODD FIX
+  input.imagenes = input.imagenes ? input.imagenes.map((imagen: Express.Multer.File, idx: number) => new Imagen(imagen.buffer, (idx === 0))): []
 
-  const {marca, categoria} = await convertIdsToEntities(input.marcaId, input.categoriaId)
+  if (input.marcaId) {
+    const marca = await convertIdToMarca(input.marcaId)
+
+    if (!marca) {
+      res.status(401).send({ message: 'Marca no encontrada.'})
+      return
+    } else {
+      input.marca = marca
+    } 
+  }
+
+  if (input.categoriaId) {
+    const categoria = await convertIdToCategoria(input.categoriaId)
+
+    if (!categoria) {
+      res.status(401).send({ message: 'Marca no encontrada.'})
+      return
+    } else {
+      input.categoria = categoria
+    }
+  }
+
   delete input.marcaId
   delete input.categoriaId
-  input.marca = marca
-  input.categoria = categoria
 
-  const operations = input.operations
-  delete input.operations
-
-  const producto = await repository.update(input, operations)
+  const producto = await repository.update(input, imagesToKeep)
   
   if (!producto) {
     res.status(404).send({ message: 'Producto no encontrado.' })
@@ -150,14 +168,18 @@ async function update(req: Request, res: Response) {
   }
 }
 
-async function convertIdsToEntities(marcaId: number, categoriaId: number) { 
+async function convertIdToMarca(marcaId: number) {
   const marcaRepo = new MarcaRepository(RequestContext.getEntityManager()?.fork() as SqlEntityManager)
   const marca = await marcaRepo.findOne({id: marcaId})
 
+  return marca
+}
+
+async function convertIdToCategoria(categoriaId: number) {
   const categoriaRepo = new CategoriaRepository(RequestContext.getEntityManager()?.fork() as SqlEntityManager)
   const categoria = await categoriaRepo.findOne({id: categoriaId})
 
-  return {marca: marca, categoria: categoria}
+  return categoria
 }
 
 async function remove(req: Request, res: Response) {

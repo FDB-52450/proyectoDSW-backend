@@ -32,7 +32,7 @@ export class Producto {
   @Property({ onCreate: () => new Date()})
   fechaIngreso!: Date
 
-  @OneToMany(() => Imagen, img => img.producto)
+  @OneToMany(() => Imagen, img => img.producto, {nullable: true, orphanRemoval: true})
   imagenes = new Collection<Imagen>(this)
 
   @ManyToOne(() => Marca)
@@ -65,6 +65,39 @@ export class Producto {
     this.fechaIngreso = new Date()
     this.stockReservado = 0
     this.destacado = false
+  }
+
+  public handleImagenes(imagenesNuevas: Array<Imagen>): void {
+    const maxLength = Math.max(imagenesNuevas.length, this.imagenes.length)
+
+    for (let x = 0; x < maxLength; x++) {
+      const nuevaImagen = imagenesNuevas[x]
+      const viejaImagen = this.imagenes.getItems()[x]
+
+      if (viejaImagen && nuevaImagen) {
+        if (nuevaImagen.id) {
+          if (!(nuevaImagen.id === viejaImagen.id)) {
+            this.imagenes.remove(viejaImagen)
+            this.imagenes.add(nuevaImagen)
+          }
+        } else {
+          this.imagenes.remove(viejaImagen)
+          this.imagenes.add(nuevaImagen)
+        }
+      } else if (nuevaImagen) {
+        this.imagenes.add(nuevaImagen)
+      } else if (viejaImagen) {
+        this.imagenes.remove(viejaImagen)
+      }
+    }
+
+    for (let x = 0; x < this.imagenes.length; x++) {
+      if (x === 0) {
+        this.imagenes[x].imagenPrimaria = true
+      } else {
+        this.imagenes[x].imagenPrimaria = false
+      }
+    }
   }
 
   public getStockDisponible(): number {

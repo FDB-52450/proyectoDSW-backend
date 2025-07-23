@@ -2,7 +2,7 @@ import { Repository } from '../shared/repository.js'
 import { Pedido } from './pedido-entity.js'
 import { EntityManager } from '@mikro-orm/mysql'
 
-export class PedidoRepository /*implements Repository<Pedido>*/ {
+export class PedidoRepository implements Repository<Pedido> {
   constructor(
     private pedidoEm: EntityManager
   ) {}

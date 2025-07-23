@@ -3,7 +3,7 @@ import { Categoria } from './categoria-entity.js'
 
 import { EntityManager } from '@mikro-orm/mysql'
 
-export class CategoriaRepository /*implements Repository<Categoria>*/{
+export class CategoriaRepository implements Repository<Categoria>{
   constructor(
     private categoriaEm: EntityManager
   ) {}
