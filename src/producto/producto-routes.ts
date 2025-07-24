@@ -4,7 +4,6 @@ import { sanitizeProductoInput, sanitizeProductoFilters, findAll, findOne, add, 
 import { createContext } from '../middleware/mikroOrmContext.js'
 import { upload } from '../middleware/multer.js'
 import { authLogin } from '../middleware/loginAuth.js'
-import { create } from 'domain'
 
 export const productoRouter = Router()
 

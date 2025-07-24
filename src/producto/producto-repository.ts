@@ -1,4 +1,3 @@
-import { Repository } from '../shared/repository.js'
 import { Producto } from './producto-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
 

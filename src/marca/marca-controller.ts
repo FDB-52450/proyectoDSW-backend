@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express'
 import { MarcaRepository } from './marca-repository.js'
 import { Marca } from './marca-entity.js'
 import { Imagen } from '../imagen/imagen-entity.js'
-import { ImagenRepository } from '../imagen/imagen-repository.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
