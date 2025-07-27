@@ -83,8 +83,8 @@ async function add(req: Request, res: Response) {
   const pedidoInput = new Pedido(
     input.tipoEntrega,
     input.tipoPago,
-    input.fechaEntrega,
-    detalleWithProducts
+    detalleWithProducts,
+    input.fechaEntrega
   )
 
   const check = pedidoInput.checkDetalle()

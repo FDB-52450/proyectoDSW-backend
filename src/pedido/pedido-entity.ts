@@ -30,15 +30,20 @@ export class Pedido {
   constructor(
     tipoEntrega: string = 'retiro',
     tipoPago: string = 'efectivo',
-    fechaEntrega: Date,
     detalle: Array<PedidoProd>,
+    fechaEntrega?: Date,
   ) {
     this.tipoEntrega = tipoEntrega
     this.tipoPago = tipoPago
-    this.fechaEntrega = fechaEntrega
     this.detalle = new Collection<PedidoProd>(this)
     this.detalle.add(detalle)
     this.precioTotal = this.calcularPrecioTotal()
+
+    if (fechaEntrega) {
+      this.fechaEntrega = fechaEntrega
+    } else {
+      this.fechaEntrega = this.calcularFechaEntrega()
+    }
   }
 
   public calcularPrecioTotal(): number {
@@ -47,6 +52,19 @@ export class Pedido {
 
   public checkDetalle(): boolean {
     return this.detalle.getItems().every(item => item.checkStock())
+  }
+
+  public calcularFechaEntrega(): Date {
+    // DOCS: Sets default date at 7 days later.
+
+    let fechaEntrega = new Date(this.fechaPedido.getDate())
+    fechaEntrega.setDate(fechaEntrega.getDate() + 7)
+
+    if (fechaEntrega.getDay() === 0) {
+      fechaEntrega.setDate(fechaEntrega.getDate() + 1)
+    }
+
+    return fechaEntrega
   }
 
   // TODO: Determine if this string of methods from pedido to product is even necessary.

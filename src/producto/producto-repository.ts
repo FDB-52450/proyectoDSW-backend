@@ -45,7 +45,7 @@ export class ProductoRepository {
   }
 
   public async findOne(item: { id: number }): Promise<Producto | null> {
-    return await this.productoEm.findOne(Producto, {id: item.id}, {populate: ['imagenes']})
+    return await this.productoEm.findOne(Producto, {id: item.id}, {populate: ['marca', 'categoria', 'imagenes']})
   }
 
   public async checkConstraint(item: Producto): Promise<boolean> {

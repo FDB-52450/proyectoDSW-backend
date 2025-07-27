@@ -49,6 +49,8 @@ export class Producto {
     desc: string = 'Sin descripcion.',
     precio: number,
     stock: number,
+    descuento: number = 0,
+    destacado: boolean = false,
     imagenes: Imagen[],
     marca: Marca,
     categoria: Categoria,
@@ -57,14 +59,14 @@ export class Producto {
     this.desc = desc
     this.precio = precio
     this.stock = stock
+    this.descuento = descuento
+    this.destacado = destacado
     this.imagenes = new Collection<Imagen>(this)
     this.imagenes.add(imagenes)
     this.marca = marca
     this.categoria = categoria
-    this.descuento = 0
     this.fechaIngreso = new Date()
     this.stockReservado = 0
-    this.destacado = false
   }
 
   public handleImagenes(imagenesNuevas: Array<Imagen>): void {

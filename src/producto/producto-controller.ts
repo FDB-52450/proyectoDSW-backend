@@ -16,6 +16,7 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
     precio: Number(req.body.precio),
     descuento: Number(req.body.descuento),
     stock: Number(req.body.stock),
+    destacado: (req.body.destacado === "true"),
     imagenes: req.files,
     marcaId: Number(req.body.marcaId),
     categoriaId: Number(req.body.categoriaId)
@@ -40,8 +41,8 @@ function sanitizeProductoFilters(req: Request, res: Response, next: NextFunction
   res.locals.filters = {
     precioMin: Number(req.query.precioMin),
     precioMax: Number(req.query.precioMax),
-    stockMin: req.query.stockMin,
-    stockMax: req.query.stockMax,
+    stockMin: Number(req.query.stockMin),
+    stockMax: Number(req.query.stockMax),
     nombre: req.query.nombre,
     destacado: (req.query.destacado === "true"),
     marca: req.query.marca,
@@ -105,6 +106,8 @@ async function add(req: Request, res: Response) {
     input.desc,
     input.precio,
     input.stock,
+    input.descuento,
+    input.destacado,
     imagenes,
     marca,
     categoria,
