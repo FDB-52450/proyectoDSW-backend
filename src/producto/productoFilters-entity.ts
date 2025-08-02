@@ -9,4 +9,5 @@ export interface ProductoFilters {
   destacado?: boolean
   marca?: string
   categoria?: string
+  sort?: string
 }

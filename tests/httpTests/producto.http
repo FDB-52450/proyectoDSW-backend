@@ -1,4 +1,4 @@
-GET http://localhost:8080/api/productos
+GET http://localhost:8080/api/productos?page=2&destacado=true
 
 ###
 GET http://localhost:8080/api/productos/?precioMin=120000

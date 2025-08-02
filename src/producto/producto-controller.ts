@@ -46,7 +46,8 @@ function sanitizeProductoFilters(req: Request, res: Response, next: NextFunction
     nombre: req.query.nombre,
     destacado: (req.query.destacado === "true"),
     marca: req.query.marca,
-    categoria: req.query.categoria
+    categoria: req.query.categoria,
+    sort: req.query.sort
   }
   
   next()
@@ -60,12 +61,27 @@ function getRepo() {
 async function findAll(req: Request, res: Response) {
   const repository = getRepo()
   const filters: ProductoFilters = res.locals.filters || undefined
-  const productos = await repository.findAll(filters)
+  const page = Number(req.query.page ?? 1)
+
+  if (page < 1) {
+    res.status(401).send({ message: 'Numero de pagina invalido'})
+    return
+  }
+  
+  const [productos, totalItems] = await repository.findAll(page, filters)
 
   if (productos.length == 0) {
     res.status(404).send({ message: 'No hay productos disponibles.'})
   } else {
-    res.json({data: productos})
+    const totalPages = Math.ceil(totalItems / 20)
+    const paginationData = {
+      totalProducts: totalItems, 
+      totalPages, 
+      currentPage: page, 
+      pageSize: 20
+    }
+
+    res.json({data: productos, pagination: paginationData})
   }
 }
 

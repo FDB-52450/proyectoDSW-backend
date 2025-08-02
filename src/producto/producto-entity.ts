@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, ManyToOne, OneToMany, Collection} from '@mikro-orm/core'
+import { Entity, PrimaryKey, Property, ManyToOne, OneToMany, Collection, BeforeCreate, BeforeUpdate} from '@mikro-orm/core'
 import { Marca } from '../marca/marca-entity.js'
 import { Categoria } from '../categoria/categoria-entity.js'
 import { Imagen } from '../imagen/imagen-entity.js'
@@ -19,6 +19,9 @@ export class Producto {
 
   @Property()
   descuento = 0
+
+  @Property()
+  precioFinal!: number
 
   @Property()
   stock!: number
@@ -67,6 +70,12 @@ export class Producto {
     this.categoria = categoria
     this.fechaIngreso = new Date()
     this.stockReservado = 0
+  }
+
+  @BeforeCreate()
+  @BeforeUpdate()
+  setFinalPrice() {
+    this.precioFinal = Math.round(this.precio - (this.precio * this.descuento / 100));
   }
 
   public handleImagenes(imagenesNuevas: Array<Imagen>): void {

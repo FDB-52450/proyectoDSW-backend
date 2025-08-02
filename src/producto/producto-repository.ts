@@ -8,15 +8,17 @@ export class ProductoRepository {
     private productoEm: EntityManager
   ) {}
 
-  public async findAll(filters?: ProductoFilters): Promise<Producto[]> {
-    const queryFilters: any = {}
+  public async findAll(page: number, filters?: ProductoFilters): Promise<[Producto[], number]> {
+    const queryFilters: any = {} 
+    const pageSize = 20
+    const offset = (page - 1) * pageSize
 
     if (filters) {
       if (filters.precioMin) {
-        queryFilters.precio = { $gte: filters.precioMin}
+        queryFilters.precioFinal = { $gte: filters.precioMin}
       }
       if (filters.precioMax) {
-        queryFilters.precio = {...(queryFilters.precio || {}), $lte: filters.precioMax}
+        queryFilters.precioFinal = {...(queryFilters.precioFinal || {}), $lte: filters.precioMax}
       }
       if (filters.stockMin) {
         queryFilters.stock = { $gte: filters.stockMin}
@@ -25,7 +27,7 @@ export class ProductoRepository {
         queryFilters.stock = {...(queryFilters.stock || {}), $lte: filters.stockMax}
       }
       if (filters.nombre) {
-        queryFilters.nombre = { $like: filters.nombre}
+        queryFilters.nombre = { $like: `%${filters.nombre}%`}
       }
       if (filters.destacado) {
         queryFilters.destacado = filters.destacado
@@ -34,14 +36,34 @@ export class ProductoRepository {
       // TODO: Check if filters.marca and filters.categoria should be uppercased or not (implemented as uppercased directly on database)
 
       if (filters.marca) {
-        queryFilters.marca = { $like: filters.marca}
+        queryFilters.marca = { nombre: {$like: `%${filters.marca}%`} }
       }
       if (filters.categoria) {
-        queryFilters.categoria = { $like: filters.categoria}
+        queryFilters.categoria = { nombre: {$like: `%${filters.categoria}%`} }
       }
     }
 
-    return await this.productoEm.find(Producto, queryFilters, {populate: ['marca', 'categoria', 'imagenes']})
+    let typeSort = {}
+
+    console.log(filters?.sort)
+
+    if (filters?.sort) {
+      switch (filters.sort) {
+        case 'precio-asc': typeSort = {precioFinal: 'ASC', id: 'ASC'}; break;
+        case 'precio-desc': typeSort = {precioFinal: 'DESC', id: 'ASC'}; break;
+        case 'destacado': typeSort = {destacado: 'ASC', id: 'ASC'}; break;
+        default: typeSort = { destacado: 'ASC', id: 'ASC' }; break;
+      }
+    } else {
+      typeSort = {destacado: 'ASC', id: 'ASC'}
+    }
+
+    return await this.productoEm.findAndCount(Producto, queryFilters, {
+      limit: pageSize,
+      offset: offset,
+      orderBy: typeSort,
+      populate: ['marca', 'categoria', 'imagenes']
+    })
   }
 
   public async findOne(item: { id: number }): Promise<Producto | null> {
