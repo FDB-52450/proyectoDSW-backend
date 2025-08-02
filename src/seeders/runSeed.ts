@@ -1,0 +1,26 @@
+import { seedProductos } from './seeds/seedProductos.js'
+import { seedMarcas } from './seeds/seedMarcas.js'
+import { seedCategorias } from './seeds/seedCategorias.js'
+
+import { clearSeeds } from './clearSeeds.js'
+
+import config from '../config-db/mikro-orm.config.js'
+import { MikroORM } from '@mikro-orm/mysql'
+
+async function main() {
+  const orm = await MikroORM.init(config)
+
+  try {
+    await clearSeeds(orm)
+    
+    await seedCategorias(orm)
+    await seedMarcas(orm)
+    await seedProductos(orm)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    await orm.close(true)
+  }
+}
+
+main()
