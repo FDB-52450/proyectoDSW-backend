@@ -34,6 +34,10 @@ export class MarcaRepository implements Repository<Marca> {
   }
 
   public async update(item: Marca): Promise<Marca | null> {
+    // DOCS: item.imagen can be either an actual image entity, null or undefined:
+    // image entity -> ADD IMAGE AND DELETE OLD ONE
+    // null -> DELETE IMAGE (SET IT TO NULL)
+    // undefined -> KEEP IMAGE
     const marca = await this.findOne(item)
 
     if (marca) {

@@ -5,26 +5,6 @@ import { Imagen } from '../imagen/imagen-entity.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
-function sanitizeMarcaInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    nombre: req.body.nombre,
-    imagen: req.file || null,
-  }
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key]
-    }
-  })
-
-  if (!req.body.sanitizedInput.nombre) {
-    res.status(401).send({ message: 'Faltan atributos de marca.' })
-    return
-  } // DONE OUTSIDE DUE TO FOREACH NOT RESPECTING RETURN
-
-  next()
-}
-
 function getRepo() {
   const em = RequestContext.getEntityManager()
   return new MarcaRepository(em as SqlEntityManager)
@@ -54,15 +34,9 @@ async function findOne(req: Request, res: Response) {
 }
 
 async function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
+  const input = req.body
   const repository = getRepo()
-  let imagen: Imagen | null
-
-  if (input.imagen) {
-    imagen = new Imagen(input.imagen.buffer)
-  } else {
-    imagen = null
-  }
+  const imagen = input.imagen ? new Imagen(input.imagen.buffer) : null
 
   const marcaInput = new Marca(
     input.nombre,
@@ -85,29 +59,25 @@ async function add(req: Request, res: Response) {
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = Number(req.params.id)
+  // TODO: Consider reworking how this functions, since currently if there's no req.body.keepImage the image will just be deleted (intended but odd behaviour)
+  req.body.id = Number(req.params.id)
+  req.body.imagen = req.file ? new Imagen(req.file.buffer) : null
+
   const repository = getRepo()
-  const keepImage = (req.body.keepImage === "true")
-  const marcaInput = req.body.sanitizedInput
+  const input = req.body
 
-  // THIS IS A QUESTIONABLE FIX
-
-  if (marcaInput.imagen) {
-    marcaInput.imagen = new Imagen(marcaInput.imagen.buffer)
-  }
-
-  if (keepImage) {
-    delete req.body.sanitizedInput.imagen
+  if (req.body.keepImage) {
+    delete input.imagen
   }
 
   let check = false
 
-  if (marcaInput.nombre) {
-    check = await repository.checkConstraint(marcaInput)
+  if (input.nombre) {
+    check = await repository.checkConstraint(input)
   }
 
   if (!check) {
-    const marca = await repository.update(marcaInput)
+    const marca = await repository.update(input)
 
     if (!marca) {
       res.status(404).send({ message: 'Marca no encontrada.' })
@@ -131,4 +101,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeMarcaInput, findAll, findOne, add, update, remove }
+export { findAll, findOne, add, update, remove }
