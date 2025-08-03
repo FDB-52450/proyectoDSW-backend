@@ -1,22 +1,8 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import { CategoriaRepository } from './categoria-repository.js'
 import { Categoria } from './categoria-entity.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
-
-function sanitizeCategoriaInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    nombre: req.body.nombre,
-  }
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key]
-    }
-  })
-  
-  next()
-}
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -48,8 +34,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   const repository = getRepo()
-  const input = req.body.sanitizedInput
-
+  const input = req.body
   const categoriaInput = RequestContext.getEntityManager()!.create(Categoria, input)
   const categoria = await repository.add(categoriaInput)
 
@@ -61,10 +46,10 @@ async function add(req: Request, res: Response) {
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = Number(req.params.id)
+  req.body.id = Number(req.params.id)
   
   const repository = getRepo()
-  const categoria = await repository.update(req.body.sanitizedInput)
+  const categoria = await repository.update(req.body)
 
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })
@@ -85,4 +70,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeCategoriaInput, findAll, findOne, add, update, remove }
+export { findAll, findOne, add, update, remove }
