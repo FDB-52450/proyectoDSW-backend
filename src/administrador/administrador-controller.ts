@@ -1,23 +1,8 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { AdministradorRepository } from './administrador-repository.js'
 import { Administrador } from './administrador-entity.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
-
-function sanitizeAdminInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    nombre: req.body.nombre,
-    password: req.body.password
-  }
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      return res.status(401).send({ message: 'Faltan credenciales de usuario.'})
-    }
-  })
-
-  next()
-}
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -49,4 +34,4 @@ function logout(req: Request, res: Response) {
   })
 }
 
-export {sanitizeAdminInput, login, logout}
+export {login, logout}

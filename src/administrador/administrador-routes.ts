@@ -1,8 +1,12 @@
 import { Router } from 'express'
-import { sanitizeAdminInput, login, logout} from './administrador-controller.js'
+import { login, logout} from './administrador-controller.js'
+
 import { authLogin } from '../middleware/loginAuth.js'
+
+import { validateAdmin } from '../middleware/validation/adminValidation.js'
+import { handleValidation } from '../middleware/validation/validateInput.js'
 
 export const administradorRouter = Router()
 
-administradorRouter.post('/login', sanitizeAdminInput, login)
+administradorRouter.post('/login', validateAdmin, handleValidation, login)
 administradorRouter.get('/logout', authLogin, logout)
