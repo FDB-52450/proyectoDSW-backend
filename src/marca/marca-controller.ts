@@ -61,7 +61,7 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   // TODO: Consider reworking how this functions, since currently if there's no req.body.keepImage the image will just be deleted (intended but odd behaviour)
   req.body.id = Number(req.params.id)
-  req.body.imagen = req.file ? new Imagen(req.file.buffer) : null
+  req.body.imagen = req.body.imagen ? new Imagen(req.body.imagen.buffer) : null
 
   const repository = getRepo()
   const input = req.body

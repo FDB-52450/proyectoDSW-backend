@@ -11,6 +11,6 @@
 - [x] Pagination for retrieval of product list.
 
 ## UNLIKELY TO BE ADDED
-- [ ] Custom validation for files uploaded (file-type / sharp).
+- [x] Custom validation for files uploaded (file-type).
 - [ ] Custom handling of race conditions (transactions / pessimistic lock / optimistic lock)
 - [ ] Super admin that can create other admins.
