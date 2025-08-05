@@ -7,7 +7,7 @@
 ## LIKELY TO BE ADDED
 - [ ] Custom middleware library for extra security (helmet).
 - [ ] Custom middleware library for bandwidth optimization (compression).
-- [-] Custom middleware library for input sanitization (express-validator).
+- [x] Custom middleware library for input sanitization (express-validator).
 - [x] Pagination for retrieval of product list.
 
 ## UNLIKELY TO BE ADDED

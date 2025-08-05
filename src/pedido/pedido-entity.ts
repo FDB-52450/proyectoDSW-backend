@@ -57,7 +57,7 @@ export class Pedido {
   public calcularFechaEntrega(): Date {
     // DOCS: Sets default date at 7 days later.
 
-    let fechaEntrega = new Date(this.fechaPedido.getDate())
+    let fechaEntrega = new Date(this.fechaPedido.getTime())
     fechaEntrega.setDate(fechaEntrega.getDate() + 7)
 
     if (fechaEntrega.getDay() === 0) {

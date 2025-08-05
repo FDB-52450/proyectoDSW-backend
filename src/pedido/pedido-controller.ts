@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import { PedidoRepository } from './pedido-repository.js'
 import { Pedido } from './pedido-entity.js'
 
@@ -6,33 +6,6 @@ import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
 import { ProductoRepository } from '../producto/producto-repository.js'
-
-function sanitizePedidoInput(req: Request, res: Response, next: NextFunction) {
-  const validStates = ['confirmado', 'cancelado']
-
-  req.body.sanitizedInput = {
-    tipoEntrega: req.body.tipoEntrega,
-    tipoPago: req.body.tipoPago,
-    fechaEntrega: req.body.fechaEntrega,
-    detalle: req.body.detalle,
-    estado: req.body.estado
-  }
-  
-  //more checks here
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key]
-    }
-  })
-
-  if (!validStates.includes(req.body.sanitizedInput.estado) && (req.method === "PATCH" || req.method === "PUT")) {
-    res.status(401).send({ message: 'Estado no valido.' })
-    return
-  }
-
-  next()
-}
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -63,7 +36,7 @@ async function findOne(req: Request, res: Response) {
 }
 
 async function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
+  const input = req.body
   const repository = getRepo()
   const prodRepo = new ProductoRepository(RequestContext.getEntityManager()?.fork() as SqlEntityManager)
 
@@ -97,15 +70,15 @@ async function add(req: Request, res: Response) {
     if (!pedido) {
       res.status(500).send({ message: 'Algo ha salido mal, intente de nuevo mas tarde.' })
     } else {
-      pedido.aumentarStockReservado()
       res.status(201).send({ message: 'Pedido creado con exito.', data: pedido })
     }
   }
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = Number(req.params.id)
-  const input = req.body.sanitizedInput
+  req.body.id = Number(req.params.id)
+
+  const input = req.body
   const repository = getRepo()
 
   let pedido: Pedido | null
@@ -124,22 +97,4 @@ async function update(req: Request, res: Response) {
   }
 }
 
-function remove(req: Request, res: Response) {
-  /*const id = Number(req.params.id)
-  const pedido = repository.delete({ id })
-
-  if (!pedido) {
-    res.status(404).send({ message: 'Pedido not found' })
-  } else {
-    res.status(200).send({ message: 'Pedido deleted successfully' })
-
-    pedido.reducirStockReservado()
-  }*/
-
-  res.status(501).send({ message: 'Not implemented' }) 
-  
-  // Won't be implemented, should be removed later.
-  // To remove a pedido, it should be cancelled, not deleted.
-}
-
-export { sanitizePedidoInput, findAll, findOne, add, update, remove }
+export { findAll, findOne, add, update }

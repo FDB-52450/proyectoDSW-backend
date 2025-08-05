@@ -1,7 +1,7 @@
 GET http://localhost:8080/api/pedidos/
 
 ###
-GET http://localhost:8080/api/pedidos/10
+GET http://localhost:8080/api/pedidos/45
 
 ###
 POST http://localhost:8080/api/pedidos/
@@ -10,26 +10,26 @@ Content-Type: application/json
 {
   "tipoEntrega": "retiro",
   "tipoPago": "efectivo",
-  "fechaEntrega": "2025-07-01 15:30:00",
   "detalle": [
     {
       "cantidad": 2,
-      "productoId": 102
+      "productoId": 490
     },
     {
       "cantidad": 1,
-      "productoId": 3
+      "productoId": 491
     }
   ]
 }
 
 ###
-PATCH http://localhost:8080/api/pedidos/1
+PATCH http://localhost:8080/api/pedidos/49
 Content-Type: application/json
 
 {
+  "tipoEntrega": "envio",
   "estado": "confirmado"
 }
 
 ###
-DELETE http://localhost:8080/api/pedidos/1
+DELETE http://localhost:8080/api/pedidos/

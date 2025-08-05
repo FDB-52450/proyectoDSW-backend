@@ -10,7 +10,7 @@ export class PedidoProd {
   @Property()
   cantidad!: number
 
-  @OneToOne(() => Producto)
+  @ManyToOne(() => Producto)
   producto!: Producto
 
   @Property()
@@ -28,7 +28,7 @@ export class PedidoProd {
   ) {
     this.cantidad = cantidad
     this.producto = producto
-    this.precioUnidad = this.producto.precio
+    this.precioUnidad = this.producto.precioFinal
     this.precioTotal = this.precioUnidad * this.cantidad
   }
 

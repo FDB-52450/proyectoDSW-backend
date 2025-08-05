@@ -16,7 +16,10 @@ export class PedidoRepository implements Repository<Pedido> {
   }
 
   public async add(item: Pedido): Promise<Pedido | null> {
+    item.aumentarStockReservado()
+
     try {
+      this.persistProdChanges(item)
       await this.pedidoEm.persistAndFlush(item)
       return item
     } catch (err) {
@@ -28,10 +31,14 @@ export class PedidoRepository implements Repository<Pedido> {
     const pedido = await this.findOne(item)
 
     if (pedido) {
-      const result = this.cambiarEstado(pedido, item)
+      let result = true
+      
+      if (item.estado) {
+        result = this.cambiarEstado(pedido, item)
+      }
 
       if (result) {
-        pedido.estado = item.estado
+        Object.assign(pedido, item)
         await this.pedidoEm.flush()
       } else {
         throw new Error()
@@ -50,13 +57,23 @@ export class PedidoRepository implements Repository<Pedido> {
           pedidoViejo.reducirStock()
         }
 
+        this.persistProdChanges(pedidoViejo)
+
         return true
       }
     }
     return false 
   }
 
+  public persistProdChanges(item: Pedido) {
+    // FIX: This was added due to some issues regarding persistAndFlush(item) not updating reserved stock properly.
+    item.detalle.getItems().forEach(itemProd => {
+      this.pedidoEm.persist(itemProd.producto)
+    })
+  }
+
   public async delete(item: { id: number }): Promise<Pedido | null> {
+    // DONT USE THIS.
     const pedido = await this.findOne(item)
 
     if (pedido) {
