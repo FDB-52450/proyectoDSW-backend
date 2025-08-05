@@ -1,3 +1,4 @@
+import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
 import { Producto } from './producto-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
 
@@ -32,9 +33,6 @@ export class ProductoRepository {
       if (filters.destacado) {
         queryFilters.destacado = filters.destacado
       }
-
-      // TODO: Check if filters.marca and filters.categoria should be uppercased or not (implemented as uppercased directly on database)
-
       if (filters.marca) {
         queryFilters.marca = { nombre: {$like: `%${filters.marca}%`} }
       }
@@ -44,8 +42,6 @@ export class ProductoRepository {
     }
 
     let typeSort = {}
-
-    console.log(filters?.sort)
 
     if (filters?.sort) {
       switch (filters.sort) {
@@ -87,11 +83,11 @@ export class ProductoRepository {
     }
   }
 
-  public async update(item: Producto, imagesToKeep: string[]): Promise<Producto | null> {
+  public async update(item: Producto, imagesToRemove: string[]): Promise<Producto | null> {
     const producto = await this.findOne(item)
 
     if (producto) {
-      const imagenesToKeep = producto.imagenes.filter(img => imagesToKeep.includes(img.url));
+      const imagenesToKeep = producto.imagenes.filter(img => !imagesToRemove.includes(img.url));
       const imagenesFinales = [...imagenesToKeep, ...item.imagenes]
 
       if (imagenesFinales.length === 0) {
@@ -116,6 +112,11 @@ export class ProductoRepository {
 
   public async delete(item: { id: number }): Promise<Producto | null> {
     const producto = await this.findOne(item)
+    const productoReferences = await this.productoEm.count(PedidoProd, {producto: producto})
+
+    if (productoReferences > 0) {
+      throw new Error('El producto es referenciado en otros pedidos.')
+    }
 
     if (producto) {
       await this.productoEm.removeAndFlush(producto)

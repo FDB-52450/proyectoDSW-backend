@@ -38,15 +38,15 @@ export async function seedProductos(orm: MikroORM) {
         const categoria = categorias[Math.floor(Math.random() * categorias.length)];
 
         const producto = new Producto(
-        nombre,
-        desc,
-        precio,
-        stock,
-        descuento,
-        destacado,
-        [],
-        marca,
-        categoria
+            nombre,
+            desc,
+            precio,
+            stock,
+            descuento,
+            destacado,
+            [],
+            marca,
+            categoria
         );
 
         productos.push(producto);

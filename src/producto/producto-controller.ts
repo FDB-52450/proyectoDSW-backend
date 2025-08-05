@@ -9,50 +9,6 @@ import { CategoriaRepository } from '../categoria/categoria-repository.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
-function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    nombre: req.body.nombre,
-    desc: req.body.desc,
-    precio: Number(req.body.precio),
-    descuento: Number(req.body.descuento),
-    stock: Number(req.body.stock),
-    destacado: (req.body.destacado === "true"),
-    imagenes: req.files,
-    marcaId: Number(req.body.marcaId),
-    categoriaId: Number(req.body.categoriaId)
-  }
-  //more checks here
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined || Number.isNaN(req.body.sanitizedInput[key])) {
-      delete req.body.sanitizedInput[key]
-
-      // This line of code validates that each key (except destacado or imagenes) actually exists when creating a product (otherwise returns an error.)
-      /*if (req.method === "POST" && !(key === 'destacado' || key === 'imagenes')) {
-        return res.status(400).send({ message: 'Missing attributes on product creation.'}
-      )}*/
-    }
-  })
-
-  next()
-}
-
-function sanitizeProductoFilters(req: Request, res: Response, next: NextFunction) {
-  res.locals.filters = {
-    precioMin: Number(req.query.precioMin),
-    precioMax: Number(req.query.precioMax),
-    stockMin: Number(req.query.stockMin),
-    stockMax: Number(req.query.stockMax),
-    nombre: req.query.nombre,
-    destacado: (req.query.destacado === "true"),
-    marca: req.query.marca,
-    categoria: req.query.categoria,
-    sort: req.query.sort
-  }
-  
-  next()
-}
-
 function getRepo() {
   const em = RequestContext.getEntityManager()
   return new ProductoRepository(em as SqlEntityManager)
@@ -60,7 +16,7 @@ function getRepo() {
 
 async function findAll(req: Request, res: Response) {
   const repository = getRepo()
-  const filters: ProductoFilters = res.locals.filters || undefined
+  const filters: ProductoFilters = req.query || undefined
   const page = Number(req.query.page ?? 1)
 
   if (page < 1) {
@@ -98,7 +54,7 @@ async function findOne(req: Request, res: Response) {
 }
 
 async function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
+  const input = req.body
   const repository = getRepo()
 
   const marca = await convertIdToMarca(input.marcaId)
@@ -113,9 +69,11 @@ async function add(req: Request, res: Response) {
 
   if (input.imagenes) {
     imagenes = input.imagenes.map((imagen: Express.Multer.File, idx: number) => new Imagen(imagen.buffer, (idx === 0)))
+  } else if (input.imagen) {
+    imagenes = [new Imagen(input.imagen.buffer, true)]
   } else {
     imagenes = []
-  }
+  } // PATCH
   
   const productoInput = new Producto(
     input.nombre,
@@ -145,13 +103,19 @@ async function add(req: Request, res: Response) {
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = Number(req.params.id)
-  const input = req.body.sanitizedInput
+  req.body.id = req.params.id
+  
+  const input = req.body
   const repository = getRepo()
-  const imagesToKeep = req.body.imagesToKeep ? (
-  req.body.imagesToKeep.length > 1 ? req.body.imagesToKeep : [req.body.imagesToKeep]) : []
+  const imagesToRemove = req.body.imagesToRemove ? req.body.imagesToRemove : []
 
-  input.imagenes = input.imagenes ? input.imagenes.map((imagen: Express.Multer.File, idx: number) => new Imagen(imagen.buffer, (idx === 0))): []
+  if (input.imagenes) {
+    input.imagenes = input.imagenes.map((imagen: Express.Multer.File, idx: number) => new Imagen(imagen.buffer, (idx === 0)))
+  } else if (input.imagen) {
+    input.imagenes = [new Imagen(input.imagen.buffer, true)]
+  } else {
+    input.imagenes = []
+  }
 
   if (input.marcaId) {
     const marca = await convertIdToMarca(input.marcaId)
@@ -161,7 +125,9 @@ async function update(req: Request, res: Response) {
       return
     } else {
       input.marca = marca
-    } 
+    }
+
+    delete input.marcaId
   }
 
   if (input.categoriaId) {
@@ -173,12 +139,11 @@ async function update(req: Request, res: Response) {
     } else {
       input.categoria = categoria
     }
+
+    delete input.categoriaId
   }
 
-  delete input.marcaId
-  delete input.categoriaId
-
-  const producto = await repository.update(input, imagesToKeep)
+  const producto = await repository.update(input, imagesToRemove)
   
   if (!producto) {
     res.status(404).send({ message: 'Producto no encontrado.' })
@@ -204,13 +169,23 @@ async function convertIdToCategoria(categoriaId: number) {
 async function remove(req: Request, res: Response) {
   const id = Number(req.params.id)
   const repository = getRepo()
-  const producto = await repository.delete({ id })
 
-  if (!producto) {
-    res.status(404).send({ message: 'Producto no encontrado.' })
-  } else {
-    res.status(200).send({ message: 'Producto borrado con exito.' })
+  try {
+    const producto = await repository.delete({ id })
+    
+    if (!producto) {
+      res.status(404).send({ message: 'Producto no encontrado.' })
+    } else {
+      res.status(200).send({ message: 'Producto borrado con exito.' })
+    }
+  } catch (err) {
+      if (err instanceof Error) {
+        res.status(500).send({message: err.message})
+      } else {
+        res.status(500).send({message: 'Error desconocido.'})
+      }
   }
+
 }
 
-export { sanitizeProductoInput, sanitizeProductoFilters, findAll, findOne, add, update, remove }
+export { findAll, findOne, add, update, remove }

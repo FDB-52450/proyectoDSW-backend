@@ -34,7 +34,7 @@ export async function validateImagen(req: Request, res: Response, next: NextFunc
 
         if (req.file) {
             req.body.imagen = validatedImages[0]
-        } else if (Array.isArray(req.files)) {
+        } else if (Array.isArray(req.files) && req.files.length > 0) {
             req.body.imagenes = validatedImages
         }
 

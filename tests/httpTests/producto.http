@@ -1,12 +1,12 @@
-GET http://localhost:8080/api/productos?page=2&destacado=true
+GET http://localhost:8080/api/productos
 
-###
+### Get products with min price filter
 GET http://localhost:8080/api/productos/?precioMin=120000
 
-###
-GET http://localhost:8080/api/productos/16
+### Get product by ID
+GET http://localhost:8080/api/productos/483
 
-### Create with singular image
+### Create product with singular image
 POST http://localhost:8080/api/productos
 Content-Type: multipart/form-data; boundary=XYZ
 
@@ -25,11 +25,11 @@ Content-Disposition: form-data; name="stock"
 --XYZ
 Content-Disposition: form-data; name="marcaId"
 
-1
+163
 --XYZ
 Content-Disposition: form-data; name="categoriaId"
 
-3
+115
 --XYZ
 Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
 Content-Type: image/png
@@ -37,7 +37,7 @@ Content-Type: image/png
 < ../testImages/nvidiaLogo.png
 --XYZ--
 
-### Create with multiple images
+### Create product with multiple images
 POST http://localhost:8080/api/productos
 Content-Type: multipart/form-data; boundary=XYZ
 
@@ -56,11 +56,11 @@ Content-Disposition: form-data; name="stock"
 --XYZ
 Content-Disposition: form-data; name="marcaId"
 
-1
+163
 --XYZ
 Content-Disposition: form-data; name="categoriaId"
 
-3
+115
 --XYZ
 Content-Disposition: form-data; name="images"; filename="amdLogo.png"
 Content-Type: image/png
@@ -73,18 +73,14 @@ Content-Type: image/png
 < ../testImages/nvidiaLogo.png
 --XYZ--
 
-### Update with add images (while also keeping some)
-PUT http://localhost:8080/api/productos/16
+### Update product with new images
+PUT http://localhost:8080/api/productos/483
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
 RTX 10000
---XYZ
-Content-Disposition: form-data; name="imagesToKeep"
-
-1753232001128-608504565.png
 --XYZ
 Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
 Content-Type: image/png
@@ -97,8 +93,8 @@ Content-Type: image/png
 < ../testImages/amdLogo.png
 --XYZ--
 
-### Update without images (only keeping)
-PUT http://localhost:8080/api/productos/16
+### Update product with new images (while also deleting some)
+PUT http://localhost:8080/api/productos/483
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
@@ -106,13 +102,37 @@ Content-Disposition: form-data; name="nombre"
 
 RTX 10000
 --XYZ
-Content-Disposition: form-data; name="imagesToKeep"
+Content-Disposition: form-data; name="imagesToRemove"
 
-1753232001128-608504565.png
+1754347859697-576050591.png
+--XYZ
+Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
+Content-Type: image/png
+
+< ../testImages/nvidiaLogo.png
+--XYZ
+Content-Disposition: form-data; name="images"; filename="amdLogo.png"
+Content-Type: image/png
+
+< ../testImages/amdLogo.png
 --XYZ--
 
-### Update without images (delete all)
-PUT http://localhost:8080/api/productos/16
+### Update product without new images (deleting some)
+PUT http://localhost:8080/api/productos/483
+Content-Type: multipart/form-data; boundary=XYZ
+
+--XYZ
+Content-Disposition: form-data; name="nombre"
+
+RTX 10000
+--XYZ
+Content-Disposition: form-data; name="imagesToRemove"
+
+1754347688874-229275238.png
+--XYZ--
+
+### Update product without new images (keeping all)
+PUT http://localhost:8080/api/productos/483
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
@@ -121,5 +141,5 @@ Content-Disposition: form-data; name="nombre"
 RTX 10000
 --XYZ--
 
-###
-DELETE http://localhost:8080/api/productos/18
+### Delete product
+DELETE http://localhost:8080/api/productos/513

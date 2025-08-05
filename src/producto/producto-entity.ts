@@ -18,7 +18,7 @@ export class Producto {
   precio!: number
 
   @Property()
-  descuento = 0
+  descuento: number
 
   @Property()
   precioFinal!: number
@@ -27,7 +27,7 @@ export class Producto {
   stock!: number
 
   @Property({ hidden: true })
-  stockReservado = 0
+  stockReservado: number = 0
 
   @Property({ default: false})
   destacado!: boolean
