@@ -26,6 +26,14 @@ const baseFormat = format.combine(
   })
 );
 
+export const infoLogger = createLogger({
+  level: 'info',
+  format: baseFormat,
+  transports: [
+    new transports.File({ filename: path.join(logDir, 'info.log')})
+  ]
+});
+
 export const errorLogger = createLogger({
   level: 'error',
   format: baseFormat,

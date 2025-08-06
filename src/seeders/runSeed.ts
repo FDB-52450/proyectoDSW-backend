@@ -1,6 +1,7 @@
 import { seedProductos } from './seeds/seedProductos.js'
 import { seedMarcas } from './seeds/seedMarcas.js'
 import { seedCategorias } from './seeds/seedCategorias.js'
+import { seedPedidos } from './seeds/seedPedidos.js'
 
 import { clearSeeds } from './clearSeeds.js'
 
@@ -16,6 +17,7 @@ async function main() {
     await seedCategorias(orm)
     await seedMarcas(orm)
     await seedProductos(orm)
+    await seedPedidos(orm)
   } catch (e) {
     console.error(e)
   } finally {
