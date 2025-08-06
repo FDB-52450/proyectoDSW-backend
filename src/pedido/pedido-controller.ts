@@ -1,11 +1,12 @@
 import { Request, Response } from 'express'
 import { PedidoRepository } from './pedido-repository.js'
 import { Pedido } from './pedido-entity.js'
+import { ProductoRepository } from '../producto/producto-repository.js'
 
 import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
-import { ProductoRepository } from '../producto/producto-repository.js'
+import { pedidoLogger } from '../shared/loggers.js'
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -70,6 +71,8 @@ async function add(req: Request, res: Response) {
     if (!pedido) {
       res.status(500).send({ message: 'Algo ha salido mal, intente de nuevo mas tarde.' })
     } else {
+      pedidoLogger.info({action: 'create', data: pedido})
+
       res.status(201).send({ message: 'Pedido creado con exito.', data: pedido })
     }
   }
@@ -93,6 +96,8 @@ async function update(req: Request, res: Response) {
   if (!pedido) {
     res.status(404).send({ message: 'Pedido no encontrado.' })
   } else {
+    pedidoLogger.info({action: 'update', data: req.body})
+
     res.status(200).send({ message: 'Pedido actualizado con exito.', data: pedido })
   }
 }

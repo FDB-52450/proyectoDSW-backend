@@ -5,6 +5,8 @@ import { Imagen } from '../imagen/imagen-entity.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
+import { auditLogger } from '../shared/loggers.js'
+
 function getRepo() {
   const em = RequestContext.getEntityManager()
   return new MarcaRepository(em as SqlEntityManager)
@@ -51,6 +53,8 @@ async function add(req: Request, res: Response) {
     if (!marca) {
       res.status(500).send({ message: 'Ocurrio un error, intente mas tarde.' })
     } else {
+      auditLogger.info({entity: 'marca', action: 'create', user: req.session.user, data: marcaInput})
+
       res.status(201).send({ message: 'Marca creada con exito.', data: marca })
     }
   } else {
@@ -82,6 +86,8 @@ async function update(req: Request, res: Response) {
     if (!marca) {
       res.status(404).send({ message: 'Marca no encontrada.' })
     } else {
+      auditLogger.info({entity: 'marca', action: 'update', user: req.session.user, data: req.body})
+
       res.status(200).send({ message: 'Marca actualizada con exito.', data: marca })
     }
   } else {
@@ -97,6 +103,8 @@ async function remove(req: Request, res: Response) {
   if (!marca) {
     res.status(404).send({ message: 'Marca no encontrada.' })
   } else {
+    auditLogger.info({entity: 'marca', action: 'delete', user: req.session.user, data: marca})
+
     res.status(200).send({ message: 'Marca borrada con exito.' })
   }
 }

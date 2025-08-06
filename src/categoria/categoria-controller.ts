@@ -4,6 +4,8 @@ import { Categoria } from './categoria-entity.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
+import { auditLogger } from '../shared/loggers.js'
+
 function getRepo() {
   const em = RequestContext.getEntityManager()
   return new CategoriaRepository(em as SqlEntityManager)
@@ -41,6 +43,8 @@ async function add(req: Request, res: Response) {
   if (!categoria) {
     res.status(409).send({ message: 'Categoria ya existente.'})
   } else {
+    auditLogger.info({entity: 'categoria', action: 'create', user: req.session.user, data: categoria})
+
     res.status(201).send({ message: 'Categoria creada con exito.', data: categoria})
   }
 }
@@ -54,6 +58,8 @@ async function update(req: Request, res: Response) {
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })
   } else {
+    auditLogger.info({entity: 'categoria', action: 'update', user: req.session.user, data: req.body})
+
     res.status(200).send({ message: 'Categoria actualizada con exito.', data: categoria })
   }
 }
@@ -66,6 +72,8 @@ async function remove(req: Request, res: Response) {
   if (!categoria) {
     res.status(404).send({ message: 'Categoria no encontrada.' })
   } else {
+    auditLogger.info({entity: 'categoria', action: 'delete', user: req.session.user, data: categoria})
+
     res.status(200).send({ message: 'Categoria borrada con exito.' })
   }
 }

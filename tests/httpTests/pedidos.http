@@ -3,7 +3,7 @@ GET http://localhost:8080/api/pedidos/
 ###
 GET http://localhost:8080/api/pedidos/45
 
-###
+### Crear pedido
 POST http://localhost:8080/api/pedidos/
 Content-Type: application/json
 
@@ -22,14 +22,18 @@ Content-Type: application/json
   ]
 }
 
-###
-PATCH http://localhost:8080/api/pedidos/49
+### Confirmar pedido
+PATCH http://localhost:8080/api/pedidos/1
 Content-Type: application/json
 
 {
-  "tipoEntrega": "envio",
   "estado": "confirmado"
 }
 
-###
-DELETE http://localhost:8080/api/pedidos/
+### Cancelar pedido
+PATCH http://localhost:8080/api/pedidos/1
+Content-Type: application/json
+
+{
+  "estado": "cancelado"
+}

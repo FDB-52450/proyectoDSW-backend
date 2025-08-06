@@ -5,6 +5,7 @@ export function authLogin(req: Request, res: Response, next: NextFunction) {
     next()
   } else {
     if (process.env.NODE_MODE && process.env.NODE_MODE === 'dev') {
+      req.session.user = {'id': 0, 'username': 'dev'}
       next()
     } else {
       res.status(401).json({message: 'Access forbidden.'})

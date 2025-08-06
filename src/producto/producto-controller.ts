@@ -9,6 +9,8 @@ import { CategoriaRepository } from '../categoria/categoria-repository.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
+import { auditLogger } from '../shared/loggers.js'
+
 function getRepo() {
   const em = RequestContext.getEntityManager()
   return new ProductoRepository(em as SqlEntityManager)
@@ -95,6 +97,8 @@ async function add(req: Request, res: Response) {
     if (!producto) {
       res.status(500).send({ message: 'Ocurrio un error, intente mas tarde.' })
     } else {
+      auditLogger.info({entity: 'producto', action: 'create', user: req.session.user, data: producto})
+
       res.status(201).send({ message: 'Producto creado con exito.', data: producto})
     }
   } else {
@@ -151,6 +155,8 @@ async function update(req: Request, res: Response) {
     if (!producto) {
       res.status(404).send({ message: 'Producto no encontrado.' })
     } else {
+      auditLogger.info({entity: 'producto', action: 'update', user: req.session.user, data: req.body})
+
       res.status(200).send({ message: 'Producto actualizado con exito.', data: producto })
     }
   } else {
@@ -182,6 +188,8 @@ async function remove(req: Request, res: Response) {
     if (!producto) {
       res.status(404).send({ message: 'Producto no encontrado.' })
     } else {
+      auditLogger.info({entity: 'producto', action: 'delete', user: req.session.user, data: {id: producto.id, nombre: producto.nombre}})
+
       res.status(200).send({ message: 'Producto borrado con exito.' })
     }
   } catch (err) {

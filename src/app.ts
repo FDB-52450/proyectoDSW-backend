@@ -12,6 +12,8 @@ import { pedidoRouter } from './pedido/pedido-routes.js'
 import { orm, syncSchema} from './shared/database.js'
 import { RequestContext } from '@mikro-orm/core'
 
+import { errorLogger } from './shared/loggers.js'
+
 const app = express()
 const port = 8080
 
@@ -50,4 +52,16 @@ app.use((_, res) => {
 
 app.listen(port, () => {
   console.log('Server running on http://localhost:8080/')
+})
+
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  errorLogger.error(err);
+
+  const status = err.status || err.statusCode || 500;
+  const prod = (process.env.NODE_MODE === 'production')
+
+  res.status(status).json({
+    message: prod ? 'Internal Server Error' : err.message,
+    ...(prod ? {} : { stack: err.stack }),
+  });
 })

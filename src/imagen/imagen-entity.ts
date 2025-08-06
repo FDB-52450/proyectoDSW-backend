@@ -1,7 +1,6 @@
 import { Entity, ManyToOne, PrimaryKey, Property, Rel, AfterDelete, BeforeCreate } from '@mikro-orm/core'
 import { Producto } from '../producto/producto-entity.js'
 import { randomUUID } from 'crypto'
-import { fileTypeFromBuffer } from 'file-type'
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
