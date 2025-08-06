@@ -37,15 +37,22 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   const repository = getRepo()
   const input = req.body
-  const categoriaInput = RequestContext.getEntityManager()!.create(Categoria, input)
-  const categoria = await repository.add(categoriaInput)
+  const categoriaInput = new Categoria(input.nombre)
 
-  if (!categoria) {
-    res.status(409).send({ message: 'Categoria ya existente.'})
+  const check = await repository.checkConstraint(input)
+
+  if (!check) {
+    const categoria = await repository.add(categoriaInput)
+
+    if (!categoria) {
+      res.status(409).send({ message: 'Categoria ya existente.'})
+    } else {
+      auditLogger.info({entity: 'categoria', action: 'create', user: req.session.user, data: categoria})
+
+      res.status(201).send({ message: 'Categoria creada con exito.', data: categoria})
+    }
   } else {
-    auditLogger.info({entity: 'categoria', action: 'create', user: req.session.user, data: categoria})
-
-    res.status(201).send({ message: 'Categoria creada con exito.', data: categoria})
+    res.status(409).send({ message: 'Categoria ya existente.' })
   }
 }
 
@@ -53,14 +60,21 @@ async function update(req: Request, res: Response) {
   req.body.id = Number(req.params.id)
   
   const repository = getRepo()
-  const categoria = await repository.update(req.body)
+  const input = req.body
+  const check = await repository.checkConstraint(input)
 
-  if (!categoria) {
-    res.status(404).send({ message: 'Categoria no encontrada.' })
+  if (!check) {
+    const categoria = await repository.update(input)
+
+    if (!categoria) {
+      res.status(404).send({ message: 'Categoria no encontrada.' })
+    } else {
+      auditLogger.info({entity: 'categoria', action: 'update', user: req.session.user, data: req.body})
+
+      res.status(200).send({ message: 'Categoria actualizada con exito.', data: categoria })
+    }
   } else {
-    auditLogger.info({entity: 'categoria', action: 'update', user: req.session.user, data: req.body})
-
-    res.status(200).send({ message: 'Categoria actualizada con exito.', data: categoria })
+    res.status(409).send({ message: 'Nombre de categoria ya en uso.' })
   }
 }
 

@@ -16,6 +16,14 @@ export class CategoriaRepository implements Repository<Categoria>{
     return await this.categoriaEm.findOne(Categoria, { id: item.id })
   }
 
+  public async checkConstraint(item: Categoria): Promise<boolean> {
+    const categoriaConflict = await this.categoriaEm.findOne(Categoria, {nombre: item.nombre})
+
+    if (categoriaConflict) return true
+
+    return false
+  }
+
   public async add(item: Categoria): Promise<Categoria | null> {
     try {
       await this.categoriaEm.persistAndFlush(item)
