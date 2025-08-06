@@ -103,7 +103,7 @@ export class ProductoRepository {
       try {
         await this.productoEm.flush()
       } catch {
-        throw new Error()
+        throw new Error('El producto no se ha actualizado con exito.')
       }
     }
 

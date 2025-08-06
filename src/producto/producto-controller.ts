@@ -143,12 +143,18 @@ async function update(req: Request, res: Response) {
     delete input.categoriaId
   }
 
-  const producto = await repository.update(input, imagesToRemove)
+  const check = await repository.checkConstraint(input)
+
+  if (!check) {
+    const producto = await repository.update(input, imagesToRemove)
   
-  if (!producto) {
-    res.status(404).send({ message: 'Producto no encontrado.' })
+    if (!producto) {
+      res.status(404).send({ message: 'Producto no encontrado.' })
+    } else {
+      res.status(200).send({ message: 'Producto actualizado con exito.', data: producto })
+    }
   } else {
-    res.status(200).send({ message: 'Producto actualizado con exito.', data: producto })
+    res.status(409).send({ message: 'Nombre de producto ya usado.' })
   }
 }
 

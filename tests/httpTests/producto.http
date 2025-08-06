@@ -1,7 +1,7 @@
 GET http://localhost:8080/api/productos
 
 ### Get products with min price filter
-GET http://localhost:8080/api/productos/?precioMin=120000
+GET http://localhost:8080/api/productos/?page=2
 
 ### Get product by ID
 GET http://localhost:8080/api/productos/483
@@ -44,7 +44,7 @@ Content-Type: multipart/form-data; boundary=XYZ
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-RTX 4090
+RTX 50901
 --XYZ
 Content-Disposition: form-data; name="precio"
 
@@ -74,7 +74,7 @@ Content-Type: image/png
 --XYZ--
 
 ### Update product with new images
-PUT http://localhost:8080/api/productos/483
+PUT http://localhost:8080/api/productos/513
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
@@ -94,17 +94,17 @@ Content-Type: image/png
 --XYZ--
 
 ### Update product with new images (while also deleting some)
-PUT http://localhost:8080/api/productos/483
+PUT http://localhost:8080/api/productos/516
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-RTX 10000
+RTX 10002
 --XYZ
 Content-Disposition: form-data; name="imagesToRemove"
 
-1754347859697-576050591.png
+13ed392e-6a56-4f8e-80c1-ad90bceb52b9
 --XYZ
 Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
 Content-Type: image/png
@@ -118,27 +118,27 @@ Content-Type: image/png
 --XYZ--
 
 ### Update product without new images (deleting some)
-PUT http://localhost:8080/api/productos/483
+PUT http://localhost:8080/api/productos/516
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-RTX 10000
+RTX 10005
 --XYZ
 Content-Disposition: form-data; name="imagesToRemove"
 
-1754347688874-229275238.png
+b4e9bce2-7679-4aca-a579-1b6a6720373f
 --XYZ--
 
 ### Update product without new images (keeping all)
-PUT http://localhost:8080/api/productos/483
+PUT http://localhost:8080/api/productos/516
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
 Content-Disposition: form-data; name="nombre"
 
-RTX 10000
+RTX 10010
 --XYZ--
 
 ### Delete product

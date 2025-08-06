@@ -80,7 +80,6 @@ export class Producto {
 
   public handleImagenes(imagenesNuevas: Array<Imagen>): void {
     const maxLength = Math.max(imagenesNuevas.length, this.imagenes.length)
-
     for (let x = 0; x < maxLength; x++) {
       const nuevaImagen = imagenesNuevas[x]
       const viejaImagen = this.imagenes.getItems()[x]

@@ -2,7 +2,7 @@
 
 ## WILL BE ADDED
 - [ ] Custom middleware for error handling (with winston and/or morgan).
-- [ ] Custom library for resizing images (sharp).
+- [x] Custom library for resizing images (sharp).
 
 ## LIKELY TO BE ADDED
 - [ ] Custom middleware library for extra security (helmet).
