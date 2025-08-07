@@ -2,6 +2,7 @@ import { seedProductos } from './seeds/seedProductos.js'
 import { seedMarcas } from './seeds/seedMarcas.js'
 import { seedCategorias } from './seeds/seedCategorias.js'
 import { seedPedidos } from './seeds/seedPedidos.js'
+import { seedAdmins } from './seeds/seedAdmins.js'
 
 import { clearSeeds } from './clearSeeds.js'
 
@@ -14,6 +15,7 @@ async function main() {
   try {
     await clearSeeds(orm)
     
+    await seedAdmins(orm)
     await seedCategorias(orm)
     await seedMarcas(orm)
     await seedProductos(orm)

@@ -9,7 +9,7 @@ import { categoriaRouter } from './categoria/categoria-routes.js'
 import { administradorRouter } from './administrador/administrador-routes.js'
 import { pedidoRouter } from './pedido/pedido-routes.js'
 
-import { orm, syncSchema} from './shared/database.js'
+import { orm, syncSchema } from './shared/database.js'
 import { RequestContext } from '@mikro-orm/core'
 
 import { errorLogger } from './shared/loggers.js'

@@ -1,4 +1,11 @@
-POST http://localhost:8080/api/administradores/login
+### Get all admins
+GET http://localhost:8080/api/administradores
+
+### Get admin by ID
+GET http://localhost:8080/api/administradores/1
+
+### Create admin
+POST http://localhost:8080/api/administradores
 Content-Type: application/json
 
 {
@@ -6,5 +13,26 @@ Content-Type: application/json
   "password": "admin123"
 }
 
-###
+### Update admin by ID
+PUT http://localhost:8080/api/administradores/4
+Content-Type: application/json
+
+{
+  "nombre": "admin",
+  "password": "admin123"
+}
+
+### Delete admin by ID
+DELETE http://localhost:8080/api/administradores/4
+
+### Admin login
+POST http://localhost:8080/api/administradores/login
+Content-Type: application/json
+
+{
+  "nombre": "subAdmin1",
+  "password": "subPass1"
+}
+
+### Admin logout
 GET http://localhost:8080/api/administradores/logout

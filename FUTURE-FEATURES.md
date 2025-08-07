@@ -14,4 +14,4 @@
 ## UNLIKELY TO BE ADDED
 - [x] Custom validation for files uploaded (file-type).
 - [ ] Custom handling of race conditions (transactions / pessimistic lock / optimistic lock)
-- [ ] Super admin that can create other admins.
+- [x] Super admin that can create other admins.

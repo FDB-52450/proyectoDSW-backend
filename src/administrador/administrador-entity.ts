@@ -9,15 +9,20 @@ export class Administrador {
   @Property()
   nombre!: string
 
-  @Property()
+  @Property({hidden: true})
   passwordHash!: string
+
+  @Property()
+  role!: string
 
   constructor(
     nombre: string,
     passwordUnhashed: string,
+    role: string = 'admin'
   ) {
     this.nombre = nombre
     this.passwordHash = Administrador.hashPassword(passwordUnhashed)
+    this.role = role
   }
 
   static hashPassword(password: string): string {
