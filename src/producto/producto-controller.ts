@@ -10,6 +10,7 @@ import { CategoriaRepository } from '../categoria/categoria-repository.js'
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
 import { auditLogger } from '../shared/loggers.js'
+import { ProductoDTO } from './producto-dto.js'
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -20,6 +21,14 @@ async function findAll(req: Request, res: Response) {
   const repository = getRepo()
   const filters: ProductoFilters = req.query || undefined
   const page = Number(req.query.page ?? 1)
+
+  let view: string
+
+  if (req.query.view && req.query.view === 'admin' && req.session.user) {
+    view = 'admin'
+  } else {
+    view = 'public'
+  }
 
   if (page < 1) {
     res.status(401).send({ message: 'Numero de pagina invalido'})
@@ -38,8 +47,9 @@ async function findAll(req: Request, res: Response) {
       currentPage: page, 
       pageSize: 20
     }
+    const productosDTOs = productos.map((prod) => new ProductoDTO(prod, view))
 
-    res.json({data: productos, pagination: paginationData})
+    res.json({data: productosDTOs, pagination: paginationData})
   }
 }
 
@@ -48,10 +58,20 @@ async function findOne(req: Request, res: Response) {
   const repository = getRepo()
   const producto = await repository.findOne({ id })
 
+  let view: string
+
+  if (req.query.view && req.query.view === 'admin' && req.session.user) {
+    view = 'admin'
+  } else {
+    view = 'public'
+  }
+
   if (!producto) {
     res.status(404).send({ message: 'Producto no encontrado.' })
   } else {
-    res.json({ data: producto })
+    const productoDTO = new ProductoDTO(producto, view)
+
+    res.json({ data: productoDTO })
   }
 }
 

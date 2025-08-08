@@ -5,6 +5,10 @@ export const validateProductoFilters = [
     .optional({ nullable: false, checkFalsy: false })
     .toInt()
     .isInt({ min: 1 }).withMessage('precioMin debe ser un número positivo mayor a 0'),
+  
+  query('view')
+    .optional({ nullable: false, checkFalsy: false })
+    .isIn(['admin', 'view']).withMessage('Vista invalida.'),
 
   query('precioMin')
     .optional({ nullable: false, checkFalsy: false })
@@ -49,7 +53,8 @@ export const validateProductoFilters = [
 
   query()
     .custom(query => {
-      const allowed = ['precioMin', 'precioMax', 'stockMin', 'stockMax', 'nombre', 'destacado', 'marca', 'categoria', 'sort', 'page']
+      const allowed = ['precioMin', 'precioMax', 'stockMin', 'stockMax', 'nombre', 'destacado', 'marca', 'categoria', 
+                       'sort', 'page', 'view']
       const extraKeys = Object.keys(query).filter(key => !allowed.includes(key))
 
       if (extraKeys.length) {
