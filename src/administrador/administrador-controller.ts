@@ -4,7 +4,7 @@ import { Administrador } from './administrador-entity.js'
 
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
-import { auditLogger } from '../shared/loggers.js'
+import { auditLogger, securityLogger } from '../shared/loggers.js'
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -111,20 +111,28 @@ async function login(req: Request, res: Response) {
   const admin = await repository.findByName({ nombre })
 
   if (!admin) {
+    securityLogger.info({ action: 'Failed login attempt', data: {ip: req.ip?.replace('::ffff:', ''), username: nombre, reason: 'invalid username'}})
+
     res.status(401).json({ message: 'Usuario y/o contraseña incorrectas.' })
   } else {  
     const passwordHash = Administrador.hashPassword(password)
 
     if (admin.passwordHash == passwordHash) {
       req.session.user = {'id': admin.id, 'username': admin.nombre, 'role': admin.role};
+      securityLogger.info({ action: 'Successful login attempt', data: {ip: req.ip?.replace('::ffff:', ''), credentials: req.session.user }})
+
       res.status(200).json({ message: 'Login exitoso.' })
     } else {
+      securityLogger.info({ action: 'Failed login attempt', data: {ip: req.ip?.replace('::ffff:', ''), username: nombre, reason: 'invalid password'}})
+
       res.status(401).json({ message: 'Usuario y/o contraseña incorrectas.' })
     }
   }
 }
 
 function logout(req: Request, res: Response) {
+  securityLogger.info({ action: 'Succesful logout attempt', data: {ip: req.ip?.replace('::ffff:', ''), credentials: req.session.user }})
+
   req.session.destroy(() => {
     res.status(200).json({message: 'Logout exitoso.'})
   })

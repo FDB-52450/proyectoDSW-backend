@@ -71,3 +71,18 @@ export const pedidoLogger = createLogger({
     new transports.File({ filename: path.join(logDir, 'pedido.log')})
   ]
 });
+
+export const securityLogger = createLogger({
+  level: 'info',
+  format: format.combine(
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.printf(info => {
+      const { timestamp, message } = info;
+      const { action, data } = message as { action: string; data: any };
+      return `[${timestamp}] ${action}:\n${JSON.stringify(data, null, 2)}\n`;
+    })
+  ),
+  transports: [
+    new transports.File({ filename: path.join(logDir, 'security.log')})
+  ]
+});
