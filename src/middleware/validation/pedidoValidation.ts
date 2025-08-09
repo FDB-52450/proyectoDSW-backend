@@ -24,7 +24,7 @@ export function validatePedido(mode = "create") {
         .custom((detalle) => {
             for (const item of detalle) {
               if (typeof item !== 'object' || !('productoId' in item) || !('cantidad' in item) ||
-                typeof item.productoId !== 'number' || typeof item.cantidad !== 'number' || item.cantidad <= 0
+                typeof item.productoId !== 'number' || typeof item.cantidad !== 'number' || item.cantidad < 0
               ) {
                 throw new Error('El detalle especificado es invalido.');
               }
