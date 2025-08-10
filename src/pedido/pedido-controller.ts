@@ -6,7 +6,11 @@ import { ProductoRepository } from '../producto/producto-repository.js'
 import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
-import { pedidoLogger } from '../shared/loggers.js'
+import { errorLogger, pedidoLogger } from '../shared/loggers.js'
+import { Cliente } from '../cliente/cliente-entity.js'
+import { clienteObtain } from '../cliente/cliente-service.js'
+import { ClienteDTO } from '../cliente/cliente-dto.js'
+import { ClienteConstraintError, ClienteDataMismatchError } from '../cliente/cliente-errors.js'
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -41,6 +45,25 @@ async function add(req: Request, res: Response) {
   const repository = getRepo()
   const prodRepo = new ProductoRepository(RequestContext.getEntityManager()?.fork() as SqlEntityManager)
 
+  let cliente: Cliente
+
+  try {
+    cliente = await clienteObtain(req.body.cliente as ClienteDTO)
+  } catch (err) {
+    if (err instanceof ClienteConstraintError) {
+        res.status(err.status).json({ error: 'Email ya en uso.'})
+        return
+    }
+
+    if (err instanceof ClienteDataMismatchError) {
+        res.status(err.status).json({ error: err.message})
+        return
+    }
+
+    res.status(500).json({ error: 'Error interno del servidor' })
+    return
+  }
+
   // THIS CODE REPLACES EACH PRODUCT ID IN THE DETALLE WITH THE ACTUAL PRODUCT ENTITY
 
   const detalleWithProducts = await Promise.all(input.detalle.map(async (item: { cantidad: number, productoId: number }) => {
@@ -58,6 +81,7 @@ async function add(req: Request, res: Response) {
     input.tipoEntrega,
     input.tipoPago,
     detalleWithProducts,
+    cliente,
     input.fechaEntrega
   )
 

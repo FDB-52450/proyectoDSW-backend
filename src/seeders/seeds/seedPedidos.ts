@@ -1,3 +1,4 @@
+import { ClienteRepository } from "../../cliente/cliente-repository.js";
 import { Pedido } from "../../pedido/pedido-entity.js"
 import { PedidoProd } from "../../pedidoprod/pedidoprod-entity.js";
 import { ProductoRepository } from "../../producto/producto-repository.js"
@@ -16,8 +17,10 @@ function getRandomDateAroundToday(maxDays = 5): Date {
 export async function seedPedidos(orm: MikroORM) {
     const pedidoEm = orm.em.fork()
     const prodRepo = new ProductoRepository(pedidoEm.fork())
+    const clienteRepo = new ClienteRepository(pedidoEm.fork())
 
     const [productos, totalItems] = await prodRepo.findAll(1)
+    const clientes = await clienteRepo.findAll()
 
     const pedidos: Pedido[] = [];
 
@@ -25,6 +28,7 @@ export async function seedPedidos(orm: MikroORM) {
         const tipoEntrega = Math.random() < 0.8 ? 'retiro' : 'envio'
         const tipoPago = Math.random() < 0.6 ? 'efectivo' : 'credito'
         const fechaEntrega = Math.random() < 0.8 ? getRandomDateAroundToday() : undefined
+        const cliente = clientes[Math.floor(Math.random() * clientes.length)]
 
         const length = Math.floor(Math.random() * 2) + 1
         const detalle = Array.from({ length }, () => {return new PedidoProd(
@@ -36,8 +40,11 @@ export async function seedPedidos(orm: MikroORM) {
             tipoEntrega,
             tipoPago,
             detalle,
+            cliente,
             fechaEntrega
         )
+
+        cliente.pedidos.add(pedido)
 
         pedido.aumentarStockReservado()
         pedidos.push(pedido)

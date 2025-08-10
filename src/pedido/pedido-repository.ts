@@ -8,11 +8,11 @@ export class PedidoRepository implements Repository<Pedido> {
   ) {}
 
   public async findAll(): Promise<Pedido[]> {
-    return await this.pedidoEm.findAll(Pedido, {populate: ['detalle', 'detalle.producto']})
+    return await this.pedidoEm.findAll(Pedido, {populate: ['detalle', 'detalle.producto', 'cliente']})
   }
 
   public async findOne(item: { id: number }): Promise<Pedido | null> {
-    return await this.pedidoEm.findOne(Pedido, {id: item.id}, {populate: ['detalle', 'detalle.producto']})
+    return await this.pedidoEm.findOne(Pedido, {id: item.id}, {populate: ['detalle', 'detalle.producto', 'cliente']})
   }
 
   public async add(item: Pedido): Promise<Pedido | null> {
@@ -20,6 +20,7 @@ export class PedidoRepository implements Repository<Pedido> {
 
     try {
       this.persistProdChanges(item)
+      item.cliente.pedidos.add(item)
       await this.pedidoEm.persistAndFlush(item)
       return item
     } catch (err) {

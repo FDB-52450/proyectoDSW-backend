@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { validateCliente } from "./clienteValidation.js";
 
 export function validatePedido(mode = "create") {
     const isUpdate = (mode === "update")
@@ -38,7 +39,7 @@ export function validatePedido(mode = "create") {
         .isIn(['confirmado', 'cancelado']).withMessage('El estado debe ser "confirmado" o "enviado".'),
     
       body().custom(body => {
-        const allowed = isUpdate ? ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'estado'] : ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'detalle'];
+        const allowed = isUpdate ? ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'estado'] : ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'detalle', 'cliente'];
         const extraKeys = Object.keys(body).filter(key => !allowed.includes(key))
 
         if (extraKeys.length) {
@@ -49,10 +50,12 @@ export function validatePedido(mode = "create") {
         })
     ]
 
+    validations.push(...validateCliente('cliente.'))
+
     if (isUpdate) {
         validations.push(
             body().custom(body => {
-              const allowedFields = ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'detalle', 'estado'];
+              const allowedFields = ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'detalle', 'estado', 'cliente']
 
               if (!body || typeof body !== 'object') {
                 throw new Error('Debe proporcionar al menos un campo para actualizar')

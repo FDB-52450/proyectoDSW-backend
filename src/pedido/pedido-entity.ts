@@ -1,5 +1,6 @@
+import { Cliente } from '../cliente/cliente-entity.js'
 import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
-import { Entity, PrimaryKey, Property, OneToMany, Collection } from '@mikro-orm/core'
+import { Entity, PrimaryKey, Property, OneToMany, Collection, ManyToOne, Rel, Cascade } from '@mikro-orm/core'
 
 @Entity()
 export class Pedido {
@@ -24,18 +25,23 @@ export class Pedido {
   @Property()
   fechaPedido: Date = new Date()
 
-  @OneToMany(() => PedidoProd, pedidoProd => pedidoProd.pedido)
+  @OneToMany(() => PedidoProd, pedidoProd => pedidoProd.pedido, {cascade: [Cascade.REMOVE]})
   detalle = new Collection<PedidoProd>(this)
+
+  @ManyToOne(() => Cliente)
+  cliente!: Rel<Cliente>
 
   constructor(
     tipoEntrega: string = 'retiro',
     tipoPago: string = 'efectivo',
     detalle: Array<PedidoProd>,
+    cliente: Rel<Cliente>,
     fechaEntrega?: Date,
   ) {
     this.tipoEntrega = tipoEntrega
     this.tipoPago = tipoPago
     this.detalle = new Collection<PedidoProd>(this)
+    this.cliente = cliente
     this.detalle.add(detalle)
     this.precioTotal = this.calcularPrecioTotal()
 

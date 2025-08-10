@@ -1,0 +1,31 @@
+### Obtener todos los clientes
+GET http://localhost:8080/api/clientes
+
+### Obtener cliente por ID
+GET http://localhost:8080/api/clientes/1
+
+### Crear cliente
+POST http://localhost:8080/api/clientes
+Content-Type: application/json
+
+{
+    "dni": "12345678",
+    "nombre": "Juanito",
+    "apellido": "Perez",
+    "email": "juan.perez@example.com",
+    "telefono": "+54 9 11 1234 5678",
+    "provincia": "Buenos Aires",
+    "ciudad": "La Plata",
+    "direccion": "Calle Falsa 123",
+    "codigoPostal": "1900"
+}
+### Actualizar cliente
+PATCH http://localhost:8080/api/clientes/1
+Content-Type: application/json
+
+{
+    "nombre": "Juanito"
+}
+
+### Eliminar cliente
+DELETE http://localhost:8080/api/clientes/1

@@ -8,6 +8,7 @@ import { clearSeeds } from './clearSeeds.js'
 
 import config from '../config-db/mikro-orm.config.js'
 import { MikroORM } from '@mikro-orm/mysql'
+import { seedClientes } from './seeds/seedClientes.js'
 
 async function main() {
   const orm = await MikroORM.init(config)
@@ -19,6 +20,7 @@ async function main() {
     await seedCategorias(orm)
     await seedMarcas(orm)
     await seedProductos(orm)
+    await seedClientes(orm)
     await seedPedidos(orm)
   } catch (e) {
     console.error(e)

@@ -10,14 +10,25 @@ Content-Type: application/json
 {
   "tipoEntrega": "retiro",
   "tipoPago": "efectivo",
+  "cliente": {
+    "dni": "12345678",
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "email": "juan.perez@example.com",
+    "telefono": "+54 9 11 1234 5678",
+    "provincia": "Buenos Aires",
+    "ciudad": "La Plata",
+    "direccion": "Calle Falsa 123",
+    "codigoPostal": "1900"
+  },
   "detalle": [
     {
       "cantidad": 2,
-      "productoId": 490
+      "productoId": 4
     },
     {
       "cantidad": 1,
-      "productoId": 491
+      "productoId": 6
     }
   ]
 }

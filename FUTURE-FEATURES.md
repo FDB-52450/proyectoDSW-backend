@@ -10,6 +10,7 @@
 - [x] Custom middleware library for input sanitization (express-validator).
 - [x] Pagination for retrieval of product list.
 - [ ] Rotation of pedido logs (winston-daily-rotate-file)
+- [ ] Session regeneration.
 
 ## UNLIKELY TO BE ADDED
 - [x] Custom validation for files uploaded (file-type).
