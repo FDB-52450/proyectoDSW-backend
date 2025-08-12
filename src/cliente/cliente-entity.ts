@@ -34,8 +34,11 @@ export class Cliente {
     @Property()
     codigoPostal!: string
 
-    @Property()
-    blocked: boolean = false
+    @Property({ nullable: true })
+    banStart: Date | null  = null
+
+    @Property({ nullable: true })
+    banEnd: Date | null = null
 
     @OneToMany(() => Pedido, pedido => pedido.cliente, {cascade: [Cascade.REMOVE]})
     pedidos = new Collection<Pedido>(this)

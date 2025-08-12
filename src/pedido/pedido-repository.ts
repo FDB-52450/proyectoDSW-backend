@@ -20,7 +20,6 @@ export class PedidoRepository implements Repository<Pedido> {
 
     try {
       this.persistProdChanges(item)
-      item.cliente.pedidos.add(item)
       await this.pedidoEm.persistAndFlush(item)
       return item
     } catch (err) {
@@ -83,4 +82,32 @@ export class PedidoRepository implements Repository<Pedido> {
 
     return pedido
   }
+
+    public async findPedidosDataByCliente(clienteId?: number, estado?: string) {
+        let query = `select cli.id as cliId, COUNT(*) as totalPedidos, SUM(ped.precio_total) as totalSuma 
+        from pedido as ped inner join cliente as cli on ped.cliente_id = cli.id`
+
+        if (clienteId !== undefined) {
+            query += ` where cli.id = '${clienteId}'`
+        }
+
+        if (estado !== undefined) {
+            if (clienteId !== undefined) {
+                query += ` and estado = '${estado}'`
+            }
+            query += ` where estado = '${estado}'`
+        }
+
+        query += ' group by cli.id'
+
+        const result = await this.pedidoEm.execute(query)
+
+        const pedidoData = result.map(item => ({
+            clienteId: item.cliId,
+            cantPedidos: item.totalPedidos,
+            totalPedidos: Number(item.totalSuma)
+        }))
+    
+        return pedidoData
+    }
 }

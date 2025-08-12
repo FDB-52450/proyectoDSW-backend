@@ -27,8 +27,7 @@ export async function seedPedidos(orm: MikroORM) {
     for (let i = 1; i <= 20; i++) {
         const tipoEntrega = Math.random() < 0.8 ? 'retiro' : 'envio'
         const tipoPago = Math.random() < 0.6 ? 'efectivo' : 'credito'
-        // const fechaEntrega = Math.random() < 0.8 ? getRandomDateAroundToday() : undefined
-        const fechaEntrega = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+        const fechaEntrega = Math.random() < 0.8 ? getRandomDateAroundToday() : undefined
         const cliente = clientes[Math.floor(Math.random() * clientes.length)]
 
         const length = Math.floor(Math.random() * 2) + 1

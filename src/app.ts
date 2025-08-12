@@ -14,7 +14,7 @@ import { orm, syncSchema } from './shared/database.js'
 import { RequestContext } from '@mikro-orm/core'
 
 import { errorLogger } from './shared/loggers.js'
-import { startPedidosScanTask } from './tasks/cancelOldPedidos.js'
+import { startTasks } from './tasks/startTasks.js'
 
 const app = express()
 const port = 8080
@@ -55,7 +55,7 @@ app.use((_, res) => {
 
 app.listen(port, () => {
   console.log('Server running on http://localhost:8080/')
-  startPedidosScanTask()
+  startTasks()
 })
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
