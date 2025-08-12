@@ -25,7 +25,7 @@ export class Pedido {
   @Property()
   fechaPedido: Date = new Date()
 
-  @OneToMany(() => PedidoProd, pedidoProd => pedidoProd.pedido, {cascade: [Cascade.REMOVE]})
+  @OneToMany(() => PedidoProd, pedidoProd => pedidoProd.pedido, {cascade: [Cascade.REMOVE, Cascade.PERSIST]})
   detalle = new Collection<PedidoProd>(this)
 
   @ManyToOne(() => Cliente)

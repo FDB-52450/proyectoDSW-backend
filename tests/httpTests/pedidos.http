@@ -1,7 +1,7 @@
 GET http://localhost:8080/api/pedidos/
 
 ###
-GET http://localhost:8080/api/pedidos/45
+GET http://localhost:8080/api/pedidos/22
 
 ### Crear pedido
 POST http://localhost:8080/api/pedidos/
@@ -11,19 +11,19 @@ Content-Type: application/json
   "tipoEntrega": "retiro",
   "tipoPago": "efectivo",
   "cliente": {
-    "dni": "12345678",
-    "nombre": "Juan",
-    "apellido": "Perez",
-    "email": "juan.perez@example.com",
-    "telefono": "+54 9 11 1234 5678",
+    "dni": "10000003",
+    "nombre": "Maria",
+    "apellido": "Lopez",
+    "email": "maria.lopez@example.com",
+    "telefono": "+54 9 11 1234 5633",
     "provincia": "Buenos Aires",
-    "ciudad": "La Plata",
-    "direccion": "Calle Falsa 123",
-    "codigoPostal": "1900"
+    "ciudad": "Córdoba Capital",
+    "direccion": "Boulevard Central 103",
+    "codigoPostal": "1003"
   },
   "detalle": [
     {
-      "cantidad": 2,
+      "cantidad": 1,
       "productoId": 4
     },
     {
@@ -42,9 +42,28 @@ Content-Type: application/json
 }
 
 ### Cancelar pedido
-PATCH http://localhost:8080/api/pedidos/1
+PATCH http://localhost:8080/api/pedidos/21
 Content-Type: application/json
 
 {
   "estado": "cancelado"
+}
+
+### Validar pedido
+POST http://localhost:8080/api/pedidos/validate
+Content-Type: application/json
+
+{
+  "tipoEntrega": "retiro",
+  "tipoPago": "efectivo",
+  "detalle": [
+    {
+      "cantidad": 1,
+      "productoId": 4
+    },
+    {
+      "cantidad": 1,
+      "productoId": 6
+    }
+  ]
 }

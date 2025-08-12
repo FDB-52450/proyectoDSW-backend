@@ -1,16 +1,15 @@
 import { Request, Response } from 'express'
 import { PedidoRepository } from './pedido-repository.js'
 import { Pedido } from './pedido-entity.js'
-import { ProductoRepository } from '../producto/producto-repository.js'
 
-import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
 import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
 import { errorLogger, pedidoLogger } from '../shared/loggers.js'
 import { Cliente } from '../cliente/cliente-entity.js'
 import { clienteObtain } from '../cliente/cliente-service.js'
 import { ClienteDTO } from '../cliente/cliente-dto.js'
-import { ClienteConstraintError, ClienteDataMismatchError } from '../cliente/cliente-errors.js'
+import { pedidoTransformDetalle, pedidoValidateDetalleStock, ValidationResult } from './pedido-helper.js'
+import { AppError } from '../shared/errors.js'
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -43,62 +42,45 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   const input = req.body
   const repository = getRepo()
-  const prodRepo = new ProductoRepository(RequestContext.getEntityManager()?.fork() as SqlEntityManager)
 
   let cliente: Cliente
 
   try {
     cliente = await clienteObtain(req.body.cliente as ClienteDTO)
   } catch (err) {
-    if (err instanceof ClienteConstraintError) {
-        res.status(err.status).json({ error: 'Email ya en uso.'})
-        return
-    }
-
-    if (err instanceof ClienteDataMismatchError) {
+    if (err instanceof AppError) {
         res.status(err.status).json({ error: err.message})
         return
     }
 
+    errorLogger.error(err)
     res.status(500).json({ error: 'Error interno del servidor' })
     return
   }
+  
+  const resultDetalleTransformation = await pedidoTransformDetalle(input.detalle)
+  
+  if (resultDetalleTransformation instanceof ValidationResult) {
+    res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultDetalleTransformation.errors})
+    return
+  }
 
-  // THIS CODE REPLACES EACH PRODUCT ID IN THE DETALLE WITH THE ACTUAL PRODUCT ENTITY
+  const pedidoInput = new Pedido(input.tipoEntrega, input.tipoPago, resultDetalleTransformation, cliente)
+  const resultCheck = pedidoValidateDetalleStock(pedidoInput, true)
 
-  const detalleWithProducts = await Promise.all(input.detalle.map(async (item: { cantidad: number, productoId: number }) => {
-    const producto = await prodRepo.findOne({ id: item.productoId })
-
-    if (!producto) {
-      res.status(400).send({ message: `Producto con id ${item.productoId} no existe.` })
-      throw new Error('Producto no encontrado') // TEMPORAL FIX
-    }
-
-    return new PedidoProd(item.cantidad, producto)
-  }))
-
-  const pedidoInput = new Pedido(
-    input.tipoEntrega,
-    input.tipoPago,
-    detalleWithProducts,
-    cliente,
-    input.fechaEntrega
-  )
-
-  const check = pedidoInput.checkDetalle()
-
-  if (!check) {
-    res.status(400).send({ message: 'Detalle del pedido no válido' })
+  if (resultCheck.result) {
+    res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultCheck})
+    return
+  }
+  
+  const pedido = await repository.add(pedidoInput)
+  
+  if (!pedido) {
+    res.status(500).send({ message: 'Algo ha salido mal, intente de nuevo mas tarde.' })
   } else {
-    const pedido = await repository.add(pedidoInput)
+    pedidoLogger.info({action: 'create', data: pedido})
 
-    if (!pedido) {
-      res.status(500).send({ message: 'Algo ha salido mal, intente de nuevo mas tarde.' })
-    } else {
-      pedidoLogger.info({action: 'create', data: pedido})
-
-      res.status(201).send({ message: 'Pedido creado con exito.', data: pedido })
-    }
+    res.status(201).send({ message: 'Pedido creado con exito.', data: pedido })
   }
 }
 
@@ -126,4 +108,26 @@ async function update(req: Request, res: Response) {
   }
 }
 
-export { findAll, findOne, add, update }
+async function validate(req: Request, res: Response) {
+    const input = req.body
+    const resultDetalleTransformation = await pedidoTransformDetalle(input.detalle)
+
+    if (resultDetalleTransformation instanceof ValidationResult) {
+        res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultDetalleTransformation.errors})
+        return
+    }
+
+    const dummyCliente = new Cliente('', '', '', '', '', '', '', '', '') // FUNNY PATCH TO NOT CHANGE PEDIDO STRUCTURE
+    const pedidoInput = new Pedido(input.tipoEntrega, input.tipoPago, resultDetalleTransformation, dummyCliente, input.fechaEntrega)
+
+    const resultCheck = pedidoValidateDetalleStock(pedidoInput, false)
+
+    if (resultCheck.result) {
+        res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultCheck})
+        return
+    }
+
+    res.status(201).send({message: 'Pedido validado con exito.'})
+}
+
+export { findAll, findOne, add, update, validate }

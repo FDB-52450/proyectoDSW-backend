@@ -4,7 +4,7 @@ GET http://localhost:8080/api/productos
 GET http://localhost:8080/api/productos/?page=2
 
 ### Get product by ID
-GET http://localhost:8080/api/productos/483
+GET http://localhost:8080/api/productos/4
 
 ### Create product with singular image
 POST http://localhost:8080/api/productos
@@ -74,7 +74,7 @@ Content-Type: image/png
 --XYZ--
 
 ### Update product with new images
-PUT http://localhost:8080/api/productos/513
+PUT http://localhost:8080/api/productos/5
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
@@ -94,7 +94,7 @@ Content-Type: image/png
 --XYZ--
 
 ### Update product with new images (while also deleting some)
-PUT http://localhost:8080/api/productos/516
+PUT http://localhost:8080/api/productos/5
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
@@ -118,7 +118,7 @@ Content-Type: image/png
 --XYZ--
 
 ### Update product without new images (deleting some)
-PUT http://localhost:8080/api/productos/516
+PUT http://localhost:8080/api/productos/5
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ
@@ -132,7 +132,7 @@ b4e9bce2-7679-4aca-a579-1b6a6720373f
 --XYZ--
 
 ### Update product without new images (keeping all)
-PUT http://localhost:8080/api/productos/516
+PUT http://localhost:8080/api/productos/5
 Content-Type: multipart/form-data; boundary=XYZ
 
 --XYZ

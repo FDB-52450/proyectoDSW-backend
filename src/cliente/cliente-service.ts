@@ -3,7 +3,7 @@ import { ClienteRepository } from './cliente-repository.js'
 import { Cliente } from './cliente-entity.js'
 import { ClienteDTO } from './cliente-dto.js'
 
-import { AppError, ClienteConstraintError, ClienteDataMismatchError, ClienteNotFoundError, NoClientesFoundError } from './cliente-errors.js'
+import { ClienteConstraintError, ClienteDataMismatchError, ClienteNotFoundError, NoClientesFoundError } from './cliente-errors.js'
 import { errorLogger } from '../shared/loggers.js'
 
 function getRepo() {

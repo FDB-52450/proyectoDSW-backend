@@ -33,7 +33,7 @@ export class PedidoProd {
   }
 
   public checkStock(): boolean {
-    return (this.cantidad <= Math.ceil(this.producto.getStockDisponible() * 0.1))
+    return (this.cantidad <= this.producto.getStockDisponible())
   }
 
   public aumentarStockReservado(): void {

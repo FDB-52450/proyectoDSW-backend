@@ -29,7 +29,7 @@ export async function seedProductos(orm: MikroORM) {
     for (let i = 1; i <= nombresBase.length; i++) {
         const nombre = `${nombresBase[i % nombresBase.length]}`
         const desc = `Descripción del producto ${i}`
-        const precio = parseFloat((Math.random() * 50000 + 10).toFixed(2))
+        const precio = parseFloat((Math.random() * 500000 + 1000).toFixed(2))
         const stock = Math.floor(Math.random() * 50) + 10
         const descuento = Math.random() < 0.5 ? Math.floor(Math.random() * 31) : 0
         const destacado = Math.random() < 0.2

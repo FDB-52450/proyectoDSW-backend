@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { ClienteDTO } from './cliente-dto.js'
 import { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove } from './cliente-service.js'
 
-import { AppError } from './cliente-errors.js'
+import { AppError } from '../shared/errors.js'
 
 async function findAll(req: Request, res: Response) {
     try {
