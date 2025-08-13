@@ -2,53 +2,53 @@ import { query } from 'express-validator';
 
 export const validateProductoFilters = [
   query('page')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .toInt()
     .isInt({ min: 1 }).withMessage('precioMin debe ser un número positivo mayor a 0'),
   
   query('view')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .isIn(['admin', 'view']).withMessage('Vista invalida.'),
 
   query('precioMin')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .toInt()
     .isInt({ min: 0 }).withMessage('precioMin debe ser un número positivo'),
 
   query('precioMax')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .toInt()
     .isInt({ min: 0 }).withMessage('precioMax debe ser un número positivo'),
 
   query('stockMin')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .toInt()
     .isInt({ min: 0 }).withMessage('stockMin debe ser un número entero no negativo'),
 
   query('stockMax')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .toInt()
     .isInt({ min: 0 }).withMessage('stockMax debe ser un número entero no negativo'),
 
   query('nombre')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .isString().withMessage('nombre debe ser un texto'),
 
   query('destacado')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .toBoolean()
     .isBoolean().withMessage('destacado debe ser "true" o "false"'),
 
   query('marca')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .isString().withMessage('marca debe ser un texto'),
 
   query('categoria')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .isString().withMessage('categoria debe ser un texto'),
 
   query('sort')
-    .optional({ nullable: false, checkFalsy: false })
+    .optional()
     .isIn(['precio-asc', 'precio-desc', 'destacado']).withMessage('sort debe ser "precio-asc", "precio-desc" o "destacado"'),
 
   query()

@@ -8,6 +8,7 @@ export const validateAdmin = [
 
   body('password')
     .trim()
+    .hide('******')
     .notEmpty().withMessage('La contraseña es obligatoria').bail()
     .isLength({ max: 50 }).withMessage('La contraseña no puede tener más de 50 caracteres'),
   

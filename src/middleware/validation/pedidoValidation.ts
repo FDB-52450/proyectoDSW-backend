@@ -7,16 +7,16 @@ export function validatePedido(mode = "create") {
 
     const validations = [
       body('tipoEntrega')
-        .if(() => !isUpdate)
+        .if((value, { req }) => {return !isUpdate || req.body.tipoEntrega !== undefined})
         .isIn(['retiro', 'envio']).withMessage('El tipoEntrega debe ser "retiro" o "envio".'),
 
       body('tipoPago')
-        .if(() => !isUpdate)
+        .if((value, { req }) => {return !isUpdate || req.body.tipoPago !== undefined})
         .isIn(['efectivo', 'credito']).withMessage('El tipoPago debe ser "efectivo" o "credito".'),
 
       body('fechaEntrega')
         .if(() => isUpdate)
-        .optional({ nullable: false, checkFalsy: false })
+        .optional()
         .isISO8601().withMessage('La fechaEntrega debe ser una fecha valida.')
         .toDate(),
 
@@ -36,7 +36,7 @@ export function validatePedido(mode = "create") {
     
       body('estado')
         .if(() => isUpdate)
-        .optional({ nullable: false, checkFalsy: false })
+        .optional()
         .isIn(['confirmado', 'cancelado']).withMessage('El estado debe ser "confirmado" o "enviado".'),
     
       body().custom(body => {
