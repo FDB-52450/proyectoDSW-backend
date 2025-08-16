@@ -8,12 +8,12 @@ export async function seedCategorias(orm: MikroORM) {
     const categorias: Categoria[] = []
 
     const nombresBase = [
-        'Procesadores', 'Tarjetas gráficas', 'Placas madre', 'Memorias RAM', 'Almacenamiento',
-        'Fuentes de poder', 'Gabinetes', 'Refrigeración', 'Monitores', 'Periféricos',
+        'Placas Madre', 'Procesadores', 'Tarjetas Gráficas', 'Memorias RAM', 'Almacenamiento',
+        'Fuentes de Poder', 'Gabinetes', 'Refrigeración', 'Mouses', 'Teclados', 'Auriculares',
+        'Microfonos', 'Monitores', 'Notebooks', 'Computadoras'
     ];
 
-    for (let i = 1; i <= nombresBase.length; i++) {
-        const nombre = `${nombresBase[i % nombresBase.length]}`
+    for (const nombre of nombresBase) {
         const categoria = new Categoria(nombre)
 
         categorias.push(categoria);

@@ -9,7 +9,7 @@ export class CategoriaRepository implements Repository<Categoria>{
   ) {}
 
   public async findAll(): Promise<Categoria[]> {
-    return await this.categoriaEm.find(Categoria, {})
+    return await this.categoriaEm.find(Categoria, {}, {orderBy: {id: 'ASC'}})
   }
 
   public async findOne(item: { id: number }): Promise<Categoria | null> {

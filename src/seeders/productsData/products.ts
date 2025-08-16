@@ -1,0 +1,130 @@
+export const products = [
+    { categoryId: 1, brandId: 11, name: "ASUS ROG Strix Z690-E", desc: "High-end motherboard supporting DDR5 and PCIe 5.0." },
+    { categoryId: 1, brandId: 12, name: "MSI MAG B550 Tomahawk", desc: "Durable motherboard with AMD B550 chipset and solid VRM." },
+    { categoryId: 1, brandId: 11, name: "ASUS TUF Gaming B460M-PLUS", desc: "Reliable micro-ATX motherboard for Intel 10th gen CPUs." },
+    { categoryId: 1, brandId: 12, name: "MSI MPG X570 Gaming Plus", desc: "X570 chipset motherboard with active cooling and overclocking features." },
+    { categoryId: 1, brandId: 11, name: "ASUS Prime H610M-E D4", desc: "Entry-level motherboard with support for Intel 12th gen processors." },
+    { categoryId: 1, brandId: 12, name: "MSI PRO Z690-A DDR4", desc: "Feature-packed motherboard with PCIe 5.0 and DDR4 support." },
+    { categoryId: 1, brandId: 11, name: "ASUS ROG Maximus XIII Hero", desc: "Premium motherboard designed for Intel 11th gen CPUs and extreme overclocking." },
+
+    { categoryId: 2, brandId: 2, name: "AMD Ryzen 9 5950X", desc: "16-core, 32-thread powerhouse for gaming and productivity." },
+    { categoryId: 2, brandId: 1, name: "Intel Core i9-12900K", desc: "Hybrid architecture CPU with 16 cores and 24 threads for ultimate performance." },
+    { categoryId: 2, brandId: 2, name: "AMD Ryzen 7 5800X3D", desc: "Gaming-focused CPU with 3D V-Cache technology." },
+    { categoryId: 2, brandId: 1, name: "Intel Core i5-12400F", desc: "6-core CPU offering excellent price-performance for mainstream users." },
+    { categoryId: 2, brandId: 2, name: "AMD Ryzen 5 5600G", desc: "6-core APU with integrated Radeon graphics for budget builds." },
+    { categoryId: 2, brandId: 1, name: "Intel Pentium Gold G6400", desc: "Entry-level dual-core CPU suitable for basic tasks." },
+    { categoryId: 2, brandId: 2, name: "AMD Athlon 3000G", desc: "Affordable dual-core processor with integrated graphics." },
+
+    { categoryId: 3, brandId: 3, name: "NVIDIA GeForce RTX 4090", desc: "Top-tier GPU with unparalleled ray tracing and AI performance." },
+    { categoryId: 3, brandId: 3, name: "NVIDIA GeForce RTX 3070 Ti", desc: "High-performance graphics card for 1440p and 4K gaming." },
+    { categoryId: 3, brandId: 11, name: "ASUS TUF Gaming GeForce RTX 3060", desc: "Reliable GPU with efficient cooling and factory overclock." },
+    { categoryId: 3, brandId: 12, name: "MSI Radeon RX 6800 XT Gaming X", desc: "AMD RDNA 2 GPU with great performance and cooling." },
+    { categoryId: 3, brandId: 3, name: "NVIDIA GeForce GTX 1660 Super", desc: "Budget-friendly GPU suitable for 1080p gaming." },
+    { categoryId: 3, brandId: 11, name: "ASUS Dual Radeon RX 6600", desc: "Compact and efficient GPU for mid-range builds." },
+    { categoryId: 3, brandId: 12, name: "MSI Ventus RTX 3050", desc: "Entry-level ray tracing GPU for casual gamers." },
+
+    { categoryId: 4, brandId: 4, name: "Corsair Vengeance RGB Pro 32GB DDR4", desc: "High-speed RAM with customizable RGB lighting." },
+    { categoryId: 4, brandId: 5, name: "Kingston Fury Beast 16GB DDR4", desc: "Reliable memory kit optimized for gaming and multitasking." },
+    { categoryId: 4, brandId: 4, name: "Corsair Dominator Platinum 64GB DDR4", desc: "Premium RAM for enthusiasts and professional workloads." },
+    { categoryId: 4, brandId: 5, name: "Kingston HyperX Predator 16GB DDR4", desc: "Low-latency RAM designed for smooth performance." },
+    { categoryId: 4, brandId: 4, name: "Corsair Vengeance LPX 8GB DDR4", desc: "Affordable memory module for budget systems." },
+    { categoryId: 4, brandId: 5, name: "Kingston ValueRAM 8GB DDR4", desc: "Basic RAM suitable for everyday computing." },
+    { categoryId: 4, brandId: 4, name: "Corsair Vengeance RGB Pro SL 16GB DDR4", desc: "Slim-profile RAM with dynamic RGB lighting." },
+
+    { categoryId: 5, brandId: 7, name: "Samsung 980 PRO 1TB NVMe SSD", desc: "High-speed PCIe 4.0 SSD for fast data transfer." },
+    { categoryId: 5, brandId: 6, name: "Seagate Barracuda 2TB HDD", desc: "Reliable hard drive with ample storage for backups." },
+    { categoryId: 5, brandId: 7, name: "Samsung 870 EVO 500GB SATA SSD", desc: "Versatile SSD with excellent durability and speed." },
+    { categoryId: 5, brandId: 6, name: "Seagate FireCuda 520 1TB NVMe SSD", desc: "Gaming-focused SSD with fast read/write speeds." },
+    { categoryId: 5, brandId: 7, name: "Samsung 980 250GB NVMe SSD", desc: "Compact SSD suitable for boot drives and applications." },
+    { categoryId: 5, brandId: 6, name: "Seagate Expansion 4TB External HDD", desc: "Portable storage solution for large files and backups." },
+    { categoryId: 5, brandId: 7, name: "Samsung Portable T7 2TB SSD", desc: "Fast external SSD with USB-C connectivity." },
+
+    { categoryId: 6, brandId: 8, name: "Cooler Master MWE Gold 650W", desc: "Efficient 80 Plus Gold PSU with modular cables." },
+    { categoryId: 6, brandId: 8, name: "Cooler Master V850 SFX Gold", desc: "Compact SFX power supply with high efficiency." },
+    { categoryId: 6, brandId: 8, name: "Cooler Master MasterWatt 750W", desc: "Reliable PSU with semi-modular design and quiet operation." },
+    { categoryId: 6, brandId: 8, name: "Cooler Master Elite V3 500W", desc: "Budget-friendly power supply for basic setups." },
+    { categoryId: 6, brandId: 8, name: "Cooler Master MasterPower MPY-6501-ACAAG", desc: "650W 80 Plus Bronze certified power supply." },
+    { categoryId: 6, brandId: 8, name: "Cooler Master MasterWatt Lite 230V 600W", desc: "Affordable, reliable power supply for mid-range PCs." },
+    { categoryId: 6, brandId: 8, name: "Cooler Master V650 SFX Gold", desc: "Small form factor PSU with efficient performance." },
+
+    // Gabinetes (7)
+    { categoryId: 7, brandId: 8, name: "Cooler Master MasterBox NR600", desc: "Mid-tower case with mesh front panel for optimal airflow." },
+    { categoryId: 7, brandId: 8, name: "Cooler Master H500", desc: "High-airflow case with two large RGB fans in front." },
+    { categoryId: 7, brandId: 8, name: "Cooler Master Silencio S400", desc: "Silent-focused compact case with sound dampening." },
+    { categoryId: 7, brandId: 8, name: "Cooler Master Cosmos C700P", desc: "Premium full-tower case with modular design and tempered glass." },
+    { categoryId: 7, brandId: 8, name: "Cooler Master MasterCase H100", desc: "Compact case designed for mini-ITX builds." },
+    { categoryId: 7, brandId: 8, name: "Cooler Master MasterBox Q300L", desc: "Budget-friendly and versatile micro-ATX case." },
+    { categoryId: 7, brandId: 8, name: "Cooler Master MasterCase MC500", desc: "Mid-tower with tempered glass and RGB lighting." },
+
+    // Refrigeración (8)
+    { categoryId: 8, brandId: 8, name: "Cooler Master Hyper 212 Black Edition", desc: "Popular air cooler with silent operation." },
+    { categoryId: 8, brandId: 8, name: "Cooler Master MasterLiquid ML240L RGB", desc: "240mm AIO liquid cooler with RGB lighting." },
+    { categoryId: 8, brandId: 8, name: "Cooler Master Fan MF120R ARGB", desc: "ARGB case fan with high airflow." },
+    { categoryId: 8, brandId: 8, name: "Cooler Master MasterAir MA620M", desc: "Dual tower air cooler with RGB lighting." },
+    { categoryId: 8, brandId: 8, name: "Cooler Master MasterLiquid ML360R", desc: "High-performance 360mm liquid cooler with RGB." },
+    { categoryId: 8, brandId: 8, name: "Cooler Master GeminII S524 Ver.2", desc: "Dual heat pipe tower cooler with efficient cooling." },
+    { categoryId: 8, brandId: 8, name: "Cooler Master MasterFan SF120R", desc: "Slim case fan designed for tight spaces." },
+
+    // Mouses (9)
+    { categoryId: 9, brandId: 9, name: "Logitech G502 HERO", desc: "High-precision wired gaming mouse with customizable weights." },
+    { categoryId: 9, brandId: 10, name: "Razer DeathAdder V2", desc: "Ergonomic wired gaming mouse with high DPI sensor." },
+    { categoryId: 9, brandId: 9, name: "Logitech MX Master 3", desc: "Wireless mouse optimized for productivity and comfort." },
+    { categoryId: 9, brandId: 10, name: "Razer Basilisk V3", desc: "Gaming mouse with customizable buttons and RGB." },
+    { categoryId: 9, brandId: 9, name: "Logitech G Pro X Superlight", desc: "Ultra-lightweight wireless gaming mouse." },
+    { categoryId: 9, brandId: 10, name: "Razer Viper Ultimate", desc: "Wireless gaming mouse with low latency and high accuracy." },
+    { categoryId: 9, brandId: 9, name: "Logitech M330 Silent Plus", desc: "Wireless silent mouse for office use." },
+
+    // Teclados (10)
+    { categoryId: 10, brandId: 9, name: "Logitech G915 TKL", desc: "Wireless mechanical keyboard with low-profile switches." },
+    { categoryId: 10, brandId: 10, name: "Razer BlackWidow V3", desc: "Mechanical keyboard with customizable RGB lighting." },
+    { categoryId: 10, brandId: 9, name: "Logitech MX Keys", desc: "Wireless keyboard designed for productivity." },
+    { categoryId: 10, brandId: 10, name: "Razer Huntsman Elite", desc: "High-speed optical switches with wrist rest." },
+    { categoryId: 10, brandId: 9, name: "Logitech K380", desc: "Compact Bluetooth keyboard for multiple devices." },
+    { categoryId: 10, brandId: 10, name: "Razer Cynosa V2", desc: "Affordable membrane keyboard with RGB lighting." },
+    { categoryId: 10, brandId: 9, name: "Logitech G213 Prodigy", desc: "Wired RGB gaming keyboard with spill-resistant design." },
+
+    // Auriculares (11)
+    { categoryId: 11, brandId: 9, name: "Logitech G Pro X", desc: "Gaming headset with Blue VO!CE microphone technology." },
+    { categoryId: 11, brandId: 10, name: "Razer Kraken X", desc: "Lightweight gaming headset with 7.1 surround sound." },
+    { categoryId: 11, brandId: 9, name: "Logitech H390 USB Headset", desc: "Comfortable wired headset with noise-canceling mic." },
+    { categoryId: 11, brandId: 10, name: "Razer Nari Ultimate", desc: "Wireless gaming headset with haptic feedback." },
+    { categoryId: 11, brandId: 9, name: "Logitech G435 Lightspeed", desc: "Wireless headset with DTS Headphone:X 2.0." },
+    { categoryId: 11, brandId: 10, name: "Razer BlackShark V2", desc: "Esports headset with advanced audio drivers." },
+    { categoryId: 11, brandId: 9, name: "Logitech Zone Wireless", desc: "Bluetooth headset optimized for calls and music." },
+
+    // Microfonos (12)
+    { categoryId: 12, brandId: 9, name: "Logitech Blue Snowball", desc: "USB condenser microphone ideal for streaming and podcasting." },
+    { categoryId: 12, brandId: 10, name: "Razer Seiren X", desc: "Compact microphone with supercardioid pickup pattern." },
+    { categoryId: 12, brandId: 9, name: "Logitech StreamCam", desc: "High-quality camera with built-in microphone for content creators." },
+    { categoryId: 12, brandId: 10, name: "Razer Kiyo", desc: "Webcam with integrated ring light and microphone." },
+    { categoryId: 12, brandId: 9, name: "Logitech USB Headset Microphone", desc: "Plug and play microphone for clear voice input." },
+    { categoryId: 12, brandId: 10, name: "Razer Seiren Mini", desc: "Compact streaming mic with studio-quality audio." },
+    { categoryId: 12, brandId: 9, name: "Logitech C920 Microphone", desc: "Built-in microphone with noise reduction." },
+
+    // Monitores (13)
+    { categoryId: 13, brandId: 11, name: "ASUS ROG Swift PG259QN", desc: "24.5-inch 360Hz gaming monitor with G-Sync." },
+    { categoryId: 13, brandId: 12, name: "MSI Optix MAG274QRF-QD", desc: "27-inch QHD monitor with 165Hz refresh rate." },
+    { categoryId: 13, brandId: 11, name: "ASUS TUF Gaming VG27AQ", desc: "27-inch IPS monitor with 165Hz and HDR support." },
+    { categoryId: 13, brandId: 12, name: "MSI Modern MD271P", desc: "27-inch 2K monitor with eye care technology." },
+    { categoryId: 13, brandId: 11, name: "ASUS ProArt PA278QV", desc: "Professional-grade 27-inch monitor for creators." },
+    { categoryId: 13, brandId: 12, name: "MSI Optix MAG241C", desc: "24-inch curved gaming monitor with 144Hz refresh." },
+    { categoryId: 13, brandId: 11, name: "ASUS VP28UQG", desc: "28-inch 4K UHD gaming monitor with 1ms response." },
+
+    // Notebooks (14)
+    { categoryId: 14, brandId: 13, name: "Dell XPS 15 9520", desc: "Premium 15-inch laptop with Intel 12th gen processors." },
+    { categoryId: 14, brandId: 14, name: "HP Spectre x360 14", desc: "Convertible 2-in-1 with OLED touchscreen." },
+    { categoryId: 14, brandId: 15, name: "Apple MacBook Pro 14-inch M2", desc: "Powerful laptop with Apple Silicon and Retina display." },
+    { categoryId: 14, brandId: 13, name: "Dell G15 5520", desc: "Gaming laptop with NVIDIA RTX 3060 GPU." },
+    { categoryId: 14, brandId: 14, name: "HP Omen 16", desc: "Gaming notebook with AMD Ryzen 7 and high refresh screen." },
+    { categoryId: 14, brandId: 15, name: "Apple MacBook Air M2", desc: "Lightweight and silent ultrabook with excellent battery life." },
+    { categoryId: 14, brandId: 13, name: "Dell Inspiron 14 5000", desc: "Affordable 14-inch laptop for everyday use." },
+
+    // Computadoras (15)
+    { categoryId: 15, brandId: 13, name: "Dell OptiPlex 7090", desc: "Business desktop with Intel 11th gen CPU and SSD." },
+    { categoryId: 15, brandId: 14, name: "HP EliteDesk 800 G6", desc: "Compact desktop with solid performance for offices." },
+    { categoryId: 15, brandId: 15, name: "Apple Mac Mini M2", desc: "Compact desktop with Apple Silicon and powerful performance." },
+    { categoryId: 15, brandId: 13, name: "Dell Alienware Aurora R12", desc: "High-performance gaming desktop with RTX graphics." },
+    { categoryId: 15, brandId: 14, name: "HP Pavilion Desktop TP01", desc: "Affordable desktop for home and office use." },
+    { categoryId: 15, brandId: 15, name: "Apple iMac 24-inch M1", desc: "All-in-one desktop with stunning Retina display." },
+    { categoryId: 15, brandId: 13, name: "Dell Vostro 3888", desc: "Reliable desktop for small business tasks." },
+]

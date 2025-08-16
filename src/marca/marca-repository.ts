@@ -9,7 +9,7 @@ export class MarcaRepository implements Repository<Marca> {
   ) {}
 
   public async findAll(): Promise<Marca[]> {
-    return await this.marcaEm.find(Marca, {}, {populate: ['imagen']})
+    return await this.marcaEm.find(Marca, {}, {populate: ['imagen'], orderBy: {id: 'ASC'}})
   }
 
   public async findOne(item: { id: number }): Promise<Marca | null> {
