@@ -47,11 +47,11 @@ export class ProductoRepository {
       switch (filters.sort) {
         case 'precio-asc': typeSort = {precioFinal: 'ASC', id: 'ASC'}; break;
         case 'precio-desc': typeSort = {precioFinal: 'DESC', id: 'ASC'}; break;
-        case 'destacado': typeSort = {destacado: 'ASC', id: 'ASC'}; break;
-        default: typeSort = { destacado: 'ASC', id: 'ASC' }; break;
+        case 'destacado': typeSort = {destacado: 'DESC', id: 'ASC'}; break;
+        default: typeSort = { destacado: 'DESC', id: 'ASC' }; break;
       }
     } else {
-      typeSort = {destacado: 'ASC', id: 'ASC'}
+      typeSort = {destacado: 'DESC', id: 'ASC'}
     }
 
     return await this.productoEm.findAndCount(Producto, queryFilters, {
@@ -63,7 +63,7 @@ export class ProductoRepository {
   }
 
   public async findOne(item: { id: number }): Promise<Producto | null> {
-    return await this.productoEm.findOne(Producto, {id: item.id}, {populate: ['marca', 'categoria', 'imagenes']})
+    return await this.productoEm.findOne(Producto, {id: item.id}, {populate: ['marca', 'categoria', 'imagenes', 'marca.imagen']})
   }
 
   public async checkConstraint(item: Producto): Promise<boolean> {
