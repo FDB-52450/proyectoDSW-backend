@@ -34,8 +34,8 @@ export function validateProducto(mode = "create") {
 
     body('destacado')
       .optional()
-      .toBoolean()
-      .isBoolean().withMessage('El campo destacado debe ser "true" o "false"'),
+      .isIn(['true', 'false']).withMessage('destacado debe ser "true" o "false"')
+      .toBoolean(),
 
     body('marcaId')
       .if((value, { req }) => {return !isUpdate || req.body.marcaId !== undefined})

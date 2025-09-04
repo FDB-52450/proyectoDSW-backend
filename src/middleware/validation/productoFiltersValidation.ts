@@ -36,8 +36,8 @@ export const validateProductoFilters = [
 
   query('destacado')
     .optional()
-    .toBoolean()
-    .isBoolean().withMessage('destacado debe ser "true" o "false"'),
+    .isIn(['true', 'false']).withMessage('destacado debe ser "true" o "false"')
+    .toBoolean(),
 
   query('marca')
     .optional()
