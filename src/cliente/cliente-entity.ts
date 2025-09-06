@@ -43,8 +43,6 @@ export class Cliente {
     @OneToMany(() => Pedido, pedido => pedido.cliente, {cascade: [Cascade.REMOVE]})
     pedidos = new Collection<Pedido>(this)
 
-    // Attributes validation will be in a different file
-
     constructor(
         dni: string,
         nombre: string,

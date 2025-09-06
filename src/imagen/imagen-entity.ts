@@ -41,7 +41,7 @@ export class Imagen{
     async saveToDisk() {
         this.url = randomUUID()
         
-        const imageSizes = {'small': 50, 'medium': 200, 'large': 500}
+        const imageSizes = {'small': 100, 'medium': 500, 'large': 1000}
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
         const basePath = path.join(__dirname, '..', '..', 'images', this.url);
@@ -53,7 +53,7 @@ export class Imagen{
         }
 
         for (const [size, width] of Object.entries(imageSizes)) {
-            const resizedBuffer = await sharp(this.buffer).resize(width).toFormat('webp').toBuffer()
+            const resizedBuffer = await sharp(this.buffer).trim().resize({height: width, fit: 'inside'}).toFormat('webp').toBuffer()
 
             try {
                 await fs.promises.writeFile(path.join(basePath, `${size}.webp`), resizedBuffer)
