@@ -16,7 +16,8 @@ export class ValidationResult {
 
 interface ValidationError {
     message: string,
-    productoId?: number
+    productoId?: number,
+    categoriaId?: number
 }
 
 interface DetalleItem {
@@ -24,41 +25,32 @@ interface DetalleItem {
     cantidad: number
 }
 
-const stockLimits = [
-    { min: 0,       max: 9999,    limit: 10 },
-    { min: 10000,   max: 29999,   limit: 7 },
-    { min: 30000,   max: 74999,   limit: 5 },
-    { min: 75000,   max: 124999,  limit: 3 },
-    { min: 125000,  max: 249999,  limit: 2 },
-    { min: 250000,  max: Infinity, limit: 1 },
-]
-
 const maxGlobalPedidoAmountLimit = 3
 const maxGlobalPedidoCostLimit = 10000000
-
-function getMaxStockForPrice(prodPrecio: number) {
-    const range = stockLimits.find(rule => prodPrecio >= rule.min && prodPrecio <= rule.max)
-    return range ? range.limit : 1
-}
 
 function pedidoValidateDetalleStock(pedido: Pedido, clienteCheck: boolean): ValidationResult {
     const detalle = pedido.detalle.getItems()
     let errors: ValidationError[] = []
 
-    for (const [key, value] of Object.entries(detalle)) {
-        const productoPrecio = value.producto.precioFinal
-        const productoStock = value.producto.getStockDisponible()
-        const cantidadPedida = value.cantidad
+    const categoriaSums: Map<number, number> = new Map()
+    const categoriasError: Set<number> = new Set();
 
-        // Checks whenever the amount solicited for a certain product exceeds the amount allowed per price bracket.
-        const maxStock = getMaxStockForPrice(productoPrecio)
+    for (const pedProd of detalle) {
+        const prodCategoria = pedProd.producto.categoria
+        const cantPedida = pedProd.cantidad
 
-        if (cantidadPedida > productoStock) {
-            errors.push({ productoId: value.producto.id, message: `Solo hay ${productoStock} unidades disponibles.` })
+        const categoriaId = prodCategoria.id
+        const stockLim = prodCategoria.stockLimit
+
+        const currentSum = categoriaSums.get(categoriaId) ?? 0
+
+        if (currentSum + cantPedida > stockLim && !categoriasError.has(categoriaId)) {
+            errors.push({ categoriaId: prodCategoria.id, message: `Maximo ${stockLim} unidades permitadas por pedido de categoria ${prodCategoria.nombre}`})
+            categoriasError.add(categoriaId)
         }
 
-        if (cantidadPedida > maxStock) {
-            errors.push({ productoId: value.producto.id, message: `Maximo ${maxStock} unidades permitidas por pedido.` })
+        if (!categoriasError.has(categoriaId)) {
+            categoriaSums.set(categoriaId, currentSum + cantPedida)
         }
     }
 

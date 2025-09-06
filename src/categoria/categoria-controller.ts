@@ -37,7 +37,11 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   const repository = getRepo()
   const input = req.body
-  const categoriaInput = new Categoria(input.nombre)
+  const categoriaInput = new Categoria(
+    input.nombre,
+    input.duracionGar,
+    input.stockLim
+  )
 
   const check = await repository.checkConstraint(input)
 
