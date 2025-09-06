@@ -54,12 +54,20 @@ export class ProductoRepository {
       typeSort = {destacado: 'DESC', id: 'ASC'}
     }
 
-    return await this.productoEm.findAndCount(Producto, queryFilters, {
+    const [productos, count] = await this.productoEm.findAndCount(Producto, queryFilters, {
       limit: pageSize,
       offset: offset,
       orderBy: typeSort,
       populate: ['marca', 'categoria', 'imagenes']
     })
+
+    productos.forEach((producto) => {
+      producto.imagenes.set(producto.imagenes.getItems().slice().sort((a, b) => {
+        return a.id - b.id;
+      }))
+    })
+
+    return [productos, count]
   }
 
   public async findOne(item: { id: number }): Promise<Producto | null> {

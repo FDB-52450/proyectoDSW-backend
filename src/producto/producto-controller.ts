@@ -22,6 +22,8 @@ async function findAll(req: Request, res: Response) {
   const filters: ProductoFilters = req.query || undefined
   const page = Number(req.query.page ?? 1)
 
+  filters.destacado = Boolean(filters.destacado) // PATCHY PATCH
+
   let view: string
 
   if (req.query.view && req.query.view === 'admin' && req.session.user) {
@@ -38,7 +40,8 @@ async function findAll(req: Request, res: Response) {
   const [productos, totalItems] = await repository.findAll(page, filters)
 
   if (productos.length == 0) {
-    res.status(404).send({ message: 'No hay productos disponibles.'})
+    const paginationData = {totalProducts: 0, totalPages: 0, currentPage: 0, pageSize: 20}
+    res.json({data: [], pagination: paginationData})
   } else {
     const totalPages = Math.ceil(totalItems / 20)
     const paginationData = {
