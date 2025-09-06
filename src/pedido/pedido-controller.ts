@@ -69,7 +69,7 @@ async function add(req: Request, res: Response) {
   const resultCheck = pedidoValidateDetalleStock(pedidoInput, true)
 
   if (resultCheck.result) {
-    res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultCheck})
+    res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultCheck.errors})
     return
   }
   
@@ -123,7 +123,7 @@ async function validate(req: Request, res: Response) {
     const resultCheck = pedidoValidateDetalleStock(pedidoInput, false)
 
     if (resultCheck.result) {
-        res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultCheck})
+        res.status(422).json({error: 'VALIDACION_FALLIDA', details: resultCheck.errors})
         return
     }
 

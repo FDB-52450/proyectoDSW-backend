@@ -16,3 +16,4 @@
 - [x] Custom validation for files uploaded (file-type).
 - [ ] Custom handling of race conditions (transactions / pessimistic lock / optimistic lock)
 - [x] Super admin that can create other admins.
+- [ ] Lightweight producto DTO for list of products.
