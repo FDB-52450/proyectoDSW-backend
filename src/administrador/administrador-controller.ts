@@ -131,11 +131,22 @@ async function login(req: Request, res: Response) {
 }
 
 function logout(req: Request, res: Response) {
-  securityLogger.info({ action: 'Succesful logout attempt', data: {ip: req.ip?.replace('::ffff:', ''), credentials: req.session.user }})
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).json({ message: 'Logout failed' });
+    }
 
-  req.session.destroy(() => {
+    securityLogger.info({ action: 'Succesful logout attempt', data: {ip: req.ip?.replace('::ffff:', ''), credentials: req.session.user }})
+    res.clearCookie('connect.sid')
     res.status(200).json({message: 'Logout exitoso.'})
   })
 }
 
-export { findAll, findOne, add, update, remove, login, logout }
+function me(req: Request, res: Response) {
+    const user = req.session.user
+
+    res.json({user})
+}
+
+export { findAll, findOne, add, update, remove, login, logout, me }

@@ -36,3 +36,6 @@ Content-Type: application/json
 
 ### Admin logout
 GET http://localhost:8080/api/administradores/logout
+
+### Get current user
+GET http://localhost:8080/api/administradores/me

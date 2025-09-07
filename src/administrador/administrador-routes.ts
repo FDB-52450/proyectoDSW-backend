@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { findAll, findOne, add, update, remove, login, logout } from './administrador-controller.js'
+import { findAll, findOne, add, update, remove, login, logout, me } from './administrador-controller.js'
 
 import { authLogin } from '../middleware/loginAuth.js'
 import { superAuthLogin } from '../middleware/superLoginAuth.js'
@@ -12,6 +12,7 @@ export const administradorRouter = Router()
 
 administradorRouter.post('/login', validateAdmin, handleValidation, login)
 administradorRouter.get('/logout', authLogin, logout)
+administradorRouter.get('/me', authLogin, me)
 
 administradorRouter.get('/', superAuthLogin, findAll)
 administradorRouter.get('/:id', superAuthLogin, findOne)
