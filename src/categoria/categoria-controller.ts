@@ -40,7 +40,7 @@ async function add(req: Request, res: Response) {
   const categoriaInput = new Categoria(
     input.nombre,
     input.duracionGar,
-    input.stockLim
+    input.stockLimit
   )
 
   const check = await repository.checkConstraint(input)
