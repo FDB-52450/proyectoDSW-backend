@@ -39,7 +39,7 @@ async function add(req: Request, res: Response) {
   const input = req.body
   const categoriaInput = new Categoria(
     input.nombre,
-    input.duracionGar,
+    input.duracionGarantia,
     input.stockLimit
   )
 

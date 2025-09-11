@@ -14,15 +14,13 @@ export function validateCliente(prefix = '', mode = 'create') {
             .if((value, { req }) => {return !isUpdate || (prefix === '' ? req.body.nombre !== undefined : req.body.cliente.nombre !== undefined)})
             .trim()
             .notEmpty().withMessage('El nombre es obligatorio').bail()
-            .isLength({ min: 2, max: 50 }).withMessage('El nombre no cumple con los estandares de longitud')
-            .toLowerCase(),
+            .isLength({ min: 2, max: 50 }).withMessage('El nombre no cumple con los estandares de longitud'),
 
         body(`${prefix}apellido`)
             .if((value, { req }) => {return !isUpdate || (prefix === '' ? req.body.apellido !== undefined : req.body.cliente.apellido !== undefined)})
             .trim()
             .notEmpty().withMessage('El apellido es obligatorio').bail()
-            .isLength({ min: 2, max: 50 }).withMessage('El apellido no cumple con los estandares de longitud')
-            .toLowerCase(),
+            .isLength({ min: 2, max: 50 }).withMessage('El apellido no cumple con los estandares de longitud'),
 
         body(`${prefix}email`)
             .if((value, { req }) => {return !isUpdate || (prefix === '' ? req.body.email !== undefined : req.body.cliente.email !== undefined)})
@@ -41,15 +39,13 @@ export function validateCliente(prefix = '', mode = 'create') {
             .if((value, { req }) => {return !isUpdate || (prefix === '' ? req.body.provincia !== undefined : req.body.cliente.provincia !== undefined)})
             .trim()
             .notEmpty().withMessage('La provincia es requerida').bail()
-            .isLength({ min: 2, max: 30 }).withMessage('La provincia no cumple con los estandares de longitud').bail()
-            .toLowerCase(),
+            .isLength({ min: 2, max: 30 }).withMessage('La provincia no cumple con los estandares de longitud').bail(),
 
         body(`${prefix}ciudad`)
             .if((value, { req }) => {return !isUpdate || (prefix === '' ? req.body.ciudad !== undefined : req.body.cliente.ciudad !== undefined)})
             .trim()
             .notEmpty().withMessage('La ciudad es requerida').bail()
-            .isLength({ min: 2, max: 50 }).withMessage('La ciudad no cumple con los estandares de longitud').bail()
-            .toLowerCase(),
+            .isLength({ min: 2, max: 50 }).withMessage('La ciudad no cumple con los estandares de longitud').bail(),
 
         body(`${prefix}direccion`)
             .if((value, { req }) => {return !isUpdate || (prefix === '' ? req.body.direccion !== undefined : req.body.cliente.direccion !== undefined)})
