@@ -18,7 +18,7 @@ Content-Disposition: form-data; name="nombre"
 
 RAZER
 --XYZ
-Content-Disposition: form-data; name="image"; filename="nvidiaLogo.png"
+Content-Disposition: form-data; name="imagen"; filename="nvidiaLogo.png"
 Content-Type: image/png
 
 < ../testImages/nvidiaLogo.png
@@ -41,7 +41,7 @@ Content-Disposition: form-data; name="nombre"
 
 AMD
 --XYZ
-Content-Disposition: form-data; name="image"; filename="amdLogo.png"
+Content-Disposition: form-data; name="imagen"; filename="amdLogo.png"
 Content-Type: image/png
 
 < ../testImages/amdLogo.png

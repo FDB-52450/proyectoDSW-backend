@@ -17,7 +17,7 @@ export function validateMarca(mode = "create") {
       .isBoolean().withMessage('El campo destacado debe ser "true" o "false"'),
            
     body().custom(body => {
-      const allowed = isUpdate ? ['nombre', 'keepImage', 'imagen'] : ['nombre', 'imagen']
+      const allowed = isUpdate ? ['nombre', 'keepImage', 'imagen'] : ['nombre', 'imagen', 'keepImage']
       const extraKeys = Object.keys(body).filter(key => !allowed.includes(key))
 
       if (extraKeys.length) {
