@@ -18,7 +18,29 @@ export function validatePedido(mode = "create") {
         .if(() => isUpdate)
         .optional()
         .isISO8601().withMessage('La fechaEntrega debe ser una fecha valida.')
-        .toDate(),
+        .toDate()
+        .custom((value) => {
+            if (!(value instanceof Date) || isNaN(value.getTime())) {
+                throw new Error('La fechaEntrega no es válida')
+            }
+
+            const now = new Date()
+            const min = new Date()
+            const max = new Date()
+
+            min.setDate(now.getDate() + 7)
+            max.setDate(now.getDate() + 21)
+
+            const inputDate = new Date(value.getFullYear(), value.getMonth(), value.getDate())
+            const minDate = new Date(min.getFullYear(), min.getMonth(), min.getDate())
+            const maxDate = new Date(max.getFullYear(), max.getMonth(), max.getDate())
+
+            if (inputDate < minDate || inputDate > maxDate) {
+                throw new Error(`La fechaEntrega debe estar entre ${minDate.toLocaleDateString()} y ${maxDate.toLocaleDateString()}`)
+            }
+
+            return true
+        }),
 
       body('detalle')
         .if(() => !isUpdate)
@@ -43,10 +65,10 @@ export function validatePedido(mode = "create") {
         let allowed: string[] = []
 
         switch (mode) {
-            case "create": allowed = ['tipoEntrega', 'tipoPago', 'detalle', 'cliente']
-            case "validate": allowed = ['tipoEntrega', 'tipoPago', 'estado']
-            case "update": allowed = ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'detalle']
-            default: allowed = ['tipoEntrega', 'tipoPago', 'detalle', 'cliente']
+            case "create": allowed = ['tipoEntrega', 'tipoPago', 'detalle', 'cliente', 'fechaEntrega']; break
+            case "validate": allowed = ['tipoEntrega', 'tipoPago', 'estado']; break
+            case "update": allowed = ['tipoEntrega', 'tipoPago', 'fechaEntrega', 'detalle', 'estado']; break
+            default: allowed = ['tipoEntrega', 'tipoPago', 'detalle', 'cliente']; break
         }
 
         const extraKeys = Object.keys(body).filter(key => !allowed.includes(key))

@@ -65,7 +65,7 @@ async function add(req: Request, res: Response) {
     return
   }
 
-  const pedidoInput = new Pedido(input.tipoEntrega, input.tipoPago, resultDetalleTransformation, cliente)
+  const pedidoInput = new Pedido(input.tipoEntrega, input.tipoPago, resultDetalleTransformation, cliente, input.fechaEntrega)
   const resultCheck = pedidoValidateDetalleStock(pedidoInput, true)
 
   if (resultCheck.result) {
