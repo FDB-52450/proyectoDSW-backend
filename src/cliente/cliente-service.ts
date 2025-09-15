@@ -98,9 +98,9 @@ async function clienteRemove(id: number) {
 
 function checkClienteData(dbCliente: Cliente, reqCliente: ClienteDTO): boolean {
     return (
-        dbCliente.nombre.toLowerCase() === reqCliente.nombre &&
-        dbCliente.apellido.toLowerCase() === reqCliente.apellido &&
-        dbCliente.email.toLowerCase() === reqCliente.email
+        dbCliente.nombre.toLowerCase() === reqCliente.nombre.toLowerCase() &&
+        dbCliente.apellido.toLowerCase() === reqCliente.apellido.toLowerCase() &&
+        dbCliente.email.toLowerCase() === reqCliente.email.toLowerCase()
     )
 }
 
