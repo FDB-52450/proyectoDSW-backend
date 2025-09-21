@@ -7,6 +7,7 @@ export interface ProductoFilters {
   stockMax?: number
   nombre?: string
   destacado?: boolean
+  descontado?: boolean
   marca?: string
   categoria?: string
   sort?: string

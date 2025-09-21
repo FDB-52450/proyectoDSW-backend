@@ -39,6 +39,11 @@ export const validateProductoFilters = [
     .isIn(['true', 'false']).withMessage('destacado debe ser "true" o "false"')
     .toBoolean(),
 
+  query('descontado')
+    .optional()
+    .isIn(['true', 'false']).withMessage('descontado debe ser "true" o "false"')
+    .toBoolean(),
+
   query('marca')
     .optional()
     .isString().withMessage('marca debe ser un texto'),
@@ -54,7 +59,7 @@ export const validateProductoFilters = [
   query()
     .custom(query => {
       const allowed = ['precioMin', 'precioMax', 'stockMin', 'stockMax', 'nombre', 'destacado', 'marca', 'categoria', 
-                       'sort', 'page', 'view']
+                       'sort', 'page', 'view', 'descontado']
       const extraKeys = Object.keys(query).filter(key => !allowed.includes(key))
 
       if (extraKeys.length) {

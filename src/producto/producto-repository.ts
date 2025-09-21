@@ -39,6 +39,9 @@ export class ProductoRepository {
       if (filters.categoria) {
         queryFilters.categoria = { nombre: {$like: `%${filters.categoria}%`} }
       }
+      if (filters.descontado) {
+        queryFilters.descuento = { $gt: 0 }
+      }
     }
 
     let typeSort = {}

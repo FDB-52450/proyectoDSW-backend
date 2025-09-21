@@ -23,6 +23,7 @@ async function findAll(req: Request, res: Response) {
   const page = Number(req.query.page ?? 1)
 
   filters.destacado = Boolean(filters.destacado) // PATCHY PATCH
+  filters.descontado = Boolean(filters.descontado) // MORE PATCHES
 
   let view: string
 
