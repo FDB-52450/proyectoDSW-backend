@@ -1,3 +1,4 @@
+import { Producto } from '../producto/producto-entity.js'
 import { Repository } from '../shared/repository.js'
 import { Categoria } from './categoria-entity.js'
 
@@ -20,6 +21,14 @@ export class CategoriaRepository implements Repository<Categoria>{
     const categoriaConflict = await this.categoriaEm.findOne(Categoria, {nombre: item.nombre})
 
     if (categoriaConflict) return true
+
+    return false
+  }
+  
+  public async checkDeleteConstraint(item: { id: number }): Promise<boolean> {
+    const categoriaProducts = await this.categoriaEm.findOne(Producto, {categoria: item.id})
+
+    if (categoriaProducts) return true
 
     return false
   }

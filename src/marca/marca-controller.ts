@@ -98,14 +98,21 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   const repository = getRepo()
   const id = Number(req.params.id)
-  const marca = await repository.delete({ id })
 
-  if (!marca) {
-    res.status(404).send({ message: 'Marca no encontrada.' })
+  const deleteConstraint = await repository.checkDeleteConstraint({id})
+
+  if (!deleteConstraint) {
+    const marca = await repository.delete({ id })
+
+    if (!marca) {
+        res.status(404).send({ message: 'Marca no encontrada.' })
+    } else {
+        auditLogger.info({entity: 'marca', action: 'delete', user: req.session.user, data: marca})
+
+        res.status(200).send({ message: 'Marca borrada con exito.' })
+    }
   } else {
-    auditLogger.info({entity: 'marca', action: 'delete', user: req.session.user, data: marca})
-
-    res.status(200).send({ message: 'Marca borrada con exito.' })
+    res.status(409).send({ message: 'La marca no pudo eliminarse debido a que esta vinculada a otras entidades.' })
   }
 }
 

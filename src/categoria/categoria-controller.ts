@@ -85,14 +85,21 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   const repository = getRepo()
   const id = Number(req.params.id)
-  const categoria = await repository.delete({ id })
 
-  if (!categoria) {
-    res.status(404).send({ message: 'Categoria no encontrada.' })
+  const deleteConstraint = await repository.checkDeleteConstraint({id})
+
+  if (!deleteConstraint) {
+    const categoria = await repository.delete({ id })
+
+    if (!categoria) {
+        res.status(404).send({ message: 'Categoria no encontrada.' })
+    } else {
+        auditLogger.info({entity: 'categoria', action: 'delete', user: req.session.user, data: categoria})
+
+        res.status(200).send({ message: 'Categoria borrada con exito.' })
+    }
   } else {
-    auditLogger.info({entity: 'categoria', action: 'delete', user: req.session.user, data: categoria})
-
-    res.status(200).send({ message: 'Categoria borrada con exito.' })
+    res.status(409).send({ message: 'La categoria no pudo eliminarse debido a que esta vinculada a otras entidades.' })
   }
 }
 
