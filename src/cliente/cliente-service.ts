@@ -96,6 +96,28 @@ async function clienteRemove(id: number) {
     return cliente
 }
 
+async function clienteSuspend(id: number, duracion: number | null, razon: string) {
+    const repository = getRepo()
+    const cliente = await repository.suspend({ id, duracion, razon })
+
+    if (!cliente) {
+        throw new ClienteNotFoundError()
+    }
+
+    return cliente
+}
+
+async function clienteReactivate(id: number) {
+    const repository = getRepo()
+    const cliente = await repository.reactivate({ id })
+
+    if (!cliente) {
+        throw new ClienteNotFoundError()
+    }
+
+    return cliente
+}
+
 function checkClienteData(dbCliente: Cliente, reqCliente: ClienteDTO): boolean {
     return (
         dbCliente.nombre.toLowerCase() === reqCliente.nombre.toLowerCase() &&
@@ -138,4 +160,4 @@ async function clienteObtain(clienteDTO: ClienteDTO) {
     }
 }
 
-export { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove, clienteObtain }
+export { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove, clienteObtain, clienteSuspend, clienteReactivate }

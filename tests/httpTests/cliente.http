@@ -27,5 +27,14 @@ Content-Type: application/json
     "nombre": "Juanito"
 }
 
+### Suspender cliente
+POST http://localhost:8080/api/clientes/10/suspend
+Content-Type: application/json
+
+{
+    "duracion": 7,
+    "razon": "Sospechoso"
+}
+
 ### Eliminar cliente
 DELETE http://localhost:8080/api/clientes/1

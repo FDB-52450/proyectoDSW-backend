@@ -15,6 +15,7 @@ export function startClientesScanTask() {
         for (const cliente of clientesBanned) {
             cliente.banStart = null
             cliente.banEnd = null
+            cliente.banRazon = null
         }
 
         try {

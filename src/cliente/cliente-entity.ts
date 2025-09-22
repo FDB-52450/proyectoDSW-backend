@@ -40,6 +40,9 @@ export class Cliente {
     @Property({ nullable: true })
     banEnd: Date | null = null
 
+    @Property({ nullable: true })
+    banRazon: string | null = null
+
     @OneToMany(() => Pedido, pedido => pedido.cliente, {cascade: [Cascade.REMOVE]})
     pedidos = new Collection<Pedido>(this)
 

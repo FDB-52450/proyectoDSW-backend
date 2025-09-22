@@ -71,6 +71,8 @@ export function startPedidosScanTask() {
                         cliente.banEnd = new Date(Date.now() + banDuration * 24 * 60 * 60 * 1000)
                         infoLogger.info(`[TASK-CLI-BAN] Cliente ${cliente.id} banned for ${banDuration} days [${cantPedidos} pedidos cancelados - $${totalPedidos.toLocaleString('es-AR')}]`)
                     }
+
+                    cliente.banRazon = 'Incumplimiento de pedidos reservados'
                 }
             }
 

@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
 import { ClienteDTO } from './cliente-dto.js'
-import { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove } from './cliente-service.js'
+import { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove, clienteSuspend, clienteReactivate } from './cliente-service.js'
 
 import { AppError } from '../shared/errors.js'
+import { auditLogger } from '../shared/loggers.js'
 
 async function findAll(req: Request, res: Response) {
     try {
@@ -93,4 +94,45 @@ async function remove(req: Request, res: Response) {
     }
 }
 
-export { findAll, findOne, add, update, remove }
+async function suspend(req: Request, res: Response) {
+    const id = Number(req.params.id)
+    const { duracion, razon } = req.body
+
+    try {
+        const cliente = await clienteSuspend(id, duracion, razon)
+
+        auditLogger.info({entity: 'cliente', action: 'suspend', user: req.session.user, data: cliente})
+
+        res.status(201).json({ message: 'Cliente suspendido con exito.', data: cliente})
+    } catch (err) {
+        if (err instanceof AppError) {
+            res.status(err.status).json({ error: err.message })
+            return
+        }
+
+        res.status(500).json({ error: 'Error interno del servidor' })
+        return
+    }
+}
+
+async function reactivate(req: Request, res: Response) {
+    const id = Number(req.params.id)
+
+    try {
+        const cliente = await clienteReactivate(id)
+
+        auditLogger.info({entity: 'cliente', action: 'reactivate', user: req.session.user, data: cliente})
+
+        res.status(201).json({ message: 'Cliente reactivado con exito.', data: cliente})
+    } catch (err) {
+        if (err instanceof AppError) {
+            res.status(err.status).json({ error: err.message })
+            return
+        }
+
+        res.status(500).json({ error: 'Error interno del servidor' })
+        return
+    }
+}
+
+export { findAll, findOne, add, update, remove, suspend, reactivate }
