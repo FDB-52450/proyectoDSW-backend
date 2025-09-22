@@ -12,8 +12,8 @@ export const clienteRouter = Router()
 
 clienteRouter.get('/', authLogin, findAll)
 clienteRouter.get('/:id', authLogin, findOne)
-clienteRouter.post('/:id/suspend', authLogin, validateId, validateBan, suspend)
-clienteRouter.post('/:id/reactivate', authLogin, validateId, reactivate)
+clienteRouter.post('/:id/suspend', authLogin, validateId, validateBan, handleValidation, suspend)
+clienteRouter.post('/:id/reactivate', authLogin, validateId, handleValidation, reactivate)
 
 // NOTE: The endpoints below are only meant for admin use or for potential client login implementation in the future.
 

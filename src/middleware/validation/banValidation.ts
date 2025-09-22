@@ -3,12 +3,17 @@ import { body } from 'express-validator'
 export const validateBan = [
     body('duracion')
         .custom((value) => {
-            if (value === null) return true
+            if (value != null) {
+                const num = parseInt(value)
 
-            const num = parseInt(value, 10)
-            if (!Number.isNaN(num) && num > 0) return true
+                if (!isNaN(num) && num > 0) {
+                    return true
+                } else {
+                    throw new Error('La duración debe ser un número positivo mayor a 0 o null')
+                }
+            }
 
-            throw new Error('La duración debe ser un número positivo mayor a 0 o null')
+            return true
         }),
 
     body('razon')
