@@ -4,10 +4,10 @@ import { fileURLToPath } from 'url';
 
 import { MikroORM } from "@mikro-orm/mysql"
 
-import { Producto } from "../../producto/producto-entity.js"
-import { Imagen } from '../../imagen/imagen-entity.js';
-import { MarcaRepository } from "../../marca/marca-repository.js"
-import { CategoriaRepository } from "../../categoria/categoria-repository.js"
+import { Producto } from "../../src/producto/producto-entity.js"
+import { Imagen } from '../../src/imagen/imagen-entity.js';
+import { MarcaRepository } from "../../src/marca/marca-repository.js"
+import { CategoriaRepository } from "../../src/categoria/categoria-repository.js"
 
 import { products } from "../productsData/products.js"
 
@@ -44,6 +44,7 @@ export async function seedProductos(orm: MikroORM) {
         const stock = Math.floor(Math.random() * 50) + 10
         const descuento = Math.random() < 0.5 ? Math.floor(Math.random() * 31) : 0
         const destacado = Math.random() < 0.05
+        const ocultado = Math.random() < 0.05
 
         const marca = marcas[product.brandId - 1]
         const categoria = categorias[product.categoryId - 1]
@@ -58,6 +59,7 @@ export async function seedProductos(orm: MikroORM) {
             stock,
             descuento,
             destacado,
+            ocultado,
             imagenes,
             marca,
             categoria

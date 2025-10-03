@@ -1,7 +1,7 @@
-import { ClienteRepository } from "../../cliente/cliente-repository.js";
-import { Pedido } from "../../pedido/pedido-entity.js"
-import { PedidoProd } from "../../pedidoprod/pedidoprod-entity.js";
-import { ProductoRepository } from "../../producto/producto-repository.js"
+import { ClienteRepository } from "../../src/cliente/cliente-repository.js";
+import { Pedido } from "../../src/pedido/pedido-entity.js"
+import { PedidoProd } from "../../src/pedidoprod/pedidoprod-entity.js";
+import { ProductoRepository } from "../../src/producto/producto-repository.js"
 
 import { MikroORM } from "@mikro-orm/mysql"
 
@@ -14,6 +14,16 @@ function getRandomDateAroundToday(maxDays = 5): Date {
   return randomDate;
 }
 
+function getRandomDateInLastMonths(cantMeses: number): Date {
+    const now = new Date()
+    const oneMonthAgo = new Date()
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - cantMeses)
+
+    const randomTime = oneMonthAgo.getTime() + Math.random() * (now.getTime() - oneMonthAgo.getTime())
+    return new Date(randomTime)
+}
+
+
 export async function seedPedidos(orm: MikroORM) {
     const pedidoEm = orm.em.fork()
     const prodRepo = new ProductoRepository(pedidoEm.fork())
@@ -24,7 +34,7 @@ export async function seedPedidos(orm: MikroORM) {
 
     const pedidos: Pedido[] = [];
 
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 500; i++) {
         const tipoEntrega = Math.random() < 0.8 ? 'retiro' : 'envio'
         const tipoPago = Math.random() < 0.6 ? 'efectivo' : 'credito'
         const fechaEntrega = Math.random() < 0.8 ? getRandomDateAroundToday() : undefined
@@ -44,9 +54,13 @@ export async function seedPedidos(orm: MikroORM) {
             fechaEntrega
         )
 
+        pedido.estado = Math.random() < 0.9 ? 'confirmado' : (Math.random() < 0.2 ? 'pendiente' : 'cancelado')
+        pedido.fechaPedido = getRandomDateInLastMonths(3)
+
         cliente.pedidos.add(pedido)
 
-        pedido.aumentarStockReservado()
+        pedido.estado === 'pendiente' ? pedido.aumentarStockReservado() : ''
+
         pedidos.push(pedido)
         pedidoEm.persist(pedido)
     }

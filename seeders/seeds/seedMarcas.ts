@@ -1,4 +1,4 @@
-import { Marca } from "../../marca/marca-entity.js"
+import { Marca } from "../../src/marca/marca-entity.js"
 
 import { MikroORM } from "@mikro-orm/mysql"
 

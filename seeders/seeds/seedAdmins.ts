@@ -1,4 +1,4 @@
-import { Administrador } from "../../administrador/administrador-entity.js";
+import { Administrador } from "../../src/administrador/administrador-entity.js";
 
 import { MikroORM } from "@mikro-orm/mysql"
 

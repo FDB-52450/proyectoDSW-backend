@@ -1,10 +1,10 @@
-import { Administrador } from "../administrador/administrador-entity.js";
-import { Categoria } from "../categoria/categoria-entity.js";
-import { Cliente } from "../cliente/cliente-entity.js";
-import { Marca } from "../marca/marca-entity.js";
-import { Pedido } from "../pedido/pedido-entity.js";
-import { PedidoProd } from "../pedidoprod/pedidoprod-entity.js";
-import { Producto } from "../producto/producto-entity.js";
+import { Administrador } from "../src/administrador/administrador-entity.js";
+import { Categoria } from "../src/categoria/categoria-entity.js";
+import { Cliente } from "../src/cliente/cliente-entity.js";
+import { Marca } from "../src/marca/marca-entity.js";
+import { Pedido } from "../src/pedido/pedido-entity.js";
+import { PedidoProd } from "../src/pedidoprod/pedidoprod-entity.js";
+import { Producto } from "../src/producto/producto-entity.js";
 
 import { MikroORM } from "@mikro-orm/mysql";
 

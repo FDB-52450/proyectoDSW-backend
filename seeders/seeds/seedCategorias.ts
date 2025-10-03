@@ -1,4 +1,4 @@
-import { Categoria } from "../../categoria/categoria-entity.js"
+import { Categoria } from "../../src/categoria/categoria-entity.js"
 
 import { MikroORM } from "@mikro-orm/mysql"
 

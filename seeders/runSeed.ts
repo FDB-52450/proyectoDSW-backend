@@ -6,7 +6,7 @@ import { seedAdmins } from './seeds/seedAdmins.js'
 
 import { clearSeeds } from './clearSeeds.js'
 
-import config from '../config-db/mikro-orm.config.js'
+import config from '../src/config-db/mikro-orm.config.js'
 import { MikroORM } from '@mikro-orm/mysql'
 import { seedClientes } from './seeds/seedClientes.js'
 

@@ -14,7 +14,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "include": ["src/**/*", "**/*.ts", "typing-stubs"],
+  "include": ["src/**/*", "**/*.ts", "typing-stubs", "seeders"],
   "exclude": ["node_modules"],
   "typeRoots": [
     "./@typing-stubs",
