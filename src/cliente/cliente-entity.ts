@@ -33,6 +33,9 @@ export class Cliente {
 
     @Property()
     codigoPostal!: string
+ 
+    @Property({ onCreate: () => new Date()})
+    fechaIngreso!: Date
 
     @Property({ nullable: true })
     banStart: Date | null  = null
