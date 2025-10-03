@@ -15,6 +15,7 @@ export class ProductoDTO {
     stockReservado?: number
     stockDisponible?: number
     destacado: boolean
+    ocultado: boolean
     fechaIngreso: Date
 
     marca: Marca
@@ -29,6 +30,7 @@ export class ProductoDTO {
         this.descuento = producto.descuento
         this.precioFinal = producto.precioFinal
         this.destacado = producto.destacado
+        this.ocultado = producto.ocultado
         this.fechaIngreso = producto.fechaIngreso
         this.marca = producto.marca
         this.categoria = producto.categoria

@@ -36,6 +36,11 @@ export function validateProducto(mode = "create") {
       .optional()
       .isIn(['true', 'false']).withMessage('destacado debe ser "true" o "false"')
       .toBoolean(),
+    
+    body('ocultado')
+      .optional()
+      .isIn(['true', 'false']).withMessage('ocultado debe ser "true" o "false"')
+      .toBoolean(),
 
     body('marcaId')
       .if((value, { req }) => {return !isUpdate || req.body.marcaId !== undefined})
@@ -59,7 +64,7 @@ export function validateProducto(mode = "create") {
       .isArray().withMessage('imagesToRemove debe ser un array'),
 
     body().custom(body => {
-      const allowed = ['nombre', 'desc', 'precio', 'descuento', 'stock', 'destacado', 'marcaId', 'categoriaId', 'imagesToRemove', 'imagenes', 'imagen']
+      const allowed = ['nombre', 'desc', 'precio', 'descuento', 'stock', 'destacado', 'ocultado', 'marcaId', 'categoriaId', 'imagesToRemove', 'imagenes', 'imagen']
       const extraKeys = Object.keys(body).filter(key => !allowed.includes(key))
 
       if (extraKeys.length) {
@@ -74,7 +79,7 @@ export function validateProducto(mode = "create") {
     validations.push(
       body().custom(body => {
         const allowedFields = [
-          'nombre', 'desc', 'precio', 'descuento',
+          'nombre', 'desc', 'precio', 'descuento', 'ocultado',
           'stock', 'destacado', 'marcaId', 'categoriaId', 'imagesToRemove', 'imagenes', 'imagen'
         ];
 

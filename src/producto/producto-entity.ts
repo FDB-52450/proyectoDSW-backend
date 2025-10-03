@@ -31,6 +31,9 @@ export class Producto {
 
   @Property({ default: false})
   destacado!: boolean
+  
+  @Property({ default: false})
+  ocultado!: boolean
 
   @Property({ onCreate: () => new Date()})
   fechaIngreso!: Date
@@ -54,6 +57,7 @@ export class Producto {
     stock: number,
     descuento: number = 0,
     destacado: boolean = false,
+    ocultado: boolean = false,
     imagenes: Imagen[],
     marca: Marca,
     categoria: Categoria,
@@ -64,6 +68,7 @@ export class Producto {
     this.stock = stock
     this.descuento = descuento
     this.destacado = destacado
+    this.ocultado = ocultado
     this.imagenes = new Collection<Imagen>(this)
     this.imagenes.add(imagenes)
     this.marca = marca

@@ -51,7 +51,9 @@ async function findAll(req: Request, res: Response) {
       currentPage: page, 
       pageSize: 20
     }
-    const productosDTOs = productos.map((prod) => new ProductoDTO(prod, view))
+    const productosDTOs = productos
+        .filter((prod) => !(prod.ocultado && view !== 'admin'))
+        .map((prod) => new ProductoDTO(prod, view))
 
     res.json({data: productosDTOs, pagination: paginationData})
   }
@@ -108,6 +110,7 @@ async function add(req: Request, res: Response) {
     input.stock,
     input.descuento,
     input.destacado,
+    input.ocultado,
     imagenes,
     marca,
     categoria,
