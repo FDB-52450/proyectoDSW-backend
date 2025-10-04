@@ -1,14 +1,43 @@
-import { Repository } from '../shared/repository.js'
 import { Pedido } from './pedido-entity.js'
 import { EntityManager } from '@mikro-orm/mysql'
+import { PedidoFilters } from './pedidoFilters-entity.js'
 
-export class PedidoRepository implements Repository<Pedido> {
+export class PedidoRepository {
   constructor(
     private pedidoEm: EntityManager
   ) {}
 
-  public async findAll(): Promise<Pedido[]> {
-    return await this.pedidoEm.findAll(Pedido, {populate: ['detalle', 'detalle.producto', 'cliente']})
+  public async findAll(page: number, filters?: PedidoFilters): Promise<[Pedido[], number]> {
+    const queryFilters: any = {} 
+    const pageSize = 20
+    const offset = (page - 1) * pageSize
+    
+    let typeSort = {}
+
+    if (filters) {
+        if (filters.estado) {
+            queryFilters.estado = filters.estado
+        }
+    }
+
+    if (filters?.sort) {
+      switch (filters.sort) {
+        case 'precio-asc': typeSort = {precioTotal: 'ASC', id: 'DESC'}; break;
+        case 'precio-desc': typeSort = {precioTotal: 'DESC', id: 'DESC'}; break;
+        default: typeSort = { estado: 'DESC', id: 'DESC'}; break;
+      }
+    } else {
+      typeSort = {estado: 'DESC', id: 'DESC'}
+    }
+
+    const [pedidos, count] = await this.pedidoEm.findAndCount(Pedido, queryFilters, {
+        limit: pageSize,
+        offset: offset,
+        orderBy: typeSort,
+        populate: ['detalle', 'detalle.producto', 'cliente']
+    })
+
+    return [pedidos, count]
   }
 
   public async findOne(item: { id: number }): Promise<Pedido | null> {

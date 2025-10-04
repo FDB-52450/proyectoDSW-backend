@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { findAll, findOne, add, update, remove} from './producto-controller.js'
 
 import { validateProducto } from '../middleware/validation/productoValidation.js'
-import { validateProductoFilters } from '../middleware/validation/productoFiltersValidation.js'
+import { validateProductoFilters } from '../middleware/validation/filters/productoFiltersValidation.js'
 import { validateId } from '../middleware/validation/idValidation.js'
 import { validateImagen } from '../middleware/validation/imagenValidation.js'
 import { handleValidation } from '../middleware/validation/validateInput.js'

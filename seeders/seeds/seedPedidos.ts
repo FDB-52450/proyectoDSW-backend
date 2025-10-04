@@ -30,7 +30,7 @@ export async function seedPedidos(orm: MikroORM) {
     const clienteRepo = new ClienteRepository(pedidoEm.fork())
 
     const [productos, totalItems] = await prodRepo.findAll(1)
-    const clientes = await clienteRepo.findAll()
+    const [clientes, totalClientes] = await clienteRepo.findAll(1)
 
     const pedidos: Pedido[] = [];
 

@@ -7,10 +7,11 @@ import { validateId } from '../middleware/validation/idValidation.js'
 import { validateBan } from '../middleware/validation/banValidation.js'
 
 import { handleValidation } from '../middleware/validation/validateInput.js'
+import { validateClienteFilters } from '../middleware/validation/filters/clienteFiltersValidation.js'
 
 export const clienteRouter = Router()
 
-clienteRouter.get('/', authLogin, findAll)
+clienteRouter.get('/', authLogin, validateClienteFilters, handleValidation, findAll)
 clienteRouter.get('/:id', authLogin, findOne)
 clienteRouter.post('/:id/suspend', authLogin, validateId, validateBan, handleValidation, suspend)
 clienteRouter.post('/:id/reactivate', authLogin, validateId, handleValidation, reactivate)

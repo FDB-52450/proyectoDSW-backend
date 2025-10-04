@@ -1,14 +1,34 @@
-import { Repository } from '../shared/repository.js'
 import { Cliente } from './cliente-entity.js'
 import { EntityManager } from '@mikro-orm/mysql'
+import { ClienteFilters } from './clienteFilters-entity.js'
 
-export class ClienteRepository implements Repository<Cliente> {
+export class ClienteRepository {
     constructor(
       private clienteEm: EntityManager
     ) {}
 
-    public async findAll(): Promise<Cliente[]> {
-        return await this.clienteEm.findAll(Cliente, {populate: ['pedidos']})
+    public async findAll(page: number, filters?: ClienteFilters): Promise<[Cliente[], number]> {
+        const queryFilters: any = {} 
+        const pageSize = 20
+        const offset = (page - 1) * pageSize
+        
+        let typeSort = {}
+
+        if (filters?.sort) {
+            switch (filters.sort) {
+                default: typeSort = { id: 'DESC'}; break;
+            }
+        } else {
+            typeSort = {id: 'DESC'}
+        }
+
+        const [clientes, count] = await this.clienteEm.findAndCount(Cliente, queryFilters, {
+            limit: pageSize,
+            offset: offset,
+            orderBy: typeSort,
+        })
+
+        return [clientes, count]
     }
 
     public async findOne(item: { id: number }): Promise<Cliente | null> {

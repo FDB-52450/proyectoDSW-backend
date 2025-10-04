@@ -5,6 +5,7 @@ import { ClienteDTO } from './cliente-dto.js'
 
 import { ClienteConstraintError, ClienteDataMismatchError, ClienteNotFoundError, NoClientesFoundError } from './cliente-errors.js'
 import { errorLogger } from '../shared/loggers.js'
+import { ClienteFilters } from './clienteFilters-entity.js'
 
 function getRepo() {
     const em = RequestContext.getEntityManager()
@@ -12,16 +13,19 @@ function getRepo() {
     return new ClienteRepository(em as SqlEntityManager)
 }
 
-async function clienteFindAll() {
+async function clienteFindAll(page: number, filters: ClienteFilters) {
     const repository = getRepo()
 
-    const clientes = await repository.findAll()
+    const [clientes, totalItems] = await repository.findAll(page, filters)
 
     if (clientes.length <= 0) {
-        throw new NoClientesFoundError()
+        return [[], {totalPedidos: 0, totalPages: 0, currentPage: 0, pageSize: 20}]
     }
 
-    return clientes
+    const totalPages = Math.ceil(totalItems / 20)
+    const paginationData = { totalProducts: totalItems, totalPages, currentPage: page, pageSize: 20}
+
+    return [clientes, paginationData]
 }
 
 async function clienteFindOne(id: number) {

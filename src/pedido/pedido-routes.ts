@@ -5,10 +5,11 @@ import { authLogin } from '../middleware/loginAuth.js'
 import { validatePedido } from '../middleware/validation/pedidoValidation.js'
 import { validateId } from '../middleware/validation/idValidation.js'
 import { handleValidation } from '../middleware/validation/validateInput.js'
+import { validatePedidoFilters } from '../middleware/validation/filters/pedidoFiltersValidation.js'
 
 export const pedidoRouter = Router()
 
-pedidoRouter.get('/', authLogin, findAll)
+pedidoRouter.get('/', authLogin, validatePedidoFilters, handleValidation, findAll)
 pedidoRouter.get('/:id', authLogin, findOne)
 pedidoRouter.post('/validate', validatePedido('validate'), handleValidation, validate)
 pedidoRouter.post('/', validatePedido('create'), handleValidation, add)

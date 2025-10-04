@@ -11,6 +11,8 @@ import { ClienteDTO } from '../cliente/cliente-dto.js'
 import { pedidoTransformDetalle, pedidoValidateDetalleStock, ValidationResult } from './pedido-helper.js'
 import { AppError } from '../shared/errors.js'
 
+import { PedidoFilters } from './pedidoFilters-entity.js'
+
 function getRepo() {
   const em = RequestContext.getEntityManager()
   return new PedidoRepository(em as SqlEntityManager)
@@ -18,12 +20,25 @@ function getRepo() {
 
 async function findAll(req: Request, res: Response) {
   const repository = getRepo()
-  const pedidos = await repository.findAll()
+  const filters: PedidoFilters = req.query || undefined
+  const page = Number(req.query.page ?? 1)
+
+  const [pedidos, totalItems] = await repository.findAll(page, filters)
 
   if (pedidos.length == 0) {
-    res.status(404).send({ message: 'No hay pedidos disponibles.'})
+    const paginationData = {totalPedidos: 0, totalPages: 0, currentPage: 0, pageSize: 20}
+
+    res.json({data: [], pagination: paginationData})
   } else {
-    res.json({data: pedidos})
+    const totalPages = Math.ceil(totalItems / 20)
+    const paginationData = {
+      totalProducts: totalItems, 
+      totalPages, 
+      currentPage: page, 
+      pageSize: 20
+    }
+
+    res.json({data: pedidos, pagination: paginationData})
   }
 }
 

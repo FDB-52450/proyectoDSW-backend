@@ -4,12 +4,16 @@ import { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRe
 
 import { AppError } from '../shared/errors.js'
 import { auditLogger } from '../shared/loggers.js'
+import { ClienteFilters } from './clienteFilters-entity.js'
 
 async function findAll(req: Request, res: Response) {
     try {
-        const clientes = await clienteFindAll()
+        const filters: ClienteFilters = req.query || undefined
+        const page = Number(req.query.page ?? 1)
+        
+        const [clientes, pagination] = await clienteFindAll(page, filters)
 
-        res.status(201).json({ data: clientes })
+        res.status(201).json({ data: clientes, pagination: pagination})
     } catch (err) {
         if (err instanceof AppError) {
             res.status(err.status).json({ error: err.message })
