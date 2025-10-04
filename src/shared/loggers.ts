@@ -7,7 +7,7 @@ import fs from 'fs'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const logDir = path.join(__dirname, '..', '..', 'logs');
+const logDir = path.join(__dirname, '..', '..', '..', 'logs');
 
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);

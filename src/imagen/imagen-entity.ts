@@ -44,7 +44,7 @@ export class Imagen{
         const imageSizes = {'small': 100, 'medium': 500, 'large': 1000}
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
-        const basePath = path.join(__dirname, '..', '..', 'images', this.url);
+        const basePath = path.join(__dirname, '..', '..', '..', 'images', this.url);
 
         try {
            await fs.promises.mkdir(basePath, {recursive: true}) 
