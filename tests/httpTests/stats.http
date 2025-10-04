@@ -1,0 +1,14 @@
+### Stats de pedidos
+GET http://localhost:8080/api/stats/pedidos/
+
+### Stats de productos
+GET http://localhost:8080/api/stats/productos/
+
+### Stats de categorias
+GET http://localhost:8080/api/stats/categorias/
+
+### Stats de marcas
+GET http://localhost:8080/api/stats/marcas/
+
+### Stats de clientes
+GET http://localhost:8080/api/stats/clientes/

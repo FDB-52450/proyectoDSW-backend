@@ -9,6 +9,7 @@ import { categoriaRouter } from './categoria/categoria-routes.js'
 import { administradorRouter } from './administrador/administrador-routes.js'
 import { pedidoRouter } from './pedido/pedido-routes.js'
 import { clienteRouter } from './cliente/cliente-routes.js'
+import { statsRouter } from './stats/stats-routes.js'
 
 import { orm, syncSchema } from './shared/database.js'
 import { RequestContext } from '@mikro-orm/core'
@@ -48,6 +49,7 @@ app.use('/api/categorias', categoriaRouter)
 app.use('/api/administradores', administradorRouter)
 app.use('/api/pedidos', pedidoRouter)
 app.use('/api/clientes', clienteRouter)
+app.use('/api/stats', statsRouter)
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Resource not found' });
