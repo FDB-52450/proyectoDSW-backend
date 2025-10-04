@@ -44,6 +44,10 @@ function pedidoValidateDetalleStock(pedido: Pedido, clienteCheck: boolean): Vali
 
         const currentSum = categoriaSums.get(categoriaId) ?? 0
 
+        if (pedProd.producto.ocultado) {
+            errors.push({ productoId: pedProd.producto.id, message: 'El producto no esta disponible para la venta.'})
+        }
+
         if (currentSum + cantPedida > stockLim && !categoriasError.has(categoriaId)) {
             errors.push({ categoriaId: prodCategoria.id, message: `Maximo ${stockLim} unidades permitadas por pedido de categoria ${prodCategoria.nombre}`})
             categoriasError.add(categoriaId)
