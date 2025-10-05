@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { ClienteDTO } from './cliente-dto.js'
-import { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove, clienteSuspend, clienteReactivate } from './cliente-service.js'
+import { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove, clienteSuspend, clienteReactivate, clienteGetStatus } from './cliente-service.js'
 
 import { AppError } from '../shared/errors.js'
 import { auditLogger } from '../shared/loggers.js'
@@ -139,4 +139,22 @@ async function reactivate(req: Request, res: Response) {
     }
 }
 
-export { findAll, findOne, add, update, remove, suspend, reactivate }
+async function status(req: Request, res: Response) {
+    const clienteData: ClienteDTO = req.body
+
+    try {
+        const cliente = await clienteGetStatus(clienteData)
+
+        res.status(201).json({ data: cliente})
+    } catch (err) {
+        if (err instanceof AppError) {
+            res.status(err.status).json({ error: err.message })
+            return
+        }
+
+        res.status(500).json({ error: 'Error interno del servidor' })
+        return
+    }
+}
+
+export { findAll, findOne, add, update, remove, suspend, reactivate, status }

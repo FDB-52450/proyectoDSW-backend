@@ -7,6 +7,13 @@ import { ClienteConstraintError, ClienteDataMismatchError, ClienteNotFoundError,
 import { errorLogger } from '../shared/loggers.js'
 import { ClienteFilters } from './clienteFilters-entity.js'
 
+interface ClienteStatus {
+    banned: boolean,
+    banStart?: Date
+    banEnd?: Date | null
+    banRazon?: string
+}
+
 function getRepo() {
     const em = RequestContext.getEntityManager()
 
@@ -122,6 +129,23 @@ async function clienteReactivate(id: number) {
     return cliente
 }
 
+async function clienteGetStatus(clienteDTO: ClienteDTO) {
+    const repository = getRepo()
+    const dni = clienteDTO.dni
+    const cliente = await repository.findByDni({ dni })
+
+    const status: ClienteStatus = {banned: false}
+
+    if (cliente && cliente.banStart) {  
+        status.banned = true
+        status.banStart = cliente.banStart
+        status.banEnd = cliente.banEnd
+        status.banRazon = cliente.banRazon ?? 'Razon no especificada.'
+    }
+
+    return status
+}
+
 function checkClienteData(dbCliente: Cliente, reqCliente: ClienteDTO): boolean {
     return (
         dbCliente.nombre.toLowerCase() === reqCliente.nombre.toLowerCase() &&
@@ -164,4 +188,4 @@ async function clienteObtain(clienteDTO: ClienteDTO) {
     }
 }
 
-export { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove, clienteObtain, clienteSuspend, clienteReactivate }
+export { clienteFindAll, clienteFindOne, clienteCreate, clienteUpdate, clienteRemove, clienteObtain, clienteSuspend, clienteReactivate, clienteGetStatus }

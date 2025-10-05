@@ -23,7 +23,7 @@ export async function seedClientes(orm: MikroORM) {
     const calles = ['Calle Falsa', 'Avenida Siempre Viva', 'Pasaje Luna', 'Boulevard Central', 'Camino del Sol']
 
     for (let i = 0; i < 100; i++) {
-        const dni = `1000000${i}`
+        const dni = `10000${i}`
         const nombre = nombres[Math.floor(Math.random() * nombres.length)]
         const apellido = apellidos[Math.floor(Math.random() * apellidos.length)]
         const email = `${nombre.toLowerCase()}.${apellido.toLowerCase()}@example.com`

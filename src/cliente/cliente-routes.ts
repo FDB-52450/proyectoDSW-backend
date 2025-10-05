@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { findAll, findOne, add, update, remove, suspend, reactivate } from './cliente-controller.js'
+import { findAll, findOne, add, update, remove, suspend, reactivate, status } from './cliente-controller.js'
 import { authLogin } from '../middleware/loginAuth.js'
 
 import { validateCliente } from '../middleware/validation/clienteValidation.js'
@@ -13,6 +13,7 @@ export const clienteRouter = Router()
 
 clienteRouter.get('/', authLogin, validateClienteFilters, handleValidation, findAll)
 clienteRouter.get('/:id', authLogin, findOne)
+clienteRouter.post('/status', validateCliente(), handleValidation, status)
 clienteRouter.post('/:id/suspend', authLogin, validateId, validateBan, handleValidation, suspend)
 clienteRouter.post('/:id/reactivate', authLogin, validateId, handleValidation, reactivate)
 
