@@ -18,10 +18,10 @@ Content-Disposition: form-data; name="nombre"
 
 RAZER
 --XYZ
-Content-Disposition: form-data; name="imagen"; filename="nvidiaLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="imagen"; filename="nvidiaLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/nvidiaLogo.png
+< ../testImages/brandImages/nvidiaLogo.webp
 --XYZ--
 
 ### Simple update
@@ -41,10 +41,10 @@ Content-Disposition: form-data; name="nombre"
 
 AMD
 --XYZ
-Content-Disposition: form-data; name="imagen"; filename="amdLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="imagen"; filename="amdLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/amdLogo.png
+< ../testImages/brandImages/amdLogo.webp
 --XYZ--
 ###
 DELETE http://localhost:8080/api/marcas/23

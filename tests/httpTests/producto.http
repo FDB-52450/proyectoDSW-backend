@@ -31,10 +31,10 @@ Content-Disposition: form-data; name="categoriaId"
 
 115
 --XYZ
-Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="images"; filename="nvidiaLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/nvidiaLogo.png
+< ../testImages/brandImages/nvidiaLogo.webp
 --XYZ--
 
 ### Create product with multiple images
@@ -62,15 +62,15 @@ Content-Disposition: form-data; name="categoriaId"
 
 115
 --XYZ
-Content-Disposition: form-data; name="images"; filename="amdLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="images"; filename="amdLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/amdLogo.png
+< ../testImages/brandImages/amdLogo.webp
 --XYZ
-Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="images"; filename="nvidiaLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/nvidiaLogo.png
+< ../testImages/brandImages/nvidiaLogo.webp
 --XYZ--
 
 ### Update product with new images
@@ -82,15 +82,15 @@ Content-Disposition: form-data; name="nombre"
 
 RTX 10000
 --XYZ
-Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="images"; filename="nvidiaLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/nvidiaLogo.png
+< ../testImages/brandImages/nvidiaLogo.webp
 --XYZ
-Content-Disposition: form-data; name="images"; filename="amdLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="images"; filename="amdLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/amdLogo.png
+< ../testImages/brandImages/amdLogo.webp
 --XYZ--
 
 ### Update product with new images (while also deleting some)
@@ -106,15 +106,15 @@ Content-Disposition: form-data; name="imagesToRemove"
 
 13ed392e-6a56-4f8e-80c1-ad90bceb52b9
 --XYZ
-Content-Disposition: form-data; name="images"; filename="nvidiaLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="images"; filename="nvidiaLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/nvidiaLogo.png
+< ../testImages/brandImages/nvidiaLogo.webp
 --XYZ
-Content-Disposition: form-data; name="images"; filename="amdLogo.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="images"; filename="amdLogo.webp"
+Content-Type: image/webp
 
-< ../testImages/amdLogo.png
+< ../testImages/brandImages/amdLogo.webp
 --XYZ--
 
 ### Update product without new images (deleting some)
