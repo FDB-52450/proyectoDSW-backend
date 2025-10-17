@@ -23,15 +23,15 @@ export async function seedClientes(orm: MikroORM) {
     const calles = ['Calle Falsa', 'Avenida Siempre Viva', 'Pasaje Luna', 'Boulevard Central', 'Camino del Sol']
 
     for (let i = 0; i < 100; i++) {
-        const dni = `10000${i}`
+        const dni = `${Math.floor(Math.random() * 90000000) + 1000000}`
         const nombre = nombres[Math.floor(Math.random() * nombres.length)]
         const apellido = apellidos[Math.floor(Math.random() * apellidos.length)]
         const email = `${nombre.toLowerCase()}.${apellido.toLowerCase()}@example.com`
-        const telefono = `+54 9 11 1234 56${i}${i}`
+        const telefono = `+54 9 11 1234 ${Math.floor(Math.random() * 9000) + 1000}`
         const provincia = provincias[Math.floor(Math.random() * provincias.length)]
         const ciudad = ciudades[Math.floor(Math.random() * ciudades.length)]
         const direccion = `${calles[Math.floor(Math.random() * calles.length)]} ${100 + i}`
-        const codigoPostal = `100${i}`
+        const codigoPostal = `${Math.floor(Math.random() * 9000) + 1000}`
 
         const cliente = new Cliente(
             dni,

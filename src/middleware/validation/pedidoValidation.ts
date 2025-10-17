@@ -19,6 +19,10 @@ export function validatePedido(mode = "create") {
         .optional()
         .isISO8601().withMessage('La fechaEntrega debe ser una fecha valida.')
         .toDate()
+        .customSanitizer((value: Date) => {
+            value.setUTCHours(12, 0, 0, 0)
+            return value
+        })
         .custom((value) => {
             if (!(value instanceof Date) || isNaN(value.getTime())) {
                 throw new Error('La fechaEntrega no es válida')
@@ -35,8 +39,14 @@ export function validatePedido(mode = "create") {
             const minDate = new Date(min.getFullYear(), min.getMonth(), min.getDate())
             const maxDate = new Date(max.getFullYear(), max.getMonth(), max.getDate())
 
-            if (inputDate < minDate || inputDate > maxDate) {
-                throw new Error(`La fechaEntrega debe estar entre ${minDate.toLocaleDateString()} y ${maxDate.toLocaleDateString()}`)
+            if (isUpdate) {
+                if (inputDate < new Date()) {
+                    throw new Error(`La fechaEntrega debe ser mayor a ${new Date().toLocaleDateString()}`)
+                }
+            } else {
+                if (inputDate < minDate || inputDate > maxDate) {
+                    throw new Error(`La fechaEntrega debe estar entre ${minDate.toLocaleDateString()} y ${maxDate.toLocaleDateString()}`)
+                }
             }
 
             return true
