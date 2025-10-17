@@ -13,7 +13,7 @@ export function validateProducto(mode = "create") {
     body('desc')
       .optional()
       .trim()
-      .isLength({ max: 1000 }).withMessage('La descripción no puede tener más de 1000 caracteres'),
+      .isLength({ max: 2000 }).withMessage('La descripción no puede tener más de 1000 caracteres'),
 
     body('precio')
       .if((value, { req }) => {return !isUpdate || req.body.precio !== undefined})

@@ -11,7 +11,7 @@ export class Producto {
   @Property({ unique: true })
   nombre!: string
 
-  @Property({ default: 'Sin descripcion.'})
+  @Property({ type: 'text' })
   desc!: string
 
   @Property()
