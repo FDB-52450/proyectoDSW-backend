@@ -17,7 +17,7 @@ import { RequestContext } from '@mikro-orm/core'
 import { errorLogger } from './shared/loggers.js'
 import { startTasks } from './tasks/startTasks.js'
 
-const app = express()
+export const app = express()
 const port = 8080
 
 // await syncSchema() // ONLY FOR UPDATING SCHEMA

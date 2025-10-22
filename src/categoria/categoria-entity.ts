@@ -2,16 +2,16 @@ import { Entity, PrimaryKey, Property} from '@mikro-orm/core'
 
 @Entity()
 export class Categoria {
-  @PrimaryKey()
+  @PrimaryKey({type: 'number', autoincrement: true})
   id!: number
 
-  @Property({ unique: true})
+  @Property({ unique: true, type: 'string'})
   nombre!: string
 
-  @Property()
+  @Property({type: 'number'})
   duracionGarantia!: number
 
-  @Property()
+  @Property({type: 'number'})
   stockLimit!: number
 
   constructor(

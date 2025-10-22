@@ -4,25 +4,25 @@ import { Entity, PrimaryKey, Property, OneToMany, Collection, ManyToOne, Rel, Ca
 
 @Entity()
 export class Pedido {
-  @PrimaryKey()
+  @PrimaryKey({type: 'number', autoincrement: true})
   id!: number
 
-  @Property()
+  @Property({type: 'string'})
   tipoEntrega!: string
 
-  @Property()
+  @Property({type: 'string'})
   tipoPago!: string
 
-  @Property()
+  @Property({type: 'string'})
   estado: string = 'pendiente'
 
-  @Property()
+  @Property({type: 'number'})
   precioTotal: number
 
-  @Property()
+  @Property({type: 'date'})
   fechaEntrega!: Date
 
-  @Property()
+  @Property({type: 'date'})
   fechaPedido: Date = new Date()
 
   @OneToMany(() => PedidoProd, pedidoProd => pedidoProd.pedido, {cascade: [Cascade.REMOVE, Cascade.PERSIST]})

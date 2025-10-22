@@ -3,10 +3,10 @@ import { Imagen } from '../imagen/imagen-entity.js'
 
 @Entity()
 export class Marca {
-  @PrimaryKey()
+  @PrimaryKey({type: 'number', autoincrement: true})
   id!: number
 
-  @Property({ unique: true})
+  @Property({ unique: true, type: 'string'})
   nombre!: string
 
   @OneToOne(() => Imagen, {nullable: true, orphanRemoval: true, deleteRule: "cascade"})

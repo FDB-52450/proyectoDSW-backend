@@ -10,13 +10,13 @@ import path from 'path'
 import fs from 'fs'
 @Entity()
 export class Imagen{
-    @PrimaryKey()
+    @PrimaryKey({type: 'number', autoincrement: true})
     id!: number
 
-    @Property() // TODO: Consider deleting this.
+    @Property({type: 'string'}) // TODO: Consider deleting this.
     url!: string 
 
-    @Property()
+    @Property({type: 'boolean'})
     imagenPrimaria!: boolean
 
     @ManyToOne(() => Producto, {nullable: true, hidden: true})
@@ -41,7 +41,7 @@ export class Imagen{
     async saveToDisk() {
         this.url = randomUUID()
         
-        const imageSizes = {'small': 100, 'medium': 500, 'large': 1000}
+        const imageSizes = this.producto ? {'small': 100, 'medium': 500, 'large': 1000} : {'small': 100, 'medium': 250}
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
         const basePath = path.join(__dirname, '..', '..', '..', 'images', this.url);

@@ -5,37 +5,37 @@ import { Imagen } from '../imagen/imagen-entity.js'
 
 @Entity()
 export class Producto {
-  @PrimaryKey()
+  @PrimaryKey({type: 'number', autoincrement: true})
   id!: number
 
-  @Property({ unique: true })
+  @Property({ unique: true, type: 'string'})
   nombre!: string
 
   @Property({ type: 'text' })
   desc!: string
 
-  @Property()
+  @Property({type: 'number'})
   precio!: number
 
-  @Property()
+  @Property({type: 'number'})
   descuento: number
 
-  @Property()
+  @Property({type: 'number'})
   precioFinal!: number
 
-  @Property()
+  @Property({type: 'number'})
   stock!: number
 
-  @Property({ hidden: true })
+  @Property({ hidden: true, type: 'number' })
   stockReservado: number = 0
 
-  @Property({ default: false})
+  @Property({ default: false, type: 'boolean'})
   destacado!: boolean
   
-  @Property({ default: false})
+  @Property({ default: false, type: 'boolean'})
   ocultado!: boolean
 
-  @Property({ onCreate: () => new Date()})
+  @Property({ onCreate: () => new Date(), type: 'date'})
   fechaIngreso!: Date
 
   @OneToMany(() => Imagen, img => img.producto, {nullable: true, orphanRemoval: true})

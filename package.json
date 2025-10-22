@@ -4,7 +4,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run seed && node --env-file .env --loader ts-node/esm node_modules/vitest/vitest.mjs run",
     "build": "tsc -p ./tsconfig.json",
     "start:dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node --env-file .env ./dist/src/app.js\"",
     "seed": "node --env-file .env ./dist/seeders/runSeed.js"
@@ -19,8 +19,12 @@
     "@types/express-session": "^1.18.2",
     "@types/multer": "^2.0.0",
     "@types/node": "22.15.17",
+    "@types/supertest": "^6.0.3",
+    "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.4.16",
@@ -34,6 +38,7 @@
     "multer": "^2.0.1",
     "mysql2": "^3.14.2",
     "node-cron": "^4.2.1",
+    "reflect-metadata": "^0.2.2",
     "sharp": "^0.34.3",
     "winston": "^3.17.0"
   }

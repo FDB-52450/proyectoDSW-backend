@@ -3,16 +3,16 @@ import { Entity, PrimaryKey, Property } from '@mikro-orm/core'
 
 @Entity()
 export class Administrador {
-  @PrimaryKey()
+  @PrimaryKey({type: 'number', autoincrement: true})
   id!: number
 
-  @Property()
+  @Property({type: 'string'})
   nombre!: string
 
-  @Property({hidden: true})
+  @Property({hidden: true, type: 'string'})
   passwordHash!: string
 
-  @Property()
+  @Property({type: 'string'})
   role!: string
 
   constructor(

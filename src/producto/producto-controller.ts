@@ -165,7 +165,7 @@ async function update(req: Request, res: Response) {
     const categoria = await convertIdToCategoria(input.categoriaId)
 
     if (!categoria) {
-      res.status(401).send({ message: 'Marca no encontrada.'})
+      res.status(401).send({ message: 'Categoria no encontrada.'})
       return
     } else {
       input.categoria = categoria
@@ -209,24 +209,29 @@ async function remove(req: Request, res: Response) {
   const id = Number(req.params.id)
   const repository = getRepo()
 
-  try {
-    const producto = await repository.delete({ id })
-    
-    if (!producto) {
-      res.status(404).send({ message: 'Producto no encontrado.' })
-    } else {
-      auditLogger.info({entity: 'producto', action: 'delete', user: req.session.user, data: {id: producto.id, nombre: producto.nombre}})
+  const deleteConstraint = await repository.checkDeleteConstraint({id})
 
-      res.status(200).send({ message: 'Producto borrado con exito.' })
-    }
-  } catch (err) {
+  if (!deleteConstraint) {
+    try {
+      const producto = await repository.delete({ id })
+
+      if (!producto) {
+        res.status(404).send({ message: 'Producto no encontrado.' })
+      } else {
+        auditLogger.info({entity: 'producto', action: 'delete', user: req.session.user, data: {id: producto.id, nombre: producto.nombre}})
+
+        res.status(200).send({ message: 'Producto borrado con exito.' })
+      }
+    } catch (err) {
       if (err instanceof Error) {
         res.status(500).send({message: err.message})
       } else {
         res.status(500).send({message: 'Error desconocido.'})
       }
+    }
+  } else {
+    res.status(409).send({ message: 'El producto no pudo eliminarse debido a que esta vinculado a otras entidades.' })
   }
-
 }
 
 export { findAll, findOne, add, update, remove }

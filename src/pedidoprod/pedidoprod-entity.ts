@@ -4,19 +4,19 @@ import { Pedido } from '../pedido/pedido-entity.js'
 
 @Entity()
 export class PedidoProd {
-  @PrimaryKey()
+  @PrimaryKey({type: 'number', autoincrement: true})
   id!: number
 
-  @Property()
+  @Property({type: 'number'})
   cantidad!: number
 
   @ManyToOne(() => Producto)
   producto!: Producto
 
-  @Property()
+  @Property({type: 'number'})
   precioUnidad!: number
 
-  @Property()
+  @Property({type: 'number'})
   precioTotal!: number
 
   @ManyToOne(() => Pedido, {hidden: true})

@@ -4,46 +4,46 @@ import { ClienteDTO } from './cliente-dto.js'
 
 @Entity()
 export class Cliente {
-    @PrimaryKey()
+    @PrimaryKey({type: 'number', autoincrement: true})
     id!: number
 
-    @Property({ unique: true })
+    @Property({ unique: true, type: 'string'})
     dni!: string
 
-    @Property()
+    @Property({type: 'string'})
     nombre!: string
 
-    @Property()
+    @Property({type: 'string'})
     apellido!: string
 
-    @Property()
+    @Property({type: 'string'})
     email!: string
 
-    @Property()
+    @Property({type: 'string'})
     telefono!: string
 
-    @Property()
+    @Property({type: 'string'})
     provincia!: string
     
-    @Property()
+    @Property({type: 'string'})
     ciudad!: string
 
-    @Property()
+    @Property({type: 'string'})
     direccion!: string
 
-    @Property()
+    @Property({type: 'string'})
     codigoPostal!: string
  
-    @Property({ onCreate: () => new Date()})
+    @Property({ onCreate: () => new Date(), type: 'date'})
     fechaIngreso!: Date
 
-    @Property({ nullable: true })
+    @Property({ nullable: true, type: 'date' })
     banStart: Date | null  = null
 
-    @Property({ nullable: true })
+    @Property({ nullable: true, type: 'date' })
     banEnd: Date | null = null
 
-    @Property({ nullable: true })
+    @Property({ nullable: true, type: 'string' })
     banRazon: string | null = null
 
     @OneToMany(() => Pedido, pedido => pedido.cliente, {cascade: [Cascade.REMOVE]})

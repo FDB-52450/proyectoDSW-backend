@@ -85,6 +85,14 @@ export class ProductoRepository {
     return false
   }
 
+  public async checkDeleteConstraint(item: { id: number }): Promise<boolean> {
+    const categoriaProducts = await this.productoEm.findOne(PedidoProd, {producto: item.id})
+
+    if (categoriaProducts) return true
+
+    return false
+  }
+
   public async add(item: Producto): Promise<Producto | null> {
     try {
       await this.productoEm.persistAndFlush(item)
@@ -123,11 +131,6 @@ export class ProductoRepository {
 
   public async delete(item: { id: number }): Promise<Producto | null> {
     const producto = await this.findOne(item)
-    const productoReferences = await this.productoEm.count(PedidoProd, {producto: producto})
-
-    if (productoReferences > 0) {
-      throw new Error('El producto es referenciado en otros pedidos.')
-    }
 
     if (producto) {
       await this.productoEm.removeAndFlush(producto)
