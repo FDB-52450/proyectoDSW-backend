@@ -11,6 +11,7 @@ import { RequestContext, SqlEntityManager } from '@mikro-orm/mysql'
 
 import { auditLogger } from '../shared/loggers.js'
 import { ProductoDTO } from './producto-dto.js'
+import { AppError } from '../shared/errors.js'
 
 function getRepo() {
   const em = RequestContext.getEntityManager()
@@ -177,14 +178,22 @@ async function update(req: Request, res: Response) {
   const check = await repository.checkConstraint(input)
 
   if (!check) {
-    const producto = await repository.update(input, imagesToRemove)
+    try {
+      const producto = await repository.update(input, imagesToRemove)
   
-    if (!producto) {
-      res.status(404).send({ message: 'Producto no encontrado.' })
-    } else {
-      auditLogger.info({entity: 'producto', action: 'update', user: req.session.user, data: req.body})
+      if (!producto) {
+        res.status(404).send({ message: 'Producto no encontrado.' })
+      } else {
+        auditLogger.info({entity: 'producto', action: 'update', user: req.session.user, data: req.body})
 
-      res.status(200).send({ message: 'Producto actualizado con exito.', data: producto })
+        res.status(200).send({ message: 'Producto actualizado con exito.', data: producto })
+      }
+    } catch (err) {
+      if (err instanceof AppError) {
+        res.status(err.status).send({message: err.message})
+      } else {
+        res.status(500).send({message: 'Error desconocido.'})
+      }
     }
   } else {
     res.status(409).send({ message: 'Nombre de producto ya usado.' })

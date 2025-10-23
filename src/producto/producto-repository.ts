@@ -1,4 +1,5 @@
 import { PedidoProd } from '../pedidoprod/pedidoprod-entity.js'
+import { AppError } from '../shared/errors.js'
 import { Producto } from './producto-entity.js'
 import { ProductoFilters } from './productoFilters-entity.js'
 
@@ -108,6 +109,14 @@ export class ProductoRepository {
     if (producto) {
       const imagenesToKeep = producto.imagenes.filter(img => !imagesToRemove.includes(img.url));
       const imagenesFinales = [...imagenesToKeep, ...item.imagenes]
+
+      if (imagenesFinales.length > 4) {
+        throw new AppError('Un producto no puede tener mas de 4 imagenes', 422)
+      }
+  
+      if (item.stock && item.stock < producto.stockReservado) {
+        throw new AppError('El stock nuevo no puede ser menor al stock reservado', 409)
+      }
 
       if (imagenesFinales.length === 0) {
         producto.imagenes.removeAll()
