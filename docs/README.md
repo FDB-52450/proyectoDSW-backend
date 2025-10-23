@@ -51,7 +51,7 @@ o ingrese a la aplicacion de MySQL Workbench y realize la siguiente query:
 CREATE DATABASE IF NOT EXISTS backend_db;
 ```
 
-> El nombre que viene por defecto de la base de datos (backend_db) puede ser modificado, siempre y cuando se configure correctamente las variables de entorno para reflejar este cambio (ver sección de variables de entorno).
+> ℹ️ **Nota**: El nombre que viene por defecto de la base de datos (backend_db) puede ser modificado, siempre y cuando se configure correctamente las variables de entorno para reflejar este cambio (ver sección de variables de entorno).
 
 ---
 
@@ -81,7 +81,13 @@ cp .env-example .env
 npm run build
 ```
 
-### 5. Iniciar el servidor de desarrollo
+### 5. Generar la estructura de la base de datos
+```bash
+npm run db:create
+```
+> 💡 En caso de estar en un ambiente de producción, se recomienda generar una migracion con `npx mikro-orm migration:create` y `migration:up`.
+
+### 6. Iniciar el servidor de desarrollo
 ```bash
 npm run start:dev
 ```
@@ -122,7 +128,15 @@ Las entidades `Imagen`, y `PedidoProd` no poseen una estructura (solo contiene s
 - **Tipo**: MySQL
 - **ORM**: MikroORM ([https://mikro-orm.io/docs/quick-start](https://mikro-orm.io/docs/quick-start))
 
+### Generar la estructura de la base de datos
+Este script permite generar la estructura de la base de datos (tablas y relaciones). **Debe ser ejecutado antes de intentar poblar la base de datos por primera vez**.
+```bash
+npm run db:create
+```
+
 ### Poblar la base de datos
+> ⚠️ Asegúrate de haber ejecutado la creación de la estructura de la base de datos antes de poblarla.
+
 Este script permite poblar rápidamente la base de datos con 3 administradores (1 superadmin), 120 productos, 100 clientes, unas cuantas marcas y categorías (aprox. 10 por cada una) y 1000 pedidos con diferentes estados.
 
 Todas las marcas son cargadas con una imagen, mientras que solo unos pocos productos son cargados por imagen (debido al alto costo de carga por producto)

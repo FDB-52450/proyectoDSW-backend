@@ -7,7 +7,8 @@
     "test": "npm run seed && node --env-file .env --loader ts-node/esm node_modules/vitest/vitest.mjs run",
     "build": "tsc -p ./tsconfig.json",
     "start:dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node --env-file .env ./dist/src/app.js\"",
-    "seed": "node --env-file .env ./dist/seeders/runSeed.js"
+    "seed": "node --env-file .env ./dist/seeders/runSeed.js",
+    "db:build": "node --env-file .env ./dist/seeders/createSchema.js"
   },
   "keywords": [],
   "author": "",
