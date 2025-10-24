@@ -18,12 +18,12 @@ import { errorLogger } from './shared/loggers.js'
 import { startTasks } from './tasks/startTasks.js'
 
 export const app = express()
-const port = 8080
+const port = process.env.PORT
 
 // await syncSchema() // ONLY FOR UPDATING SCHEMA
 
 app.use(express.json())
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }))
 app.use('/images', express.static('images'))
 
 app.use(rateLimit({
@@ -56,7 +56,7 @@ app.use((_, res) => {
 });
 
 app.listen(port, () => {
-  console.log('Server running on http://localhost:8080/')
+  console.log(`Server running on http://localhost:${port}/`)
   startTasks()
 })
 

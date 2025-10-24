@@ -3,7 +3,7 @@ Bienvenido al repositorio del servicio **backend** de Tech Nexus - una API desar
 
 Además de este archivo, la documentación también cuenta con otros dos archivos que explican en mayor detalle las **entidades** ([entidades.md](./entidades.md)) y la **lógica de negocio** ([logicaNegocio.md](./logicaNegocio.md)) del sistema.
 
-> ⚠️ Este repositorio es solo para el **backend**. El frontend se encuentra en otro repositorio: [Tech Nexus - Frontend](https://github.com/tu-org/frontend-repo)
+> ⚠️ Este repositorio es solo para el **backend**. El frontend se encuentra en otro repositorio: [Tech Nexus - Frontend](https://github.com/FDB-52450/proyectoDSW-frontend)
 
 ---
 
@@ -189,6 +189,8 @@ A continuación se describen las variables necesarias para configurar el entorno
 | `DB_HOST`      | `localhost`       | Dirección del host de la base de datos             |
 | `DB_PORT`      | `3306`            | Puerto del servicio de base de datos (MySQL)       |
 | `NODE_MODE`    | `dev`            | Entorno de ejecución (dev/prod)            |
+| `PORT`      | `8080`            | Puerto a utilizar para el backend       |
+| `FRONTEND_URL`    | `http://localhost:5173`            | URL del servicio de frontend            |
 
 ## 📦 Scripts
 
