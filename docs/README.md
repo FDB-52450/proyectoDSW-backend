@@ -61,7 +61,7 @@ CREATE DATABASE IF NOT EXISTS backend_db;
 
 ```bash
 git clone https://github.com/FDB-52450/proyectoDSW-backend.git
-cd backend-repo
+cd cd proyectoDSW-backend
 ```
 
 ### 2. Instalar dependencias
