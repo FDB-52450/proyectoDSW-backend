@@ -83,7 +83,7 @@ npm run build
 
 ### 5. Generar la estructura de la base de datos
 ```bash
-npm run db:create
+npm run db:build
 ```
 > 💡 En caso de estar en un ambiente de producción, se recomienda generar una migracion con `npx mikro-orm migration:create` y `migration:up`.
 
@@ -112,7 +112,7 @@ npm run start:dev
   /shared           → Funciones, errores y utilidades comunes
   /middleware       → Middlewares de Express
    /validation       → Validaciones de entrada
-  /config           → Configuraciones (DB, auth)
+  /config-db           → Configuracion de MikroORM
   /tasks            → Tareas programadas (cron jobs)
 /docs               → Documentación de la API
 /tests              → Pruebas unitarias e integración
@@ -198,6 +198,7 @@ A continuación se describen las variables necesarias para configurar el entorno
 - `npm run start:dev` - Inicia el servidor en modo desarrollo con tsc-watch.
 - `npm run seed` - Pobla la base de datos con datos de prueba.
 - `npm test` - Ejecuta las pruebas unitarias e integración.
+- `npm run db:build` - Genera la estructura de la base de datos.
 
 ## 📞 Contacto
 En caso de tener alguna duda con respecto a la documentacion o al projecto en si, comunicarse mediante el siguiente medio:
